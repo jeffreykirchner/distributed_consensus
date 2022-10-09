@@ -1,10 +1,10 @@
 echo "setup template"
 sudo service postgresql restart
 echo "drop template db: enter db password"
-dropdb multi_user_socket_template -U dbadmin -h localhost -i
+dropdb distributed_consensus -U dbadmin -h localhost -i
 echo "create database: enter db password"
-createdb -h localhost -U dbadmin -O dbadmin multi_user_socket_template
-source _multi_user_socket_template_env/bin/activate
+createdb -h localhost -U dbadmin -O dbadmin distributed_consensus
+source _distributed_consensus_env/bin/activate
 python manage.py migrate
 echo "create super user"
 python manage.py createsuperuser 

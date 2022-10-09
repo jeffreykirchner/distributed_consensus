@@ -14,7 +14,7 @@ sudo apt-get install python3-distutils
 sudo apt-get install python3-apt
 
 Activate virtual environment and install requirments:
-virtualenv --python=python3.9 _multi_user_socket_template_env
+virtualenv --python=python3.9 _distributed_consensus_env
 pip install -U -r requirements.txt
 
 Setup Environment:
