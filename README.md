@@ -1,4 +1,4 @@
-# multi_user_socket_template
+# distributed_consensus
 Template for multi user Django Channels experiment.
 
 Setup Guide:
