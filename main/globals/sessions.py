@@ -21,3 +21,12 @@ class ExperimentPhase(models.TextChoices):
     INSTRUCTIONS = 'Instructions', _('Instructions')
     RUN = 'Run', _('Run')
     DONE = 'Done', _('Done')
+
+class PartModes(models.TextChoices):
+    '''
+    part modes
+    '''
+    A = 'A', _('A')
+    B = 'B', _('B')
+    C = 'C', _('C')
+

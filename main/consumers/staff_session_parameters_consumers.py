@@ -184,14 +184,13 @@ def take_update_parameterset(data):
     form_data_dict = form_data
     form_data_dict["instruction_set"] = form_data_dict["instruction_set"]["id"]
 
-    # for field in form_data:            
-    #     form_data_dict[field["name"]] = field["value"]
-
     form = ParameterSetForm(form_data_dict, instance=session.parameter_set)
 
     if form.is_valid():
-        #print("valid form")                
+                  
         form.save()    
+
+        session.parameter_set.update_parts_and_periods()
 
         return {"value" : "success"}                      
                                 

@@ -14,23 +14,23 @@ from main.models import InstructionSet
 
 import main
 
-#experiment session parameters
 class ParameterSet(models.Model):
     '''
     parameter set
     '''    
     instruction_set = models.ForeignKey(InstructionSet, on_delete=models.CASCADE, related_name="parameter_sets")
 
-    period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
-    period_length = models.IntegerField(verbose_name='Period Length, Production', default=60           )      #period length in seconds
+    part_count = models.IntegerField(verbose_name='Number or parts.', default=3)                              #number of parts in the experiment
+    period_count = models.IntegerField(verbose_name='Number of periods per part.', default=10)                #number of periods in each part of the experiment
+    period_length = models.IntegerField(verbose_name='Period Length, Production', default=60)                 #period length in seconds
     
-    private_chat = models.BooleanField(default=True, verbose_name = 'Private Chat')                          #if true subjects can privately chat one on one
-    show_instructions = models.BooleanField(default=True, verbose_name = 'Show Instructions')                #if true show instructions
+    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                           #if true subjects can privately chat one on one
+    show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                 #if true show instructions
 
-    test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
+    test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
-    timestamp = models.DateTimeField(auto_now_add= True)
-    updated= models.DateTimeField(auto_now= True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.id)
@@ -49,6 +49,7 @@ class ParameterSet(models.Model):
         status = "success"
 
         try:
+            self.part_count = new_ps.get("part_count")
             self.period_count = new_ps.get("period_count")
             self.period_length = new_ps.get("period_length")
 
@@ -57,7 +58,6 @@ class ParameterSet(models.Model):
             self.show_instructions = new_ps.get("show_instructions")
 
             self.save()
-
             
             #parameter set players
             new_parameter_set_players = new_ps.get("parameter_set_players")
@@ -94,6 +94,20 @@ class ParameterSet(models.Model):
         '''    
         pass
 
+    def update_parts_and_periods(self):
+        '''
+        add or remove associated tables based on the number of parts and periods
+        '''
+
+        #remove excess parts
+        main.models.ParameterSetPart.objects.filter(part_number__gt=self.part_count).delete()
+
+        for i in range(self.part_count):
+           obj, created =main.models.ParameterSetPart.objects.get_or_create(parameter_set=self,
+                                                                            part_number=i+1)
+
+
+
     def add_new_player(self):
         '''
         add a new player of type subject_type
@@ -114,8 +128,9 @@ class ParameterSet(models.Model):
         '''
         return{
             "id" : self.id,
-            "period_count" : self.period_count,
 
+            "part_count" : self.part_count,
+            "period_count" : self.period_count,
             "period_length" : self.period_length,
 
             "private_chat" : "True" if self.private_chat else "False",
@@ -123,6 +138,7 @@ class ParameterSet(models.Model):
             "instruction_set" : self.instruction_set.json_min(),
 
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
+            "parameter_set_parts" : [p.json() for p in self.parameter_set_parts.all()],
 
             "test_mode" : "True" if self.test_mode else "False",
         }
@@ -133,8 +149,11 @@ class ParameterSet(models.Model):
         '''
         return{
             "id" : self.id,
-            
+
+            "part_count" : self.part_count,
+            "period_count" : self.period_count,
             "period_length" : self.period_length,
+
             "show_instructions" : "True" if self.show_instructions else "False",
             "private_chat" : self.private_chat,
 
