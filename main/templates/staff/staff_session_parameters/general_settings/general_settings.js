@@ -26,13 +26,13 @@ sendUpdateParameterset(){
     
     app.working = true;
 
-    formData = {}
+    formData = app.session.parameter_set
 
-    for(i=0;i<app.parameterset_form_ids.length;i++)
-    {
-        v=app.parameterset_form_ids[i];
-        formData[v]=app.session.parameter_set[v];
-    }
+    // for(i=0;i<app.parameterset_form_ids.length;i++)
+    // {
+    //     v=app.parameterset_form_ids[i];
+    //     formData[v]=app.session.parameter_set[v];
+    // }
 
     app.sendMessage("update_parameterset", {"sessionID" : app.sessionID,
                                             "formData" : formData});

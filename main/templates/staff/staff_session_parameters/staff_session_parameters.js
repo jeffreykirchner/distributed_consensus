@@ -16,12 +16,10 @@ var app = Vue.createApp({
                     sessionID : {{session.id}},
                     session : {{session_json|safe}},                   
                     valuecost_modal_label:'Edit Value or Cost',
-                    current_parameter_set_player : {
-                        id:0,
-                    },                  
+                    current_parameter_set_player : {id:0,}, 
+                    current_parameter_set_part : {id:0,},               
 
-                    parameterset_form_ids: {{parameterset_form_ids|safe}},
-                    parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
+                    form_ids: {{form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
@@ -72,7 +70,10 @@ var app = Vue.createApp({
                     break;
                 case "add_parameterset_player":
                     app.takeAddParameterSetPlayer(messageData);
-                    break;                
+                    break;  
+                case "update_parameterset_part":
+                    app.takeUpdateParametersetParts(messageData);
+                    break;              
                 case "import_parameters":
                     app.takeImportParameters(messageData);
                     break;
@@ -85,7 +86,6 @@ var app = Vue.createApp({
             }
 
             app.first_load_done = true;
-
             app.working = false;
         },
 
@@ -106,11 +106,13 @@ var app = Vue.createApp({
             app.importParametersModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('importParametersModal'), {keyboard: false})
             app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})            
             app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})   
-            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})         
+            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false}) 
+            app.editParametersetPartModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editPartsModal'), {keyboard: false})        
    
             document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
             document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
             document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
+            document.getElementById('editPartsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetParts);
 
         },
 
@@ -150,6 +152,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/general_settings/general_settings.js"%}
         {%include "staff/staff_session_parameters/control/control.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
+        {%include "staff/staff_session_parameters/parts/parts.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages
@@ -162,19 +165,13 @@ var app = Vue.createApp({
                 if(e) e.remove();
             }
 
-            s = app.parameterset_form_ids;
+            s = app.form_ids;
             for(var i in s)
             {
                 e = document.getElementById("id_errors_" + s[i]);
                 if(e) e.remove();
             }
 
-            s = app.parameterset_player_form_ids;
-            for(var i in s)
-            {
-                e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
         },
 
         /** display form error messages

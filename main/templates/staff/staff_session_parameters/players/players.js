@@ -56,13 +56,13 @@ sendUpdateParametersetPlayer(){
         }
     }
 
-    formData = {}    
+    formData = parameter_set_players[index];
 
-    for(i=0;i<app.parameterset_player_form_ids.length;i++)
-    {
-        v = app.parameterset_player_form_ids[i];
-        formData[v] = parameter_set_players[index][v];
-    }
+    // for(i=0;i<app.parameterset_player_form_ids.length;i++)
+    // {
+    //     v = app.parameterset_player_form_ids[i];
+    //     formData[v] = parameter_set_players[index][v];
+    // }
 
     app.sendMessage("update_parameterset_player", {"sessionID" : app.sessionID,
                                                    "paramterset_player_id" : app.current_parameter_set_player.id,

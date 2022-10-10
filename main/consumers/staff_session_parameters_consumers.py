@@ -17,9 +17,11 @@ from main.consumers import StaffSubjectUpdateMixin
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
+from main.forms import ParameterSetPartsForm
 
 from main.models import Session
 from main.models import ParameterSetPlayer
+from main.models import ParameterSetPart
 
 import main
 
@@ -109,6 +111,22 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_parameterset_part(self, event):
+        '''
+        update a parameterset part
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_part)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_part"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
 
     async def import_parameters(self, event):
         '''
@@ -222,6 +240,41 @@ def take_update_parameterset_player(data):
     logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset player form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_part(data):
+    '''
+    update parameterset part
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset part: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_part_id = data["paramterset_part_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_part = ParameterSetPart.objects.get(id=paramterset_part_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_player parameterset_player, not found ID: {paramterset_part_id}")
+        return
+    
+    form_data_dict = form_data
+
+    # for field in form_data:            
+    #     form_data_dict[field["name"]] = field["value"]
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetPartsForm(form_data_dict, instance=parameter_set_part)
 
     if form.is_valid():
         #print("valid form")             
