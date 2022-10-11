@@ -1,15 +1,15 @@
 /**show edit parameter set player
  */
- showEditParametersetPart:function(id){
+ showEditParametersetLabel:function(id){
     
     if(app.session.started) return;
 
-    var parameter_set_parts = app.session.parameter_set.parameter_set_parts;
+    var parameter_set_labels = app.session.parameter_set.parameter_set_labels;
 
     index = -1;
-    for(i=0;i<parameter_set_parts.length;i++)
+    for(i=0;i<parameter_set_labels.length;i++)
     {
-        if(parameter_set_parts[i].id == id)
+        if(parameter_set_labels[i].id == id)
         {
             index = i;
             break;
@@ -18,12 +18,12 @@
     
     app.clearMainFormErrors();
     app.cancelModal=true;
-    app.parametersetPartBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_parts[index]);
+    app.parametersetLabelsBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_labels[index]);
     
-    app.parametersetPartBeforeEditIndex = index;
-    app.current_parameter_set_part = app.session.parameter_set.parameter_set_parts[index];
+    app.parametersetLabelsBeforeEditIndex = index;
+    app.current_parameter_set_labels = app.session.parameter_set.parameter_set_labels[index];
     
-    app.editParametersetPartModal.toggle();
+    app.editLabelModal.toggle();
 },
 
 /** hide edit parmeter set player

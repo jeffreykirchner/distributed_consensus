@@ -1,7 +1,7 @@
 <div class="card" v-show="first_load_done">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">
-            Labels ([[session.parameter_set.parameter_set_parts.length]]) 
+            Labels ([[session.parameter_set.parameter_set_labels.length]]) 
         </span>      
 
         <span class="float-end">
@@ -21,22 +21,23 @@
                     <thead>
                         <tr>
                             <th scope="col" class = "m-1 p-1">
-                                #
+                                Name
                             </th> 
-                            <th scope="col" class = "m-1 p-1">
-                                Mode
+                            <th scope="col" class = "m-1 p-1" v-for="(p, index) in session.parameter_set.number_periods" v-bind:key="'labels_period_column_' + index">
+                                P-[[index+1]]
                             </th>                           
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_parts" v-bind:key="p.id">
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.part_number]]
+                        <tr v-for="(p, index) in session.parameter_set.parameter_set_parts" v-bind:key="'labels_period_row' + p.id">
+                            <td v-on:click="showEditParametersetLabel(p.id)" class="player_table_cell">
+                                [[p.name]]
                             </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.mode]]
-                            </td>
-                            
+                            <td v-for="(l, index) in p.parameter_set_labels_period" v-bind:key="'labels_period_' + l.id"
+                                v-on:click="showEditParametersetLabelPeriod(p.id)" 
+                                class="player_table_cell" >
+                                [[p.label.abbreviation]]
+                            </td>                            
                         </tr>
                     </tbody>
                    

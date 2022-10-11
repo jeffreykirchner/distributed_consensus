@@ -100,7 +100,7 @@ class ParameterSet(models.Model):
         '''
 
         #remove excess parts
-        main.models.ParameterSetPart.objects.filter(part_number__gt=self.part_count).delete()
+        self.parameter_set_parts.filter(part_number__gt=self.part_count).delete()
 
         for i in range(self.part_count):
            obj, created = main.models.ParameterSetPart.objects.get_or_create(parameter_set=self,

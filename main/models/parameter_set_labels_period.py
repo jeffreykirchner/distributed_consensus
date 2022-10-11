@@ -19,8 +19,8 @@ class ParameterSetLabelsPeriod(models.Model):
     '''
     parameter set part
     '''    
-    parameter_set_labels = models.ForeignKey(ParameterSetLabels, on_delete=models.CASCADE, related_name="parameter_set_labels_periods_a")
-    label =  models.ForeignKey(ParameterSetRandomOutcome, on_delete=models.CASCADE, related_name="parameter_set_labels_periods_b")
+    parameter_set_labels = models.ForeignKey(ParameterSetLabels, on_delete=models.CASCADE, related_name="parameter_set_labels_period_a")
+    label =  models.ForeignKey(ParameterSetRandomOutcome, on_delete=models.CASCADE, related_name="parameter_set_labels_period_b", null=True, blank=True)
 
     period_number = models.IntegerField(verbose_name='Period Number', default=0)
     
@@ -46,6 +46,7 @@ class ParameterSetLabelsPeriod(models.Model):
 
         try:
             self.period_number = new_ps.get("period_number")
+            self.label = new_ps.get("label")
             
         except IntegrityError as exp:
             message = f"Failed to load parameter set labels: {exp}"
@@ -67,7 +68,7 @@ class ParameterSetLabelsPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-
+            "label" : self.label.json(),
         }
     
     def json_for_subject(self):
@@ -77,5 +78,6 @@ class ParameterSetLabelsPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
+            "label" : self.label.json(),
         }
 
