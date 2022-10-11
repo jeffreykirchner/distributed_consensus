@@ -21,6 +21,7 @@ from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPartsForm
+from main.forms import ParameterSetRandomOutcomeForm
 
 class StaffSessionParametersView(SingleObjectMixin, View):
     '''
@@ -48,6 +49,9 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         for i in ParameterSetPartsForm():
             form_ids.append(i.html_name)
 
+        for i in ParameterSetRandomOutcomeForm():
+            form_ids.append(i.html_name)
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
@@ -56,6 +60,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_player_form" : ParameterSetPlayerForm(),
                                "parameter_set_parts_form" : ParameterSetPartsForm(),
+                               "parameter_set_random_outcome_form" : ParameterSetRandomOutcomeForm(),
                                "form_ids" : form_ids,
                                "import_parameters_form" : ImportParametersForm(user=request.user),     
                                "websocket_path" : self.websocket_path,

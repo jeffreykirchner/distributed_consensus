@@ -18,10 +18,12 @@ from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPartsForm
+from main.forms import ParameterSetRandomOutcomeForm
 
 from main.models import Session
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetPart
+from main.models import ParameterSetRandomOutcome
 
 import main
 
@@ -63,6 +65,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
 
     async def update_parameterset_player(self, event):
         '''
@@ -111,7 +114,57 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
     
+    async def update_parameterset_random_outcome(self, event):
+        '''
+        update a parameterset random outcome
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_random_outcome)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_random_outcome"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+
+    async def remove_parameterset_random_outcome(self, event):
+        '''
+        remove a parameterset random outcome
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_remove_parameterset_random_outcome)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "remove_parameterset_random_outcome"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))   
+    
+    async def add_parameterset_random_outcome(self, event):
+        '''
+        add a parameterset random outcome
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_add_paramterset_random_outcome)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "add_parameterset_random_outcome"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+
     async def update_parameterset_part(self, event):
         '''
         update a parameterset part
@@ -215,6 +268,7 @@ def take_update_parameterset(data):
     logger.info("Invalid paramterset form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
+
 def take_update_parameterset_player(data):
     '''
     update parameterset player
@@ -240,41 +294,6 @@ def take_update_parameterset_player(data):
     logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
-
-    if form.is_valid():
-        #print("valid form")             
-        form.save()              
-
-        return {"value" : "success"}                      
-                                
-    logger.info("Invalid parameterset player form")
-    return {"value" : "fail", "errors" : dict(form.errors.items())}
-
-def take_update_parameterset_part(data):
-    '''
-    update parameterset part
-    '''   
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset part: {data}")
-
-    session_id = data["sessionID"]
-    paramterset_part_id = data["paramterset_part_id"]
-    form_data = data["formData"]
-
-    try:        
-        parameter_set_part = ParameterSetPart.objects.get(id=paramterset_part_id)
-    except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_player parameterset_player, not found ID: {paramterset_part_id}")
-        return
-    
-    form_data_dict = form_data
-
-    # for field in form_data:            
-    #     form_data_dict[field["name"]] = field["value"]
-
-    logger.info(f'form_data_dict : {form_data_dict}')
-
-    form = ParameterSetPartsForm(form_data_dict, instance=parameter_set_part)
 
     if form.is_valid():
         #print("valid form")             
@@ -323,7 +342,115 @@ def take_add_paramterset_player(data):
     session.parameter_set.add_new_player()
 
     session.update_player_count()
+
+
+def take_update_parameterset_random_outcome(data):
+    '''
+    update parameterset random outcome
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset random outcome: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_random_outcome_id = data["random_outcome_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_random_outcome = ParameterSetRandomOutcome.objects.get(id=paramterset_random_outcome_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_random_outcome random_outcome, not found ID: {paramterset_random_outcome_id}")
+        return
     
+    form_data_dict = form_data
+
+    # for field in form_data:            
+    #     form_data_dict[field["name"]] = field["value"]
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetRandomOutcomeForm(form_data_dict, instance=parameter_set_random_outcome)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset random outcome form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_add_paramterset_random_outcome(data):
+    '''
+    add a new parameter randome outcome to the parameter set
+    '''
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Add parameterset random outcome: {data}")
+
+    session_id = data["sessionID"]
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_add_paramterset_random_outcome session, not found ID: {session_id}")
+        return
+
+    ParameterSetRandomOutcome.objects.create(parameter_set=session.parameter_set)
+
+def take_remove_parameterset_random_outcome(data):
+    '''
+    remove the specifed parmeterset random outcome
+    '''
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Remove parameterset random outcome: {data}")
+
+    session_id = data["sessionID"]
+    random_outcome_id = data["random_outcome_id"]
+
+    try:        
+        session = Session.objects.get(id=session_id)
+        session.parameter_set.parameter_set_random_outcomes.get(id=random_outcome_id).delete()
+    except ObjectDoesNotExist:
+        logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {random_outcome_id}")
+        return
+    
+    return {"value" : "success"}
+
+
+def take_update_parameterset_part(data):
+    '''
+    update parameterset part
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset part: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_part_id = data["paramterset_part_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_part = ParameterSetPart.objects.get(id=paramterset_part_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_player parameterset_player, not found ID: {paramterset_part_id}")
+        return
+    
+    form_data_dict = form_data
+
+    # for field in form_data:            
+    #     form_data_dict[field["name"]] = field["value"]
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetPartsForm(form_data_dict, instance=parameter_set_part)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset player form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
 def take_import_parameters(data):
     '''
     import parameters from another session

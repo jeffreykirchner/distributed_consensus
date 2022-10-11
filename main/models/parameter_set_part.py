@@ -21,6 +21,7 @@ class ParameterSetPart(models.Model):
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_parts")
     mode = models.CharField(max_length=100, choices=PartModes.choices, default=PartModes.A)
     part_number = models.IntegerField(verbose_name='Part Number', default=0)
+    minimum_for_majority = models.IntegerField(verbose_name='Minimum for Majority', default=7)                #minimum required for a majority
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -45,6 +46,7 @@ class ParameterSetPart(models.Model):
         try:
             self.mode = new_ps.get("mode")
             self.part_number = new_ps.get("part_number")
+            self.minimum_for_majority = new_ps.get("minimum_for_majority")
             
         except IntegrityError as exp:
             message = f"Failed to load parameter set part: {exp}"
@@ -67,6 +69,7 @@ class ParameterSetPart(models.Model):
             "id" : self.id,
             "mode" : self.mode,
             "part_number" : self.part_number,
+            "minimum_for_majority" : self.minimum_for_majority,
         }
     
     def json_for_subject(self):
@@ -77,5 +80,6 @@ class ParameterSetPart(models.Model):
             "id" : self.id,
             "mode" : self.mode,
             "part_number" : self.part_number,
+            "minimum_for_majority" : self.minimum_for_majority,
         }
 

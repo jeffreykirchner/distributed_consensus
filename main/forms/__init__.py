@@ -11,6 +11,7 @@ from .import_parameters_form import ImportParametersForm
 from .parameter_set_form import ParameterSetForm
 from .parameter_set_parts_form import ParameterSetPartsForm
 from .parameter_set_player_form import ParameterSetPlayerForm
+from .parameter_set_random_outcome_form import ParameterSetRandomOutcomeForm
 
 from .session_player_name_etc_form import StaffEditNameEtcForm
 

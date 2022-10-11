@@ -1,7 +1,7 @@
 <div class="card" v-show="first_load_done">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">
-            Players ([[session.parameter_set.parameter_set_players.length]]) 
+            Random Outcomes ([[session.parameter_set.parameter_set_random_outcomes.length]]) 
         </span>      
 
         <span class="float-end">
@@ -21,36 +21,43 @@
                     <thead>
                         <tr>
                             <th scope="col" class = "m-1 p-1">
-                                #
+                                Name
                             </th> 
                             <th scope="col" class = "m-1 p-1">
-                                ID
-                            </th>                           
+                                Abbreviation
+                            </th> 
+                            <th scope="col" class = "m-1 p-1">
+                                Image File
+                            </th>                          
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
-                            <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
-                                [[p.player_number]]
+                        <tr v-for="(r, index) in session.parameter_set.parameter_set_random_outcomes" v-bind:key="r.id">
+                            <td v-on:click="showEditRandomOutcome(r.id)" class="player_table_cell">
+                                [[r.name]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
-                                [[p.parameter_set_player.id_label]]
+                            <td v-on:click="showEditRandomOutcome(r.id)" class="player_table_cell">
+                                [[r.abbreviation]]
                             </td>
-                            
+                            <td v-on:click="showEditRandomOutcome(r.id)" class="player_table_cell">
+                                [[r.image]]
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot>
-                        <!-- copy groups forward -->
+                        <!-- add random outcome -->
                         <tr>
                             <td>
                                 <button class="btn btn-outline-success btn-sm"
                                         type="button"
-                                        title="Add player"
+                                        title="Add random outcome"
                                         v-bind:disabled="session.started || reconnecting || working"
-                                        v-on:click="sendAddParameterSetPlayer()">
+                                        v-on:click="sendAddRandomOutcome()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>
                             </td>                            
+                            <td>
+                            </td>
                             <td>
                             </td>
                         </tr>

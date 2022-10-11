@@ -17,7 +17,8 @@ class ParameterSetRandomOutcome(models.Model):
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_random_outcomes")
     
     name = models.CharField(max_length=100, default="Name Here")
-    abbreviation = models.CharField(max_length=10, default="Abbreviation Here")
+    abbreviation = models.CharField(max_length=10, default="NH")
+    image = models.CharField(max_length=100, default="abc.jpg")
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -39,6 +40,7 @@ class ParameterSetRandomOutcome(models.Model):
         try:
             self.name = new_ps.get("mode")
             self.abbreviation = new_ps.get("part_number")
+            self.image = new_ps.get("image")
             
         except IntegrityError as exp:
             message = f"Failed to load parameter set part: {exp}"
@@ -65,7 +67,8 @@ class ParameterSetRandomOutcome(models.Model):
         return{
             "id" : self.id,
             "name" : self.name,
-            "abbreviation" : self.abbreviation,           
+            "abbreviation" : self.abbreviation, 
+            "image" : self.image,           
         }
     
     def json_for_subject(self):
@@ -76,5 +79,6 @@ class ParameterSetRandomOutcome(models.Model):
             "id" : self.id,
             "name" : self.name,
             "abbreviation" : self.abbreviation,
+            "image" : self.image,   
         }
 

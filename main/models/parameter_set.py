@@ -22,8 +22,8 @@ class ParameterSet(models.Model):
 
     part_count = models.IntegerField(verbose_name='Number or parts.', default=3)                              #number of parts in the experiment
     period_count = models.IntegerField(verbose_name='Number of periods per part.', default=10)                #number of periods in each part of the experiment
-    period_length = models.IntegerField(verbose_name='Period Length, Production', default=60)                 #period length in seconds
-    
+    period_length = models.IntegerField(verbose_name='Period Length, Production', default=20)                 #period length in seconds
+
     private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                           #if true subjects can privately chat one on one
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                 #if true show instructions
 
@@ -103,8 +103,8 @@ class ParameterSet(models.Model):
         main.models.ParameterSetPart.objects.filter(part_number__gt=self.part_count).delete()
 
         for i in range(self.part_count):
-           obj, created =main.models.ParameterSetPart.objects.get_or_create(parameter_set=self,
-                                                                            part_number=i+1)
+           obj, created = main.models.ParameterSetPart.objects.get_or_create(parameter_set=self,
+                                                                             part_number=i+1)
 
 
 
@@ -139,6 +139,8 @@ class ParameterSet(models.Model):
 
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
             "parameter_set_parts" : [p.json() for p in self.parameter_set_parts.all()],
+            "parameter_set_labels" : [p.json() for p in self.parameter_set_labels.all()],
+            "parameter_set_random_outcomes" : [p.json() for p in self.parameter_set_random_outcomes.all()],
 
             "test_mode" : "True" if self.test_mode else "False",
         }

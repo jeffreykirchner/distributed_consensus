@@ -17,7 +17,12 @@ class ParameterSetPartsForm(forms.ModelForm):
                              choices=PartModes.choices,
                              widget=forms.Select(attrs={"v-model":"current_parameter_set_part.mode",}))
 
+    minimum_for_majority = forms.IntegerField(label='Minimum for Majority',
+                                              min_value=1,
+                                              widget=forms.NumberInput(attrs={"min":"1",
+                                                                              "v-model":"current_parameter_set_part.minimum_for_majority"}))
+
     class Meta:
         model=ParameterSetPart
-        fields =['mode']
+        fields =['mode', 'minimum_for_majority']
     

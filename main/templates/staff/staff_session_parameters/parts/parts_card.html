@@ -25,7 +25,10 @@
                             </th> 
                             <th scope="col" class = "m-1 p-1">
                                 Mode
-                            </th>                           
+                            </th> 
+                            <th scope="col" class = "m-1 p-1">
+                                Minimum for Majority
+                            </th>                          
                         </tr>
                     </thead>
                     <tbody id="player_list">
@@ -36,7 +39,9 @@
                             <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
                                 [[p.mode]]
                             </td>
-                            
+                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                [[p.minimum_for_majority]]
+                            </td>                            
                         </tr>
                     </tbody>
                    
