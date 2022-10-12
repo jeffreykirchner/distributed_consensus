@@ -2,6 +2,7 @@
 parameter set
 '''
 import logging
+import random
 
 from decimal import Decimal
 
@@ -20,7 +21,7 @@ class ParameterSetLabelsPeriod(models.Model):
     parameter set part
     '''    
     parameter_set_labels = models.ForeignKey(ParameterSetLabels, on_delete=models.CASCADE, related_name="parameter_set_labels_period_a")
-    label =  models.ForeignKey(ParameterSetRandomOutcome, on_delete=models.CASCADE, related_name="parameter_set_labels_period_b", null=True, blank=True)
+    label =  models.ForeignKey(ParameterSetRandomOutcome, models.SET_NULL, related_name="parameter_set_labels_period_b", null=True, blank=True)
 
     period_number = models.IntegerField(verbose_name='Period Number', default=0)
     
@@ -60,6 +61,15 @@ class ParameterSetLabelsPeriod(models.Model):
         default setup
         '''    
         pass
+
+    def randomize(self):
+        '''
+        randomize labels
+        '''
+
+        self.label = random.sample(list(ParameterSetRandomOutcome.objects.all()), 1)[0]
+
+        self.save()
 
     def json(self):
         '''

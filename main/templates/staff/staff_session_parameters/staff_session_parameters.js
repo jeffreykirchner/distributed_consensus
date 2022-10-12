@@ -17,10 +17,11 @@ var app = Vue.createApp({
                     session : {{session_json|safe}},                   
   
                     current_parameter_set_player : {id:0,}, 
+                    current_parameter_set_player_part : {id:0,},
                     current_parameter_set_part : {id:0,},    
                     current_random_outcome : {id:0,}, 
                     current_parameter_set_labels : {id:0,}, 
-                    current_parameter_set_labels_period : {id:0,},            
+                    current_parameter_set_labels_period : {id:0,},                                
 
                     form_ids: {{form_ids|safe}},
 

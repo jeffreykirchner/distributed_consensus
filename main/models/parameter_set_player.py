@@ -41,6 +41,26 @@ class ParameterSetPlayer(models.Model):
         message = "Parameters loaded successfully."
 
         return message
+    
+    def setup_parts(self):
+        '''
+        update the number player parts
+        '''
+
+        difference = self.parameter_set_player_parts_a.all().count() - self.parameter_set.part_count
+
+        if difference>0:
+            for i in range(difference):
+                self.parameter_set_player_parts_a.last().delete()            
+        elif difference<0:
+            for i in range(abs(difference)):
+                main.models.ParameterSetPlayerPart.objects.create(parameter_set_player=self)
+        
+        parameter_set_player_parts = list(self.parameter_set_player_parts_a.all())
+        for index, i in enumerate(self.parameter_set.parameter_set_parts.all()):
+            parameter_set_player_parts[index].parameter_set_part = i
+            parameter_set_player_parts[index].save()
+
 
     def json(self):
         '''
@@ -51,6 +71,7 @@ class ParameterSetPlayer(models.Model):
 
             "id" : self.id,
             "id_label" : self.id_label,
+            "parameter_set_player_parts" : [i.json() for i in self.parameter_set_player_parts_a.all()]
         }
     
     def json_for_subject(self):
@@ -62,6 +83,7 @@ class ParameterSetPlayer(models.Model):
 
             "id" : self.id,
             "id_label" : self.id_label,
+            "parameter_set_player_parts" : [i.json() for i in self.parameter_set_player_parts_a.all()]
 
         }
 

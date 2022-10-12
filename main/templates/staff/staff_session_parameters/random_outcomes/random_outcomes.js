@@ -81,6 +81,7 @@ takeUpdateRandomOutcome(messageData){
     {
         app.takeGetSession(messageData);       
         app.editRandomOutcomeModal.hide();        
+        window.location.reload();
     } 
     else
     {
@@ -106,6 +107,7 @@ takeRemoveRandomOutcome(messageData){
     //app.clearMainFormErrors();
     app.takeGetSession(messageData);   
     app.editRandomOutcomeModal.hide();
+    window.location.reload();
 },
 
 /** copy specified period's groups forward to future groups
@@ -122,4 +124,5 @@ takeAddRandomOutcome(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
     app.takeGetSession(messageData); 
+    window.location.reload();
 },

@@ -20,6 +20,7 @@ from main.models import Session
 from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
+from main.forms import ParameterSetPlayerPartForm
 from main.forms import ParameterSetPartsForm
 from main.forms import ParameterSetRandomOutcomeForm
 from main.forms import ParameterSetLabelsForm
@@ -48,6 +49,9 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         for i in ParameterSetPlayerForm():
             form_ids.append(i.html_name)
         
+        for i in ParameterSetPlayerPartForm():
+            form_ids.append(i.html_name)
+        
         for i in ParameterSetPartsForm():
             form_ids.append(i.html_name)
 
@@ -67,6 +71,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "id" : session.id,
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_player_form" : ParameterSetPlayerForm(),
+                               "parameter_set_player_part_form" : ParameterSetPlayerPartForm(),
                                "parameter_set_parts_form" : ParameterSetPartsForm(),
                                "parameter_set_random_outcome_form" : ParameterSetRandomOutcomeForm(),
                                "parameter_set_labels_form" : ParameterSetLabelsForm(),

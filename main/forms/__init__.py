@@ -11,6 +11,7 @@ from .import_parameters_form import ImportParametersForm
 from .parameter_set_form import ParameterSetForm
 from .parameter_set_parts_form import ParameterSetPartsForm
 from .parameter_set_player_form import ParameterSetPlayerForm
+from .parameter_set_player_part_form import ParameterSetPlayerPartForm
 from .parameter_set_labels_form import ParameterSetLabelsForm
 from .parameter_set_labels_period_form import ParameterSetLabelsPeriodForm
 from .parameter_set_random_outcome_form import ParameterSetRandomOutcomeForm

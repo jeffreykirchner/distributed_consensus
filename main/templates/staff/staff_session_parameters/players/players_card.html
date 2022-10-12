@@ -25,6 +25,9 @@
                             </th> 
                             <th scope="col" class = "m-1 p-1">
                                 ID
+                            </th>
+                            <th scope="col" class = "m-1 p-1" v-for="(p, index) in session.parameter_set.part_count" v-bind:key="'player_part_column_' + index">
+                                <span v-if="index==0">Part </span>[[index+1]]
                             </th>                           
                         </tr>
                     </thead>
@@ -36,7 +39,12 @@
                             <td v-on:click="showEditParametersetPlayer(p.parameter_set_player.id)" class="player_table_cell">
                                 [[p.parameter_set_player.id_label]]
                             </td>
-                            
+                            <td v-for="(l, index) in p.parameter_set_player.parameter_set_player_parts" v-bind:key="l.id"
+                                v-on:click="showEditParametersetLabelsPeriod(l.id)" 
+                                class="player_table_cell" >
+                                G[[l.group]]<br>
+                                [[l.parameter_set_labels ? l.parameter_set_labels.name : '---']]
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot>

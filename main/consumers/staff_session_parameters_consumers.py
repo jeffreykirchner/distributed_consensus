@@ -185,6 +185,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
 
+
     async def update_parameterset_labels(self, event):
         '''
         update a parameterset labels
@@ -208,6 +209,22 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_labels_period)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_labels_period"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_parameterset_randomize_labels(self, event):
+        '''
+        update a parameterset labels
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_randomize_labels)(event["message_text"])
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
@@ -550,6 +567,25 @@ def take_update_parameterset_labels_period(data):
                                 
     logger.info("Invalid parameterset labels period form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_randomize_labels(data):
+    '''
+    update parameterset randomize labels
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset randomize labels: {data}")
+
+    session_id = data["sessionID"]
+
+    try:        
+        session = Session.objects.get(id=session_id)               
+    except ObjectDoesNotExist:
+        logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {random_outcome_id}")
+        return
+    
+    session.parameter_set.randomize_labels()
+    
+    return {"value" : "success"}
 
 def take_import_parameters(data):
     '''

@@ -117,6 +117,10 @@ class ParameterSet(models.Model):
         
         for i in self.parameter_set_labels.all():
             i.update_labels_periods_count()             
+        
+        #setup players
+        for i in self.parameter_set_players.all():
+            i.setup_parts()
 
     def add_new_player(self):
         '''
@@ -131,6 +135,14 @@ class ParameterSet(models.Model):
         player.parameter_set = self
 
         player.save()
+    
+    def randomize_labels(self):
+        '''
+        randomize labels
+        '''
+
+        for i in self.parameter_set_labels.all():
+            i.randomize()
 
     def json(self):
         '''

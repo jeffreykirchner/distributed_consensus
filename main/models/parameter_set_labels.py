@@ -69,6 +69,14 @@ class ParameterSetLabels(models.Model):
            obj, created = main.models.ParameterSetLabelsPeriod.objects.get_or_create(parameter_set_labels=self,
                                                                                      period_number=i+1)
 
+    def randomize(self):
+        '''
+        randomize labels
+        '''
+
+        for i in self.parameter_set_labels_period_a.all():
+            i.randomize()
+
     def json(self):
         '''
         return json object of model

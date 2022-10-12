@@ -17,31 +17,42 @@
             <!-- player settings -->
             <div class="col-md-auto text-center">                
                 <div class="table-responsive">
-                <table class="table table-condensed"> 
-                    <thead>
-                        <tr>
-                            <th scope="col" class = "m-1 p-1">
-                                Name
-                            </th> 
-                            <th scope="col" class = "m-1 p-1" v-for="(p, index) in session.parameter_set.period_count" v-bind:key="'labels_period_column_' + index">
-                                <span v-if="index==0">Period </span>[[index+1]]
-                            </th>                           
-                        </tr>
-                    </thead>
-                    <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_labels" v-bind:key="'labels_period_row_' + p.id">
-                            <td v-on:click="showEditParametersetLabels(p.id)" class="player_table_cell">
-                                [[p.name]]
-                            </td>
-                            <td v-for="(l, index) in p.parameter_set_labels_period" v-bind:key="'labels_period_' + l.id"
-                                v-on:click="showEditParametersetLabelsPeriod(l.id)" 
-                                class="player_table_cell" >
-                                [[p.label ? p.label.abbreviation : '---']]
-                            </td>                            
-                        </tr>
-                    </tbody>
-                   
-                </table>
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th scope="col" class = "m-1 p-1">
+                                    Name
+                                </th> 
+                                <th scope="col" class = "m-1 p-1" v-for="(p, index) in session.parameter_set.period_count" v-bind:key="'labels_period_column_' + index">
+                                    <span v-if="index==0">Period </span>[[index+1]]
+                                </th>                           
+                            </tr>
+                        </thead>
+                        <tbody id="player_list">
+                            <tr v-for="(p, index) in session.parameter_set.parameter_set_labels" v-bind:key="'labels_period_row_' + p.id">
+                                <td v-on:click="showEditParametersetLabels(p.id)" class="player_table_cell">
+                                    [[p.name]]
+                                </td>
+                                <td v-for="(l, index) in p.parameter_set_labels_period" v-bind:key="'labels_period_' + l.id"
+                                    v-on:click="showEditParametersetLabelsPeriod(l.id)" 
+                                    class="player_table_cell" >
+                                    [[l.label ? l.label.abbreviation : '---']]
+                                </td>                            
+                            </tr>
+                        </tbody>
+                    
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="button"
+                        class="btn btn-outline-primary"
+                        title="Randomize labels."
+                        v-on:click = "sendRandomizeLabels()"
+                        v-bind:disabled="reconnecting || working">
+                        Randomize <i class="fas fa-random"></i>
+                    </button>
                 </div>
             </div>
         </div>  

@@ -12,10 +12,10 @@ class ParameterSetRandomOutcomeForm(forms.ModelForm):
     parameterset random outcome edit form
     '''
 
-    name = forms.CharField(label='Full Name',
+    name = forms.CharField(label='Name',
                            widget=forms.TextInput(attrs={"v-model":"current_random_outcome.name",}))
     
-    abbreviation = forms.CharField(label='Full Name',
+    abbreviation = forms.CharField(label='Abbreviation',
                                    widget=forms.TextInput(attrs={"v-model":"current_random_outcome.abbreviation",}))
     
     image = forms.CharField(label='Image File',
