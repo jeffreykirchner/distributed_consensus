@@ -12,7 +12,7 @@ class ParameterSetLabelsForm(forms.ModelForm):
     '''
 
     name =  forms.CharField(label='Name',
-                            widget=forms.TextInput(attrs={"v-model":"current_parameter_set_label.name",}))
+                            widget=forms.TextInput(attrs={"v-model":"current_parameter_set_labels.name",}))
 
     class Meta:
         model=ParameterSetLabels

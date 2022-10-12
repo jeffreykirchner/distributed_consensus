@@ -63,9 +63,9 @@ class ParameterSetLabels(models.Model):
         update the number of labels period given the number of periods
         '''
 
-        self.parameter_set_parts.filter(period_number__gt=self.parameter_set.number_of_periods).delete()
+        self.parameter_set_labels_period_a.filter(period_number__gt=self.parameter_set.period_count).delete()
 
-        for i in range(self.parameter_set.number_of_periods):
+        for i in range(self.parameter_set.period_count):
            obj, created = main.models.ParameterSetLabelsPeriod.objects.get_or_create(parameter_set_labels=self,
                                                                                      period_number=i+1)
 

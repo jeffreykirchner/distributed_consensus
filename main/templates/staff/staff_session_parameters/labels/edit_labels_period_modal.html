@@ -1,17 +1,17 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade"
-     id="editLabelPeriodModal"
+     id="editLabelsPeriodModal"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
-     aria-labelledby="editLabelPeriodModal"
+     aria-labelledby="editLabelsPeriodModal"
      aria-hidden="true">
 
     <div class="modal-dialog">
-        <div class="modal-content">
-            Edit Label
-            <div class="modal-header">                
+        <div class="modal-content">           
+            <div class="modal-header">          
+                Edit Period Label      
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -28,8 +28,8 @@
             <div class="modal-footer">               
                 <button type="button"
                         class="btn btn-outline-primary"
-                        title="Update part settings."
-                        v-on:click = "sendUpdatePart()"
+                        title="Update label period."
+                        v-on:click = "sendUpdateLabelsPeriod()"
                         v-bind:disabled="reconnecting || working">
                     Update <i class="fas fa-sign-in-alt"></i>
                 </button>

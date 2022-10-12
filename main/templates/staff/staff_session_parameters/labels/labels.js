@@ -1,6 +1,6 @@
-/**show edit parameter set player
+/**show edit parameter set labels
  */
- showEditParametersetLabel:function(id){
+ showEditParametersetLabels:function(id){
     
     if(app.session.started) return;
 
@@ -23,48 +23,48 @@
     app.parametersetLabelsBeforeEditIndex = index;
     app.current_parameter_set_labels = app.session.parameter_set.parameter_set_labels[index];
     
-    app.editLabelModal.toggle();
+    app.editParametersetLabelsModal.toggle();
 },
 
 /** hide edit parmeter set player
 */
-hideEditParametersetParts:function(){
+hideEditParametersetLabels:function(){
     if(app.cancelModal)
     {
-        Object.assign(app.session.parameter_set.parameter_set_parts[app.parametersetPartBeforeEditIndex], app.parametersetPartBeforeEdit);
+        Object.assign(app.session.parameter_set.parameter_set_labels[app.parametersetLabelsBeforeEditIndex], app.parametersetLabelsBeforeEdit);
        
-        app.parametersetPartBeforeEdit=null;
+        app.parametersetLabelsBeforeEdit=null;
     }
 },
 
 /** update parameterset type settings
 */
-sendUpdatePart(){
+sendUpdateLabels(){
     
     app.working = true;
 
-    let parameter_set_parts = app.session.parameter_set.parameter_set_parts;
+    let parameter_set_labels = app.session.parameter_set.parameter_set_labels;
 
     index=-1;
-    for(i=0;i<parameter_set_parts.length;i++)
+    for(i=0;i<parameter_set_labels.length;i++)
     {
-        if(parameter_set_parts[i].id == app.current_parameter_set_part.id)
+        if(parameter_set_labels[i].id == app.current_parameter_set_labels.id)
         {
             index=i;
             break;
         }
     }
 
-    formData = parameter_set_parts[index];
+    formData = parameter_set_labels[index];
 
-    app.sendMessage("update_parameterset_part", {"sessionID" : app.sessionID,
-                                                 "paramterset_part_id" : app.current_parameter_set_part.id,
-                                                 "formData" : formData});
+    app.sendMessage("update_parameterset_labels", {"sessionID" : app.sessionID,
+                                                   "paramterset_labels_id" : app.current_parameter_set_labels.id,
+                                                   "formData" : formData});
 },
 
 /** handle result of updating parameter set player
 */
-takeUpdateParametersetParts(messageData){
+takeUpdateParametersetLabels(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
@@ -74,7 +74,7 @@ takeUpdateParametersetParts(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        app.editParametersetPartModal.hide();        
+        app.editParametersetLabelsModal.hide();        
     } 
     else
     {

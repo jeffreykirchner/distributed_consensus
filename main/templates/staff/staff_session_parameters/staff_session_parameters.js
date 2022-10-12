@@ -18,7 +18,9 @@ var app = Vue.createApp({
   
                     current_parameter_set_player : {id:0,}, 
                     current_parameter_set_part : {id:0,},    
-                    current_random_outcome : {id:0,},            
+                    current_random_outcome : {id:0,}, 
+                    current_parameter_set_labels : {id:0,}, 
+                    current_parameter_set_labels_period : {id:0,},            
 
                     form_ids: {{form_ids|safe}},
 
@@ -84,6 +86,13 @@ var app = Vue.createApp({
                     app.takeRemoveRandomOutcome(messageData);
                     break;     
 
+                case "update_parameterset_labels":
+                    app.takeUpdateParametersetLabels(messageData);
+                    break;    
+                case "update_parameterset_labels_period":
+                    app.takeUpdateParametersetLabelsPeriod(messageData);
+                    break;
+
                 case "update_parameterset_part":
                     app.takeUpdateParametersetParts(messageData);
                     break;      
@@ -122,13 +131,17 @@ var app = Vue.createApp({
             app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})   
             app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false}) 
             app.editParametersetPartModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editPartsModal'), {keyboard: false}) 
-            app.editRandomOutcomeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editRandomOutcomeModal'), {keyboard: false})       
+            app.editRandomOutcomeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editRandomOutcomeModal'), {keyboard: false})   
+            app.editParametersetLabelsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editLabelsModal'), {keyboard: false}) 
+            app.editParametersetLabelsPeriodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editLabelsPeriodModal'), {keyboard: false})   
    
             document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
             document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
             document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
             document.getElementById('editPartsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetParts);
             document.getElementById('editRandomOutcomeModal').addEventListener('hidden.bs.modal', app.hideEditRandomOutcome);
+            document.getElementById('editLabelsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetLabels);
+            document.getElementById('editLabelsPeriodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetLabelsPeriod);
         },
 
         /** take create new session
@@ -169,6 +182,8 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/players/players.js"%}
         {%include "staff/staff_session_parameters/parts/parts.js"%}
         {%include "staff/staff_session_parameters/random_outcomes/random_outcomes.js"%}
+        {%include "staff/staff_session_parameters/labels/labels.js"%}
+        {%include "staff/staff_session_parameters/labels/labels_period.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

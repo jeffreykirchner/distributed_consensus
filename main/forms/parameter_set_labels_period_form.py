@@ -16,8 +16,8 @@ class ParameterSetLabelsPeriodForm(forms.ModelForm):
     '''
 
     label = forms.ModelChoiceField(label='Label',                                    
-                                    queryset=main.models.ParameterSetRandomOutcome.objects.all(),
-                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_label_period.label"}))
+                                   queryset=main.models.ParameterSetRandomOutcome.objects.all(),
+                                   widget=forms.Select(attrs={"v-model":"current_parameter_set_labels_period.label"}))
 
     class Meta:
         model=ParameterSetLabelsPeriod

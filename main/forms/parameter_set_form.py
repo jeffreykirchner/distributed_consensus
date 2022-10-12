@@ -24,11 +24,17 @@ class ParameterSetForm(forms.ModelForm):
                                                                       "step":"1",
                                                                       "min":"1"}))
 
-    period_length = forms.IntegerField(label='Production Length (seconds)',
+    period_length = forms.IntegerField(label='Period Length (seconds)',
                                        min_value=1,
                                        widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.period_length",
                                                                        "step":"1",
                                                                        "min":"1"}))
+
+    label_set_count = forms.IntegerField(label='Label Set Count',
+                                      min_value=1,
+                                      widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.label_set_count",
+                                                                      "step":"1",
+                                                                      "min":"1"}))
 
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -45,4 +51,5 @@ class ParameterSetForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSet
-        fields =['part_count', 'period_count', 'period_length', 'show_instructions', 'instruction_set', 'test_mode']
+        fields =['part_count', 'period_count', 'period_length', 'show_instructions', 'instruction_set', 'test_mode',
+                 'label_set_count']

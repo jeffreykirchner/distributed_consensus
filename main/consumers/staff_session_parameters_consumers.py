@@ -19,11 +19,15 @@ from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPartsForm
 from main.forms import ParameterSetRandomOutcomeForm
+from main.forms import ParameterSetLabelsForm
+from main.forms import ParameterSetLabelsPeriodForm
 
-from main.models import Session
+from main.models import Session, parameter_set_labels_period
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetPart
 from main.models import ParameterSetRandomOutcome
+from main.models import ParameterSetLabels
+from main.models import ParameterSetLabelsPeriod
 
 import main
 
@@ -180,6 +184,38 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+
+    async def update_parameterset_labels(self, event):
+        '''
+        update a parameterset labels
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_labels)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_labels"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_parameterset_labels_period(self, event):
+        '''
+        update a parameterset labels
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_labels_period)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_labels_period"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     async def import_parameters(self, event):
         '''
@@ -448,7 +484,71 @@ def take_update_parameterset_part(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid parameterset player form")
+    logger.info("Invalid parameterset part form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_labels(data):
+    '''
+    update parameterset labels
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset labels: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_labels_id = data["paramterset_labels_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_labels = ParameterSetLabels.objects.get(id=paramterset_labels_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_labels parameterset_label, not found ID: {paramterset_labels_id}")
+        return
+    
+    form_data_dict = form_data
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetLabelsForm(form_data_dict, instance=parameter_set_labels)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset labels form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_labels_period(data):
+    '''
+    update parameterset labels period
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset labels period: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_labels_period_id = data["paramterset_labels_period_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_labels_period = ParameterSetLabelsPeriod.objects.get(id=paramterset_labels_period_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_labels_period parameterset_labels_period, not found ID: {paramterset_labels_period_id}")
+        return
+    
+    form_data_dict = form_data
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetLabelsPeriodForm(form_data_dict, instance=parameter_set_labels_period)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset labels period form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 def take_import_parameters(data):

@@ -3,8 +3,6 @@ parameter set
 '''
 import logging
 
-from decimal import Decimal
-
 from django.db import models
 from django.db.utils import IntegrityError
 
@@ -23,6 +21,7 @@ class ParameterSet(models.Model):
     part_count = models.IntegerField(verbose_name='Number or parts.', default=3)                              #number of parts in the experiment
     period_count = models.IntegerField(verbose_name='Number of periods per part.', default=10)                #number of periods in each part of the experiment
     period_length = models.IntegerField(verbose_name='Period Length, Production', default=20)                 #period length in seconds
+    label_set_count = models.IntegerField(verbose_name='Number or label sets.', default=3)  
 
     private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                           #if true subjects can privately chat one on one
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                 #if true show instructions
@@ -52,6 +51,7 @@ class ParameterSet(models.Model):
             self.part_count = new_ps.get("part_count")
             self.period_count = new_ps.get("period_count")
             self.period_length = new_ps.get("period_length")
+            self.label_set_count = new_ps.get("label_set_count")
 
             self.private_chat = new_ps.get("private_chat")
 
@@ -105,8 +105,18 @@ class ParameterSet(models.Model):
         for i in range(self.part_count):
            obj, created = main.models.ParameterSetPart.objects.get_or_create(parameter_set=self,
                                                                              part_number=i+1)
-
-
+                                                                            
+        #add remove label set
+        difference = self.parameter_set_labels.all().count() - self.label_set_count
+        if difference>0:
+            for i in range(difference):
+                self.parameter_set_labels.last().delete()            
+        elif difference<0:
+            for i in range(abs(difference)):
+                main.models.ParameterSetLabels.objects.create(parameter_set=self)
+        
+        for i in self.parameter_set_labels.all():
+            i.update_labels_periods_count()             
 
     def add_new_player(self):
         '''
@@ -132,6 +142,7 @@ class ParameterSet(models.Model):
             "part_count" : self.part_count,
             "period_count" : self.period_count,
             "period_length" : self.period_length,
+            "label_set_count" : self.label_set_count,
 
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
@@ -155,6 +166,7 @@ class ParameterSet(models.Model):
             "part_count" : self.part_count,
             "period_count" : self.period_count,
             "period_length" : self.period_length,
+            "label_set_count" : self.label_set_count,
 
             "show_instructions" : "True" if self.show_instructions else "False",
             "private_chat" : self.private_chat,

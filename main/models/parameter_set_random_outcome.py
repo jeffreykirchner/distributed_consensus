@@ -24,7 +24,7 @@ class ParameterSetRandomOutcome(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id)
+        return f'{self.name} ({self.abbreviation})'
 
     class Meta:
         verbose_name = 'Parameter Set Random Outcome'
