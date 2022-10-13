@@ -56,7 +56,7 @@ class ParameterSetPlayerPart(models.Model):
             "id" : self.id,        
             "group" : self.group,    
             "parameter_set_part" : self.parameter_set_part.json() if self.parameter_set_part else None,
-            "parameter_set_labels" : self.parameter_set_labels.json() if self.parameter_set_labels else None,
+            "parameter_set_labels" : self.parameter_set_labels.json() if self.parameter_set_labels else {'id':None},
         }
     
     def json_for_subject(self):
@@ -69,7 +69,7 @@ class ParameterSetPlayerPart(models.Model):
             "id" : self.id,
             "group" : self.group,
             "parameter_set_part" : self.parameter_set_part.json() if self.parameter_set_part else None,
-            "parameter_set_labels" : self.parameter_set_labels.json() if self.parameter_set_labels else None,
+            "parameter_set_labels" : self.parameter_set_labels.json() if self.parameter_set_labels else {'id':None},
         }
 
 

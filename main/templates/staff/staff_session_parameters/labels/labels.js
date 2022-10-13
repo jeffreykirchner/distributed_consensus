@@ -74,7 +74,8 @@ takeUpdateParametersetLabels(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        app.editParametersetLabelsModal.hide();        
+        app.editParametersetLabelsModal.hide();    
+        window.location.reload();    
     } 
     else
     {

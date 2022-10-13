@@ -135,6 +135,7 @@ class ParameterSet(models.Model):
         player.parameter_set = self
 
         player.save()
+        player.setup_parts()
     
     def randomize_labels(self):
         '''

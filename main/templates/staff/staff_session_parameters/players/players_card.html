@@ -40,30 +40,28 @@
                                 [[p.parameter_set_player.id_label]]
                             </td>
                             <td v-for="(l, index) in p.parameter_set_player.parameter_set_player_parts" v-bind:key="l.id"
-                                v-on:click="showEditParametersetLabelsPeriod(l.id)" 
+                                v-on:click="showEditParametersetPlayerPart(l.id)" 
                                 class="player_table_cell" >
                                 G[[l.group]]<br>
-                                [[l.parameter_set_labels ? l.parameter_set_labels.name : '---']]
+                                [[l.parameter_set_labels.id ? l.parameter_set_labels.name : '---']]
                             </td>
                         </tr>
                     </tbody>
                     <tfoot>
-                        <!-- copy groups forward -->
-                        <tr>
-                            <td>
-                                <button class="btn btn-outline-success btn-sm"
-                                        type="button"
-                                        title="Add player"
-                                        v-bind:disabled="session.started || reconnecting || working"
-                                        v-on:click="sendAddParameterSetPlayer()">
-                                       Add <i class="fas fa-plus"></i>
-                                </button>
-                            </td>                            
-                            <td>
-                            </td>
-                        </tr>
+                        
                     </tfoot>
                 </table>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-outline-success btn-sm"
+                                type="button"
+                                title="Add player"
+                                v-bind:disabled="session.started || reconnecting || working"
+                                v-on:click="sendAddParameterSetPlayer()">
+                                Add <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>  

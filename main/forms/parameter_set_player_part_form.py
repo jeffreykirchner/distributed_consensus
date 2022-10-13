@@ -14,8 +14,8 @@ class ParameterSetPlayerPartForm(forms.ModelForm):
     '''
 
     parameter_set_labels = forms.ModelChoiceField(label='Label Set',                                    
-                                                  queryset=main.models.ParameterSetRandomOutcome.objects.all(),
-                                                  widget=forms.Select(attrs={"v-model":"current_parameter_set_player_part.parameter_set_labels"}))
+                                                  queryset=main.models.ParameterSetLabels.objects.all(),
+                                                  widget=forms.Select(attrs={"v-model":"current_parameter_set_player_part.parameter_set_labels.id"}))
  
     group = forms.IntegerField(label='Group',
                                min_value=0,

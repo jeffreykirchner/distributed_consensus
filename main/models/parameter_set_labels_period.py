@@ -78,7 +78,7 @@ class ParameterSetLabelsPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-            "label" : self.label.json() if self.label else None,
+            "label" : self.label.json() if self.label else {'id':None},
         }
     
     def json_for_subject(self):
@@ -88,6 +88,6 @@ class ParameterSetLabelsPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-            "label" :  self.label.json() if self.label else None,
+            "label" :  self.label.json() if self.label else {'id':None},
         }
 

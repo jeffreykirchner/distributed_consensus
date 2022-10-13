@@ -17,13 +17,15 @@ from main.consumers import StaffSubjectUpdateMixin
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
+from main.forms import ParameterSetPlayerPartForm
 from main.forms import ParameterSetPartsForm
 from main.forms import ParameterSetRandomOutcomeForm
 from main.forms import ParameterSetLabelsForm
 from main.forms import ParameterSetLabelsPeriodForm
 
-from main.models import Session, parameter_set_labels_period
+from main.models import Session
 from main.models import ParameterSetPlayer
+from main.models import ParameterSetPlayerPart
 from main.models import ParameterSetPart
 from main.models import ParameterSetRandomOutcome
 from main.models import ParameterSetLabels
@@ -86,6 +88,22 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+    
+    async def update_parameterset_player_part(self, event):
+        '''
+        update a parameterset player part
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_player_part)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_player_part"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
 
     async def remove_parameterset_player(self, event):
         '''
@@ -109,7 +127,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         '''
 
         message_data = {}
-        message_data["status"] = await sync_to_async(take_add_paramterset_player)(event["message_text"])
+        message_data["status"] = await sync_to_async(take_add_parameterset_player)(event["message_text"])
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
@@ -357,6 +375,42 @@ def take_update_parameterset_player(data):
     logger.info("Invalid parameterset player form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
+def take_update_parameterset_player_part(data):
+    '''
+    update parameterset player part
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset player part: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_player_part_id = data["paramterset_player_part_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_player_part = ParameterSetPlayerPart.objects.get(id=paramterset_player_part_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_player_part paramterset_player_part_id, not found ID: {paramterset_player_part_id}")
+        return
+    
+    form_data_dict = form_data
+    form_data_dict['parameter_set_labels'] = form_data_dict['parameter_set_labels']['id']
+
+    # for field in form_data:            
+    #     form_data_dict[field["name"]] = field["value"]
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetPlayerPartForm(form_data_dict, instance=parameter_set_player_part)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset player part form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
 def take_remove_parameterset_player(data):
     '''
     remove the specifed parmeterset player
@@ -377,7 +431,7 @@ def take_remove_parameterset_player(data):
     
     return {"value" : "success"}
 
-def take_add_paramterset_player(data):
+def take_add_parameterset_player(data):
     '''
     add a new parameter player to the parameter set
     '''
@@ -554,6 +608,7 @@ def take_update_parameterset_labels_period(data):
         return
     
     form_data_dict = form_data
+    form_data_dict['label'] = form_data_dict['label']['id']
 
     logger.info(f'form_data_dict : {form_data_dict}')
 

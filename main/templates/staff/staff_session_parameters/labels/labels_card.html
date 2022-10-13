@@ -36,7 +36,7 @@
                                 <td v-for="(l, index) in p.parameter_set_labels_period" v-bind:key="'labels_period_' + l.id"
                                     v-on:click="showEditParametersetLabelsPeriod(l.id)" 
                                     class="player_table_cell" >
-                                    [[l.label ? l.label.abbreviation : '---']]
+                                    [[l.label.id ? l.label.abbreviation : '---']]
                                 </td>                            
                             </tr>
                         </tbody>
