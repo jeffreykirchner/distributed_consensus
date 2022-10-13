@@ -38,10 +38,11 @@ class ParameterSetRandomOutcome(models.Model):
         logger = logging.getLogger(__name__) 
 
         try:
-            self.name = new_ps.get("mode")
-            self.abbreviation = new_ps.get("part_number")
+            self.name = new_ps.get("name")
+            self.abbreviation = new_ps.get("abbreviation")
             self.image = new_ps.get("image")
             
+            self.save()
         except IntegrityError as exp:
             message = f"Failed to load parameter set part: {exp}"
             status = "fail"

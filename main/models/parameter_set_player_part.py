@@ -41,6 +41,8 @@ class ParameterSetPlayerPart(models.Model):
 
         self.save()
         self.group = source.get('group')
+
+        self.save()
         
         message = "Parameters loaded successfully."
 

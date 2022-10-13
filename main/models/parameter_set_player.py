@@ -28,13 +28,18 @@ class ParameterSetPlayer(models.Model):
         verbose_name_plural = 'Parameter Set Players'
         ordering=['id_label']
 
-    def from_dict(self, source):
+    def from_dict(self, new_ps):
         '''
         copy source values into this period
         source : dict object of parameterset player
         '''
 
-        self.id_label = source.get("id_label")
+        self.id_label = new_ps.get("id_label")
+
+        # parameter_set_player_parts
+        new_parameter_set_player_parts = new_ps.get("parameter_set_player_parts")
+        for index, p in enumerate(self.parameter_set_player_parts_a.all()):                
+            p.from_dict(new_parameter_set_player_parts[index])
 
         self.save()
         

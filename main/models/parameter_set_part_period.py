@@ -18,7 +18,8 @@ class ParameterSetPartPeriod(models.Model):
     '''
     parameter set part period
     '''    
-    parameter_set_part = models.ForeignKey(ParameterSetPart, on_delete=models.CASCADE, related_name="parameter_set_parts")
+    parameter_set_part = models.ForeignKey(ParameterSetPart, on_delete=models.CASCADE, related_name="parameter_set_part_periods")
+
     period_number = models.IntegerField(verbose_name='Period Number', default=0)
 
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -44,6 +45,7 @@ class ParameterSetPartPeriod(models.Model):
         try:
             self.period_number = new_ps.get("period_number")
             
+            self.save()
         except IntegrityError as exp:
             message = f"Failed to load parameter set part period: {exp}"
             status = "fail"

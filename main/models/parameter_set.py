@@ -54,12 +54,11 @@ class ParameterSet(models.Model):
             self.label_set_count = new_ps.get("label_set_count")
 
             self.private_chat = new_ps.get("private_chat")
-
             self.show_instructions = new_ps.get("show_instructions")
 
             self.save()
             
-            #parameter set players
+            #create parameter set players
             new_parameter_set_players = new_ps.get("parameter_set_players")
 
             if len(new_parameter_set_players) > self.parameter_set_players.count():
@@ -67,7 +66,7 @@ class ParameterSet(models.Model):
                 new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
 
                 for i in range(new_player_count):
-                    self.add_new_player(self.parameter_set_types.first())
+                     main.models.ParameterSetPlayer.objects.create(parameter_set=self)
 
             elif len(new_parameter_set_players) < self.parameter_set_players.count():
                 #remove excess players
@@ -76,10 +75,45 @@ class ParameterSet(models.Model):
 
                 for i in range(extra_player_count):
                     self.parameter_set_players.last().delete()
+            
+            #random outcomes
+            new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
+            if len(new_parameter_set_random_outcomes) > self.parameter_set_random_outcomes.count():
+                #add more players
+                new_player_count = len(new_parameter_set_random_outcomes) - self.parameter_set_random_outcomes.count()
 
+                for i in range(new_player_count):
+                    main.models.ParameterSetRandomOutcome.objects.create(parameter_set=self)
+
+            elif len(new_parameter_set_random_outcomes) < self.parameter_set_random_outcomes.count():
+                #remove excess players
+
+                extra_player_count = self.parameter_set_random_outcomes.count() - len(new_parameter_set_random_outcomes)
+
+                for i in range(extra_player_count):
+                    self.parameter_set_random_outcomes.last().delete()
+            
+            self.update_parts_and_periods()
+
+            #load players
             new_parameter_set_players = new_ps.get("parameter_set_players")
             for index, p in enumerate(self.parameter_set_players.all()):                
                 p.from_dict(new_parameter_set_players[index])
+            
+            #load random outcomes
+            new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
+            for index, p in enumerate(self.parameter_set_random_outcomes.all()):                
+                p.from_dict(new_parameter_set_random_outcomes[index])
+            
+            #load parts
+            new_parameter_set_parts = new_ps.get("parameter_set_parts")
+            for index, p in enumerate(self.parameter_set_parts.all()):                
+                p.from_dict(new_parameter_set_parts[index])
+            
+            #load labels
+            new_parameter_set_labels = new_ps.get("parameter_set_labels")
+            for index, p in enumerate(self.parameter_set_labels.all()):                
+                p.from_dict(new_parameter_set_labels[index])
 
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
@@ -126,10 +160,6 @@ class ParameterSet(models.Model):
         '''
         add a new player of type subject_type
         '''
-
-        #24 players max
-        if self.parameter_set_players.all().count() >= 24:
-            return
 
         player = main.models.ParameterSetPlayer()
         player.parameter_set = self

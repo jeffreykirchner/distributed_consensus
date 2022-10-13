@@ -47,7 +47,12 @@ class ParameterSetLabelsPeriod(models.Model):
 
         try:
             self.period_number = new_ps.get("period_number")
-            self.label = new_ps.get("label")
+            self.label = self.parameter_set_labels \
+                             .parameter_set \
+                             .parameter_set_random_outcomes \
+                             .filter(name=new_ps.get("label")["name"]).first()
+
+            self.save()
             
         except IntegrityError as exp:
             message = f"Failed to load parameter set labels: {exp}"

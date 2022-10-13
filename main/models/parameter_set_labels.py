@@ -44,7 +44,13 @@ class ParameterSetLabels(models.Model):
 
         try:
             self.name = new_ps.get("name")
+
+            #parameter_set_part_periods
+            new_parameter_set_labels_period = new_ps.get("parameter_set_labels_period")
+            for index, p in enumerate(self.parameter_set_labels_period_a.all()):                
+                p.from_dict(new_parameter_set_labels_period[index])
             
+            self.save()
         except IntegrityError as exp:
             message = f"Failed to load parameter set labels: {exp}"
             status = "fail"
