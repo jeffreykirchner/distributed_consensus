@@ -18,7 +18,7 @@ from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerPartForm
-from main.forms import ParameterSetPartsForm
+from main.forms import ParameterSetPartForm
 from main.forms import ParameterSetRandomOutcomeForm
 from main.forms import ParameterSetLabelsForm
 from main.forms import ParameterSetLabelsPeriodForm
@@ -388,6 +388,7 @@ def take_update_parameterset_player_part(data):
 
     try:        
         parameter_set_player_part = ParameterSetPlayerPart.objects.get(id=paramterset_player_part_id)
+        session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
         logger.warning(f"take_update_parameterset_player_part paramterset_player_part_id, not found ID: {paramterset_player_part_id}")
         return
@@ -395,12 +396,11 @@ def take_update_parameterset_player_part(data):
     form_data_dict = form_data
     form_data_dict['parameter_set_labels'] = form_data_dict['parameter_set_labels']['id']
 
-    # for field in form_data:            
-    #     form_data_dict[field["name"]] = field["value"]
-
     logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPlayerPartForm(form_data_dict, instance=parameter_set_player_part)
+    form.fields['parameter_set_labels'].queryset = session.parameter_set.parameter_set_labels.all()
+
 
     if form.is_valid():
         #print("valid form")             
@@ -547,7 +547,7 @@ def take_update_parameterset_part(data):
 
     logger.info(f'form_data_dict : {form_data_dict}')
 
-    form = ParameterSetPartsForm(form_data_dict, instance=parameter_set_part)
+    form = ParameterSetPartForm(form_data_dict, instance=parameter_set_part)
 
     if form.is_valid():
         #print("valid form")             
@@ -603,6 +603,7 @@ def take_update_parameterset_labels_period(data):
 
     try:        
         parameter_set_labels_period = ParameterSetLabelsPeriod.objects.get(id=paramterset_labels_period_id)
+        session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
         logger.warning(f"take_update_parameterset_labels_period parameterset_labels_period, not found ID: {paramterset_labels_period_id}")
         return
@@ -613,6 +614,7 @@ def take_update_parameterset_labels_period(data):
     logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetLabelsPeriodForm(form_data_dict, instance=parameter_set_labels_period)
+    form.fields['label'].queryset = session.parameter_set.parameter_set_random_outcomes.all()
 
     if form.is_valid():
         #print("valid form")             

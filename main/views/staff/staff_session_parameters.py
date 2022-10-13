@@ -21,10 +21,11 @@ from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerPartForm
-from main.forms import ParameterSetPartsForm
+from main.forms import ParameterSetPartForm
 from main.forms import ParameterSetRandomOutcomeForm
 from main.forms import ParameterSetLabelsForm
 from main.forms import ParameterSetLabelsPeriodForm
+from main.forms import ParameterSetPartPeriodForm
 
 class StaffSessionParametersView(SingleObjectMixin, View):
     '''
@@ -52,7 +53,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         for i in ParameterSetPlayerPartForm():
             form_ids.append(i.html_name)
         
-        for i in ParameterSetPartsForm():
+        for i in ParameterSetPartForm():
             form_ids.append(i.html_name)
 
         for i in ParameterSetRandomOutcomeForm():
@@ -63,6 +64,18 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         
         for i in ParameterSetLabelsPeriodForm():
             form_ids.append(i.html_name)
+        
+        for i in ParameterSetPartPeriodForm():
+            form_ids.append(i.html_name)
+
+        parameter_set_labels_period_form = ParameterSetLabelsPeriodForm()
+        parameter_set_labels_period_form.fields['label'].queryset = session.parameter_set.parameter_set_random_outcomes.all()
+
+        parameter_set_player_part_form = ParameterSetPlayerPartForm()
+        parameter_set_player_part_form.fields['parameter_set_labels'].queryset = session.parameter_set.parameter_set_labels.all()
+
+        parameter_set_part_period_form = ParameterSetPartPeriodForm()
+        parameter_set_part_period_form.fields['parameter_set_random_outcome'].queryset = session.parameter_set.parameter_set_random_outcomes.all()
 
         return render(request=request,
                       template_name=self.template_name,
@@ -71,11 +84,12 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "id" : session.id,
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_player_form" : ParameterSetPlayerForm(),
-                               "parameter_set_player_part_form" : ParameterSetPlayerPartForm(),
-                               "parameter_set_parts_form" : ParameterSetPartsForm(),
+                               "parameter_set_player_part_form" : parameter_set_player_part_form,
+                               "parameter_set_parts_form" : ParameterSetPartForm(),
                                "parameter_set_random_outcome_form" : ParameterSetRandomOutcomeForm(),
                                "parameter_set_labels_form" : ParameterSetLabelsForm(),
-                               "parameter_set_labels_period_form" : ParameterSetLabelsPeriodForm(),
+                               "parameter_set_labels_period_form" : parameter_set_labels_period_form,
+                               "parameter_set_part_period_form" : parameter_set_part_period_form,
                                "form_ids" : form_ids,
                                "import_parameters_form" : ImportParametersForm(user=request.user),     
                                "websocket_path" : self.websocket_path,

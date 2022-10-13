@@ -24,6 +24,12 @@ class ParameterSetPart(models.Model):
     part_number = models.IntegerField(verbose_name='Part Number', default=0)
     minimum_for_majority = models.IntegerField(verbose_name='Minimum for Majority', default=7)                #minimum required for a majority
 
+    pay_choice_majority = models.DecimalField(verbose_name = 'Pay if choice in majority choice', decimal_places=2, default=0, max_digits=4)     #payments based on choices and labels
+    pay_choice_minority = models.DecimalField(verbose_name = 'Pay if choice in minority choice', decimal_places=2, default=0, max_digits=4)
+
+    pay_label_majority = models.DecimalField(verbose_name = 'Pay if label in majority choice', decimal_places=2, default=0, max_digits=4)
+    pay_label_minority = models.DecimalField(verbose_name = 'Pay if label in minority choice', decimal_places=2, default=0, max_digits=4)
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
 
@@ -48,9 +54,13 @@ class ParameterSetPart(models.Model):
             self.mode = new_ps.get("mode")
             self.part_number = new_ps.get("part_number")
             self.minimum_for_majority = new_ps.get("minimum_for_majority")
+            self.pay_choice_majority = new_ps.get("pay_choice_majority")
+            self.pay_choice_minority = new_ps.get("pay_choice_minority")
+            self.pay_label_majority = new_ps.get("pay_label_majority")
+            self.pay_label_minority = new_ps.get("pay_label_minority")
 
             #parameter_set_part_periods
-            new_parameter_set_part_periods = new_ps.get("parameter_set_part_periods")
+            new_parameter_set_part_periods = new_ps.get("parameter_set_part_periods_a")
             for index, p in enumerate(self.parameter_set_part_periods.all()):                
                 p.from_dict(new_parameter_set_part_periods[index])
             
@@ -77,7 +87,11 @@ class ParameterSetPart(models.Model):
             "mode" : self.mode,
             "part_number" : self.part_number,
             "minimum_for_majority" : self.minimum_for_majority,
-            "parameter_set_part_periods" : [p.json() for p in self.parameter_set_part_periods.all()],
+            "parameter_set_part_periods" : [p.json() for p in self.parameter_set_part_periods_a.all()],
+            "pay_choice_majority" : self.pay_choice_majority,
+            "pay_choice_minority" : self.pay_choice_minority,
+            "pay_label_majority" : self.pay_label_majority,
+            "pay_label_minority" : self.pay_label_minority,
         }
     
     def json_for_subject(self):
@@ -89,6 +103,10 @@ class ParameterSetPart(models.Model):
             "mode" : self.mode,
             "part_number" : self.part_number,
             "minimum_for_majority" : self.minimum_for_majority,
-            "parameter_set_part_periods" : [p.json() for p in self.parameter_set_part_periods.all()],
+            "parameter_set_part_periods" : [p.json() for p in self.parameter_set_part_periods_a.all()],
+            "pay_choice_majority" : self.pay_choice_majority,
+            "pay_choice_minority" : self.pay_choice_minority,
+            "pay_label_majority" : self.pay_label_majority,
+            "pay_label_minority" : self.pay_label_minority,
         }
 

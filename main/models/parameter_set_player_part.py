@@ -33,14 +33,24 @@ class ParameterSetPlayerPart(models.Model):
         verbose_name_plural = 'Parameter Set Player Parts'
         ordering=['parameter_set_part']
 
-    def from_dict(self, source):
+    def from_dict(self, new_ps):
         '''
         copy source values into this period
         source : dict object of parameterset player
         '''
 
-        self.save()
-        self.group = source.get('group')
+        self.group = new_ps.get('group')
+
+        self.parameter_set_part = self.parameter_set_player \
+                                    .parameter_set \
+                                    .parameter_set_parts\
+                                    .filter(part_number=new_ps.get("parameter_set_part")["part_number"]).first()
+
+        if new_ps.get("parameter_set_labels").get("id", None):
+            self.parameter_set_labels = self.parameter_set_player \
+                                        .parameter_set \
+                                        .parameter_set_labels\
+                                        .filter(name=new_ps.get("parameter_set_labels")["name"]).first()
 
         self.save()
         

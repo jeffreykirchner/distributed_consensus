@@ -72,7 +72,7 @@ class ParameterSetLabelsPeriod(models.Model):
         randomize labels
         '''
 
-        self.label = random.sample(list(ParameterSetRandomOutcome.objects.all()), 1)[0]
+        self.label = random.sample(list(self.parameter_set_labels.parameter_set.parameter_set_random_outcomes.all()), 1)[0]
 
         self.save()
 

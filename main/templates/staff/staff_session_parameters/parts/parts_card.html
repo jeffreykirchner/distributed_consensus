@@ -28,6 +28,18 @@
                             </th> 
                             <th scope="col" class = "m-1 p-1">
                                 Minimum for Majority
+                            </th>
+                            <th scope="col" class = "m-1 p-1">
+                                Pay if Choice in Majority
+                            </th>
+                            <th scope="col" class = "m-1 p-1">
+                                Pay if Choice in Minority
+                            </th>
+                            <th scope="col" class = "m-1 p-1">
+                                Pay if Label in Majority
+                            </th>
+                            <th scope="col" class = "m-1 p-1">
+                                Pay if Label in Minority
                             </th>                          
                         </tr>
                     </thead>
@@ -41,6 +53,18 @@
                             </td>
                             <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
                                 [[p.minimum_for_majority]]
+                            </td>
+                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                [[p.pay_choice_majority]]
+                            </td>
+                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                [[p.pay_choice_minority]]
+                            </td>
+                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                [[p.pay_label_majority]]
+                            </td>
+                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                [[p.pay_label_minority]]
                             </td>                            
                         </tr>
                     </tbody>
