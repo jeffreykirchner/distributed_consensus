@@ -135,7 +135,8 @@ var app = Vue.createApp({
             app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})            
             app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})   
             app.editParametersetPlayerPartModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerPartModal'), {keyboard: false}) 
-            app.editParametersetPartModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editPartsModal'), {keyboard: false}) 
+            app.editParametersetPartModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editPartModal'), {keyboard: false})
+            app.editParametersetPartPeriodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editPartPeriodModal'), {keyboard: false})  
             app.editRandomOutcomeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editRandomOutcomeModal'), {keyboard: false})   
             app.editParametersetLabelsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editLabelsModal'), {keyboard: false}) 
             app.editParametersetLabelsPeriodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editLabelsPeriodModal'), {keyboard: false})   
@@ -144,7 +145,8 @@ var app = Vue.createApp({
             document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
             document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
             document.getElementById('editParametersetPlayerPartModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayerPart);
-            document.getElementById('editPartsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetParts);
+            document.getElementById('editPartModal').addEventListener('hidden.bs.modal', app.hideEditParametersetParts);
+            document.getElementById('editPartPeriodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPartsPeriod);
             document.getElementById('editRandomOutcomeModal').addEventListener('hidden.bs.modal', app.hideEditRandomOutcome);
             document.getElementById('editLabelsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetLabels);
             document.getElementById('editLabelsPeriodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetLabelsPeriod);
@@ -188,6 +190,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/players/players.js"%}
         {%include "staff/staff_session_parameters/players/players_part.js"%}
         {%include "staff/staff_session_parameters/parts/parts.js"%}
+        {%include "staff/staff_session_parameters/parts/parts_period.js"%}
         {%include "staff/staff_session_parameters/random_outcomes/random_outcomes.js"%}
         {%include "staff/staff_session_parameters/labels/labels.js"%}
         {%include "staff/staff_session_parameters/labels/labels_period.js"%}

@@ -1,11 +1,11 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade"
-     id="editPartModal"
+     id="editPartPeriodModal"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
-     aria-labelledby="editPartModal"
+     aria-labelledby="editPartPeriodModal"
      aria-hidden="true">
 
     <div class="modal-dialog">
@@ -16,7 +16,7 @@
             </div>
             <div class="modal-body">
                 <form id="ParameterSetPartForm" v-on:submit.prevent="onSubmit">
-                    {% for i in parameter_set_parts_form %}
+                    {% for i in parameter_set_labels_period_form %}
                     <div class="row">
                         <div class = "col col-md-10 offset-md-1">  
                             {{ i|as_crispy_field }}         
@@ -28,8 +28,8 @@
             <div class="modal-footer">               
                 <button type="button"
                         class="btn btn-outline-primary"
-                        title="Update part settings."
-                        v-on:click = "sendUpdatePart()"
+                        title="Update part period settings."
+                        v-on:click = "showEditParametersetPartPeriod()"
                         v-bind:disabled="reconnecting || working">
                     Update <i class="fas fa-sign-in-alt"></i>
                 </button>
