@@ -13,7 +13,8 @@ class ParameterSetPlayerPartForm(forms.ModelForm):
     parameterset player part edit form
     '''
 
-    parameter_set_labels = forms.ModelChoiceField(label='Label Set',                                    
+    parameter_set_labels = forms.ModelChoiceField(label='Label Set',        
+                                                  empty_label=None,                              
                                                   queryset=main.models.ParameterSetLabels.objects.none(),
                                                   widget=forms.Select(attrs={"v-model":"current_parameter_set_player_part.parameter_set_labels.id"}))
  

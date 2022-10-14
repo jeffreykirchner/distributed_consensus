@@ -51,7 +51,7 @@ class ParameterSetPartPeriod(models.Model):
             self.parameter_set_random_outcome = self.parameter_set_part \
                                                     .parameter_set \
                                                     .parameter_set_random_outcomes \
-                                                    .filter(name=new_ps.get("label")["name"]).first()
+                                                    .filter(name=new_ps.get("parameter_set_random_outcome")["name"]).first()
             
             self.save()
         except IntegrityError as exp:

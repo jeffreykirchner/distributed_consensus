@@ -60,8 +60,8 @@ class ParameterSetPart(models.Model):
             self.pay_label_minority = new_ps.get("pay_label_minority")
 
             #parameter_set_part_periods
-            new_parameter_set_part_periods = new_ps.get("parameter_set_part_periods_a")
-            for index, p in enumerate(self.parameter_set_part_periods.all()):                
+            new_parameter_set_part_periods = new_ps.get("parameter_set_part_periods")
+            for index, p in enumerate(self.parameter_set_part_periods_a.all()):                
                 p.from_dict(new_parameter_set_part_periods[index])
             
             self.save()
