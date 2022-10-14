@@ -19,6 +19,7 @@ from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerPartForm
 from main.forms import ParameterSetPartForm
+from main.forms import ParameterSetPartPeriodForm
 from main.forms import ParameterSetRandomOutcomeForm
 from main.forms import ParameterSetLabelsForm
 from main.forms import ParameterSetLabelsPeriodForm
@@ -27,6 +28,7 @@ from main.models import Session
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetPlayerPart
 from main.models import ParameterSetPart
+from main.models import ParameterSetPartPeriod
 from main.models import ParameterSetRandomOutcome
 from main.models import ParameterSetLabels
 from main.models import ParameterSetLabelsPeriod
@@ -198,6 +200,38 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message = {}
         message["messageType"] = "update_parameterset_part"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+    
+    async def update_parameterset_part_period(self, event):
+        '''
+        update a parameterset part period
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_part_period)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_part_period"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+    
+    async def update_parameterset_randomize_part_periods(self, event):
+        '''
+        update a parameterset part period
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_randomize_part_periods)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_part_period"
         message["messageData"] = message_data
 
         # Send message to WebSocket
@@ -558,6 +592,60 @@ def take_update_parameterset_part(data):
     logger.info("Invalid parameterset part form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
+def take_update_parameterset_part_period(data):
+    '''
+    update parameterset part period
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset part period: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_part_period_id = data["paramterset_part_period_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_part_period = ParameterSetPartPeriod.objects.get(id=paramterset_part_period_id)
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_labels_period parameterset_labels_period, not found ID: {paramterset_part_period_id}")
+        return
+    
+    form_data_dict = form_data
+    form_data_dict['parameter_set_random_outcome'] = form_data_dict['parameter_set_random_outcome']['id']
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetPartPeriodForm(form_data_dict, instance=parameter_set_part_period)
+    form.fields['parameter_set_random_outcome'].queryset =  session.parameter_set.parameter_set_random_outcomes.all()
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset part period form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_randomize_part_periods(data):
+    '''
+    update parameterset randomize part periods
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset randomize part periods: {data}")
+
+    session_id = data["sessionID"]
+
+    try:        
+        session = Session.objects.get(id=session_id)               
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_randomize_part_periods session, not found ID: {session_id}")
+        return
+    
+    session.parameter_set.randomize_parts()
+    
+    return {"value" : "success"}
+
 def take_update_parameterset_labels(data):
     '''
     update parameterset labels
@@ -598,14 +686,14 @@ def take_update_parameterset_labels_period(data):
     logger.info(f"Update parameterset labels period: {data}")
 
     session_id = data["sessionID"]
-    paramterset_labels_period_id = data["paramterset_labels_period_id"]
+    parameterset_labels_period_id = data["parameterset_labels_period_id"]
     form_data = data["formData"]
 
     try:        
-        parameter_set_labels_period = ParameterSetLabelsPeriod.objects.get(id=paramterset_labels_period_id)
+        parameter_set_labels_period = ParameterSetLabelsPeriod.objects.get(id=parameterset_labels_period_id)
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_labels_period parameterset_labels_period, not found ID: {paramterset_labels_period_id}")
+        logger.warning(f"take_update_parameterset_labels_period parameterset_labels_period, not found ID: {parameterset_labels_period_id}")
         return
     
     form_data_dict = form_data
@@ -637,7 +725,7 @@ def take_update_parameterset_randomize_labels(data):
     try:        
         session = Session.objects.get(id=session_id)               
     except ObjectDoesNotExist:
-        logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {random_outcome_id}")
+        logger.warning(f"take_update_parameterset_randomize_labels session, not found ID: {session_id}")
         return
     
     session.parameter_set.randomize_labels()

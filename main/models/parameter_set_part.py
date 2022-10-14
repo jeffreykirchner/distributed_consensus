@@ -77,6 +77,32 @@ class ParameterSetPart(models.Model):
         default setup
         '''    
         pass
+    
+    def setup_periods(self):
+        '''
+        update the number player parts
+        '''
+
+        difference = self.parameter_set_part_periods_a.all().count() - self.parameter_set.period_count
+
+        if difference>0:
+            for i in range(difference):
+                self.parameter_set_part_periods_a.last().delete()            
+        elif difference<0:
+            for i in range(abs(difference)):
+                main.models.ParameterSetPartPeriod.objects.create(parameter_set_part=self)
+        
+        for index, i in enumerate(self.parameter_set_part_periods_a.all()):
+            i.period_number = index + 1
+            i.save()
+        
+    def randomize(self):
+        '''
+        randomize part
+        '''
+
+        for i in self.parameter_set_part_periods_a.all():
+            i.randomize()
 
     def json(self):
         '''

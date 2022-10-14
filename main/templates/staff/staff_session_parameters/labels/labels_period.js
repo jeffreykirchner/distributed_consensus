@@ -56,7 +56,7 @@ sendUpdateLabelsPeriod(){
     formData = parameter_set_labels_period;
 
     app.sendMessage("update_parameterset_labels_period", {"sessionID" : app.sessionID,
-                                                          "paramterset_labels_period_id" : app.current_parameter_set_labels_period.id,
+                                                          "parameterset_labels_period_id" : app.current_parameter_set_labels_period.id,
                                                           "formData" : formData});
 },
 

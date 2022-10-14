@@ -156,6 +156,10 @@ class ParameterSet(models.Model):
         for i in self.parameter_set_players.all():
             i.setup_parts()
 
+        #setup parts
+        for i in self.parameter_set_parts.all():
+            i.setup_periods()
+
     def add_new_player(self):
         '''
         add a new player of type subject_type
@@ -173,6 +177,14 @@ class ParameterSet(models.Model):
         '''
 
         for i in self.parameter_set_labels.all():
+            i.randomize()
+    
+    def randomize_parts(self):
+        '''
+        randomize parts
+        '''
+
+        for i in self.parameter_set_parts.all():
             i.randomize()
 
     def json(self):

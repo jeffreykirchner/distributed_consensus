@@ -101,6 +101,9 @@ var app = Vue.createApp({
                 case "update_parameterset_part":
                     app.takeUpdateParametersetParts(messageData);
                     break;      
+                case "update_parameterset_part_period":
+                    app.takeUpdateParametersetPartPeriod(messageData);
+                    break;
 
                 case "import_parameters":
                     app.takeImportParameters(messageData);

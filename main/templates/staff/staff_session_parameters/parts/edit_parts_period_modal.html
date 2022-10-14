@@ -11,12 +11,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">        
-                Edit Part        
+                Edit Part Period   
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="ParameterSetPartForm" v-on:submit.prevent="onSubmit">
-                    {% for i in parameter_set_labels_period_form %}
+                    {% for i in parameter_set_part_period_form %}
                     <div class="row">
                         <div class = "col col-md-10 offset-md-1">  
                             {{ i|as_crispy_field }}         
@@ -29,7 +29,7 @@
                 <button type="button"
                         class="btn btn-outline-primary"
                         title="Update part period settings."
-                        v-on:click = "showEditParametersetPartPeriod()"
+                        v-on:click = "sendUpdatePartPeriod()"
                         v-bind:disabled="reconnecting || working">
                     Update <i class="fas fa-sign-in-alt"></i>
                 </button>

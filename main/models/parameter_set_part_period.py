@@ -2,6 +2,7 @@
 parameter set
 '''
 import logging
+import random
 
 from decimal import Decimal
 
@@ -25,7 +26,7 @@ class ParameterSetPartPeriod(models.Model):
     period_number = models.IntegerField(verbose_name='Period Number', default=0)
     
     timestamp = models.DateTimeField(auto_now_add=True)
-    updated= models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.id)
@@ -66,6 +67,15 @@ class ParameterSetPartPeriod(models.Model):
         '''    
         pass
 
+    def randomize(self):
+        '''
+        randomize labels
+        '''
+
+        self.parameter_set_random_outcome = random.sample(list(self.parameter_set_part.parameter_set.parameter_set_random_outcomes.all()), 1)[0]
+
+        self.save()
+
     def json(self):
         '''
         return json object of model
@@ -73,7 +83,7 @@ class ParameterSetPartPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-            "parameter_set_random_outcome" : self.label.json() if self.label else {'id':None},
+            "parameter_set_random_outcome" : self.parameter_set_random_outcome.json() if self.parameter_set_random_outcome else {'id':None},
         }
     
     def json_for_subject(self):
@@ -83,6 +93,6 @@ class ParameterSetPartPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-            "parameter_set_random_outcome" : self.label.json() if self.label else {'id':None},
+            "parameter_set_random_outcome" : self.parameter_set_random_outcome.json() if self.parameter_set_random_outcome else {'id':None},
         }
 

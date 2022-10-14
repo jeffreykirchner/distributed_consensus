@@ -15,7 +15,8 @@ class ParameterSetLabelsPeriodForm(forms.ModelForm):
     parameterset player labels period form
     '''
 
-    label = forms.ModelChoiceField(label='Label',                                    
+    label = forms.ModelChoiceField(label='Label',              
+                                   empty_label=None,                       
                                    queryset=main.models.ParameterSetRandomOutcome.objects.none(),
                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_labels_period.label.id"}))
 

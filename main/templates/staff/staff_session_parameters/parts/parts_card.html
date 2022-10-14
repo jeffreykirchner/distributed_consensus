@@ -17,62 +17,80 @@
             <!-- player settings -->
             <div class="col-md-auto text-center">                
                 <div class="table-responsive">
-                <table class="table table-condensed"> 
-                    <thead>
-                        <tr>
-                            <th scope="col" class = "m-1 p-1">
-                                #
-                            </th> 
-                            <th scope="col" class = "m-1 p-1">
-                                Mode
-                            </th> 
-                            <th scope="col" class = "m-1 p-1">
-                                Minimum for Majority
-                            </th>
-                            <th scope="col" class = "m-1 p-1">
-                                Pay if Choice in Majority
-                            </th>
-                            <th scope="col" class = "m-1 p-1">
-                                Pay if Choice in Minority
-                            </th>
-                            <th scope="col" class = "m-1 p-1">
-                                Pay if Label in Majority
-                            </th>
-                            <th scope="col" class = "m-1 p-1">
-                                Pay if Label in Minority
-                            </th>                          
-                        </tr>
-                    </thead>
-                    <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_parts" v-bind:key="p.id">
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.part_number]]
-                            </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.mode]]
-                            </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.minimum_for_majority]]
-                            </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.pay_choice_majority]]
-                            </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.pay_choice_minority]]
-                            </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.pay_label_majority]]
-                            </td>
-                            <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
-                                [[p.pay_label_minority]]
-                            </td>                            
-                        </tr>
-                    </tbody>
-                   
-                </table>
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th scope="col" class = "m-1 p-1">
+                                    #
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Mode
+                                </th> 
+                                <th scope="col" class = "m-1 p-1">
+                                    Minimum for Majority
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Pay if Choice in Majority
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Pay if Choice in Minority
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Pay if Label in Majority
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Pay if Label in Minority
+                                </th>   
+                                <th scope="col" class = "m-1 p-1" v-for="(p, index) in session.parameter_set.period_count" v-bind:key="'part_period_column_' + index">
+                                    <span v-if="index==0">Period Outcome </span>[[index+1]]
+                                </th>                        
+                            </tr>
+                        </thead>
+                        <tbody id="player_list">
+                            <tr v-for="(p, index) in session.parameter_set.parameter_set_parts" v-bind:key="p.id">
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                    [[p.part_number]]
+                                </td>
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell">
+                                    [[p.mode]]
+                                </td>
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell bg-light">
+                                    [[p.minimum_for_majority]]
+                                </td>
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell bg-light">
+                                    [[p.pay_choice_majority]]
+                                </td>
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell bg-light">
+                                    [[p.pay_choice_minority]]
+                                </td>
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell bg-light">
+                                    [[p.pay_label_majority]]
+                                </td>
+                                <td v-on:click="showEditParametersetPart(p.id)" class="player_table_cell bg-light">
+                                    [[p.pay_label_minority]]
+                                </td>   
+                                <td v-for="(l, index) in p.parameter_set_part_periods" v-bind:key="'part_period_part_row_' + l.id"
+                                    v-on:click="showEditParametersetPartPeriod(l.id)" 
+                                    class="player_table_cell" >
+                                    [[l.parameter_set_random_outcome.id ? l.parameter_set_random_outcome.abbreviation : '---']]
+                                </td>                         
+                            </tr>
+                        </tbody>                   
+                    </table>
                 </div>
             </div>
         </div>  
         
+        <div class="row">
+            <div class="col text-end">
+                <button type="button"
+                    class="btn btn-outline-primary"
+                    title="Randomize period outcomes."
+                    v-on:click = "sendRandomizePartPeriods()"
+                    v-bind:disabled="reconnecting || working">
+                    Randomize <i class="fas fa-random"></i>
+                </button>
+            </div>
+        </div>
     </div>                    
 </div> 

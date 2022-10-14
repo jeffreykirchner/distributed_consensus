@@ -4,24 +4,29 @@
     
     if(app.session.started) return;
 
-    var parameter_set_parts = app.session.parameter_set.parameter_set_parts;
+    var parameter_set_part_period = null;
 
     index = -1;
-    for(i=0;i<parameter_set_parts.length;i++)
+    for(i=0;i< app.session.parameter_set.parameter_set_parts.length;i++)
     {
-        if(parameter_set_parts[i].id == id)
+        for(j=0;j<app.session.parameter_set.parameter_set_parts[i].parameter_set_part_periods.length;j++)
         {
-            index = i;
-            break;
+            if(app.session.parameter_set.parameter_set_parts[i].parameter_set_part_periods[j].id == id)
+            {
+                parameter_set_part_period = app.session.parameter_set.parameter_set_parts[i].parameter_set_part_periods[j];
+                app.parametersetPartPeriodBeforeEditIndex = {i:i, j:j}
+                break;
+            }
         }
+
+        if(parameter_set_part_period) break;
     }
     
     app.clearMainFormErrors();
     app.cancelModal=true;
-    app.parametersetPartBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_parts[index]);
+    app.parametersetPartsPeriodBeforeEdit = Object.assign({}, parameter_set_part_period);
     
-    app.parametersetPartBeforeEditIndex = index;
-    app.current_parameter_set_part = app.session.parameter_set.parameter_set_parts[index];
+    app.current_parameter_set_part_period = parameter_set_part_period;
     
     app.editParametersetPartPeriodModal.toggle();
 },
@@ -31,40 +36,33 @@
 hideEditParametersetPartsPeriod:function(){
     if(app.cancelModal)
     {
-        Object.assign(app.session.parameter_set.parameter_set_parts[app.parametersetPartBeforeEditIndex], app.parametersetPartBeforeEdit);
-       
-        app.parametersetPartBeforeEdit=null;
+        Object.assign(app.session.parameter_set.parameter_set_parts[app.parametersetPartPeriodBeforeEditIndex.i]
+                                 .parameter_set_part_periods[app.parametersetPartPeriodBeforeEditIndex.j],
+                      app.parametersetPartsPeriodBeforeEdit);
+
+                    app.parametersetPartsPeriodBeforeEdit=null;
     }
 },
 
 /** update parameterset type settings
 */
-sendUpdatePart(){
+sendUpdatePartPeriod(){
     
     app.working = true;
 
-    let parameter_set_parts = app.session.parameter_set.parameter_set_parts;
+    var parameter_set_part_period = app.session.parameter_set.parameter_set_parts[app.parametersetPartPeriodBeforeEditIndex.i]
+                                                               .parameter_set_part_periods[app.parametersetPartPeriodBeforeEditIndex.j];
 
-    index=-1;
-    for(i=0;i<parameter_set_parts.length;i++)
-    {
-        if(parameter_set_parts[i].id == app.current_parameter_set_part.id)
-        {
-            index=i;
-            break;
-        }
-    }
+    formData = parameter_set_part_period;
 
-    formData = parameter_set_parts[index];
-
-    app.sendMessage("update_parameterset_part", {"sessionID" : app.sessionID,
-                                                 "paramterset_part_id" : app.current_parameter_set_part.id,
-                                                 "formData" : formData});
+    app.sendMessage("update_parameterset_part_period", {"sessionID" : app.sessionID,
+                                                        "paramterset_part_period_id" : app.current_parameter_set_part_period.id,
+                                                        "formData" : formData});
 },
 
-/** handle result of updating parameter set player
+/** handle result of updating parameter set
 */
-takeUpdateParametersetParts(messageData){
+takeUpdateParametersetPartPeriod(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
@@ -74,11 +72,20 @@ takeUpdateParametersetParts(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        app.editParametersetPartModal.hide();        
+        app.editParametersetPartPeriodModal.hide();        
     } 
     else
     {
         app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
+},
+
+/** update parameterset type settings
+*/
+sendRandomizePartPeriods(){
+    
+    app.working = true;
+    app.sendMessage("update_parameterset_randomize_part_periods", {"sessionID" : app.sessionID,
+                                                                  });
 },
