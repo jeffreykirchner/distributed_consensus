@@ -131,7 +131,7 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json_min(),
+            "parameter_set_player" : self.parameter_set_player.json(),
 
             # "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
             #                                                                        .order_by('-timestamp')[:100:-1]

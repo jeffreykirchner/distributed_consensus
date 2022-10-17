@@ -21,7 +21,7 @@ class ParameterSetPlayer(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id)
+        return f'{self.id_label}'
 
     class Meta:
         verbose_name = 'Parameter Set Player'

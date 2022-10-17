@@ -34,7 +34,7 @@ class ParameterSetPart(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id)
+        return f'Part {self.part_number}'
 
     class Meta:
         verbose_name = 'Parameter Set Part'

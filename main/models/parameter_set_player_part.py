@@ -26,7 +26,7 @@ class ParameterSetPlayerPart(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id)
+        return f'Part {self.parameter_set_part.part_number}'
 
     class Meta:
         verbose_name = 'Parameter Set Player Part'

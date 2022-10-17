@@ -1,6 +1,7 @@
 '''
 admin interface
 '''
+
 from django.contrib import admin
 from django.contrib import messages
 from django.conf import settings
@@ -13,6 +14,10 @@ from main.forms import InstructionSetFormAdmin
 from main.models import Parameters
 from main.models import ParameterSet
 from main.models import ParameterSetPlayer
+from main.models import ParameterSetPlayerPart
+from main.models import ParameterSetPart
+from main.models import ParameterSetPartPeriod
+from main.models import ParameterSetRandomOutcome
 
 from main.models import Session
 from main.models import SessionPlayer
@@ -41,8 +46,102 @@ class ParametersAdmin(admin.ModelAdmin):
 
     actions = []
 
-admin.site.register(ParameterSet)
-admin.site.register(ParameterSetPlayer)
+@admin.register(ParameterSetPlayerPart)
+class ParameterSetPlayerPartAdmin(admin.ModelAdmin):
+    
+    readonly_fields=['parameter_set_player', 'parameter_set_part', 'parameter_set_labels']
+    list_display = ['group']
+
+class ParameterSetPlayerPartInline(admin.TabularInline):
+
+      extra = 0  
+      model = ParameterSetPlayerPart
+      can_delete = False   
+      show_change_link = True
+      fields=['group']
+
+@admin.register(ParameterSetPlayer)
+class ParameterSetPlayerAdmin(admin.ModelAdmin):
+    
+    readonly_fields=['parameter_set']
+    list_display = ['id_label']
+
+    inlines = [
+        ParameterSetPlayerPartInline,
+      ]
+
+class ParameterSetPlayerInline(admin.TabularInline):
+
+      extra = 0  
+      model = ParameterSetPlayer
+      can_delete = True   
+      show_change_link = True
+
+@admin.register(ParameterSetPartPeriod)
+class ParameterSetPartPeriodAdmin(admin.ModelAdmin):
+
+    def render_change_form(self, request, context, *args, **kwargs):
+         context['adminform'].form.fields['parameter_set_random_outcome'].queryset = kwargs['obj'].parameter_set_part.parameter_set.parameter_set_random_outcomes.all()
+
+         return super(ParameterSetPartPeriodAdmin, self).render_change_form(request, context, *args, **kwargs)
+    
+    readonly_fields=['parameter_set_part', 'period_number']
+    list_display = ['period_number', 'parameter_set_random_outcome']
+
+
+class ParameterSetPartPeriodInline(admin.TabularInline):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+    
+    def render_change_form(self, request, context, *args, **kwargs):
+         context['adminform'].form.fields['parameter_set_random_outcome'].queryset = kwargs['obj'].parameter_set_part.parameter_set.parameter_set_random_outcomes.all()
+
+         return super(ParameterSetPartPeriodAdmin, self).render_change_form(request, context, *args, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'parameter_set_random_outcome':
+            
+            kwargs['queryset'] = ParameterSetRandomOutcome.objects.all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    extra = 0  
+    model = ParameterSetPartPeriod
+    can_delete = False         
+    show_change_link = True
+    fields = ['parameter_set_random_outcome']
+    
+@admin.register(ParameterSetPart)
+class ParameterSetPartAdmin(admin.ModelAdmin):
+    
+    readonly_fields=['parameter_set']
+    list_display = ['mode', 'minimum_for_majority', 'pay_choice_majority', 'pay_choice_minority', 'pay_label_majority', 'pay_label_minority']
+
+    inlines = [
+        ParameterSetPartPeriodInline,
+      ]
+
+class ParameterSetPartInline(admin.TabularInline):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    extra = 0  
+    model = ParameterSetPart
+    can_delete = False   
+    show_change_link = True
+    fields = ['mode', 'minimum_for_majority', 'pay_choice_majority', 'pay_choice_minority', 'pay_label_majority', 'pay_label_minority']
+
+@admin.register(ParameterSet)
+class ParameterSetAdmin(admin.ModelAdmin):
+    inlines = [
+        ParameterSetPlayerInline,
+        ParameterSetPartInline,
+      ]
+
+    list_display = ['id', 'part_count', 'period_count', 'period_length']
+
+
 admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerPart)
