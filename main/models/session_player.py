@@ -25,8 +25,8 @@ class SessionPlayer(models.Model):
     '''
     session player model
     '''
-    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_players")
-    parameter_set_player = models.ForeignKey(ParameterSetPlayer, on_delete=models.CASCADE, related_name="session_players_paramterset")
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_players_a")
+    parameter_set_player = models.ForeignKey(ParameterSetPlayer, on_delete=models.CASCADE, related_name="session_players_b")
 
     player_number = models.IntegerField(verbose_name='Player number', default=0)                        #player number, from 1 to N
     player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')      #login and channel key
@@ -73,22 +73,31 @@ class SessionPlayer(models.Model):
         self.current_instruction_complete = 0
         self.instructions_finished = False
 
+        self.session_player_parts_b.all().delete()
+        self.session_player_chats_b.all().delete()
+
         self.save()
     
-    def start(self):
+    def setup(self):
         '''
-        start experiment
+        setup player
         '''
 
         self.reset()
 
-        #session player periods
-        session_player_periods = []
+        #session player parts
+        session_player_parts = []
 
-        for i in self.session.session_periods.all():
-            session_player_periods.append(main.models.SessionPlayerPeriod(session_period=i, session_player=self))
+        for p in self.parameter_set_player.parameter_set_player_parts_a.all():
+            sp = self.session.session_parts_a.get(parameter_set_part=p.parameter_set_part)  
+            session_player_parts.append(main.models.SessionPlayerPart(session_part=sp, \
+                                                                      session_player=self, \
+                                                                      parameter_set_player_part=p))
         
-        main.models.SessionPlayerPeriod.objects.bulk_create(session_player_periods)
+        main.models.SessionPlayerPart.objects.bulk_create(session_player_parts)
+
+        for p in self.session_player_parts_b.all():
+            p.setup()
 
     def get_instruction_set(self):
         '''
@@ -122,12 +131,12 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json(),
+            "parameter_set_player" : self.parameter_set_player.json_min(),
 
-            "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
-                                                                                   .order_by('-timestamp')[:100:-1]
-                         ] if get_chat else [],
-            "new_chat_message" : False,           #true on client side when a new un read message comes in
+            # "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
+            #                                                                        .order_by('-timestamp')[:100:-1]
+            #              ] if get_chat else [],
+            # "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,

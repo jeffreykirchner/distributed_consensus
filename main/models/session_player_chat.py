@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.db.models import F
 
 from main.models import SessionPlayer
-from main.models import SessionPeriod
+from main.models import SessionPart
 
 from main.globals import ChatTypes
 
@@ -17,7 +17,7 @@ class SessionPlayerChat(models.Model):
     '''
     session player move model
     '''
-    session_period = models.ForeignKey(SessionPeriod, on_delete=models.CASCADE, related_name="session_player_chats_a")
+    session_period = models.ForeignKey(SessionPart, on_delete=models.CASCADE, related_name="session_player_chats_a")
     session_player = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_chats_b")
 
     session_player_recipients = models.ManyToManyField(SessionPlayer, related_name="session_player_chats_c")

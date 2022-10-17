@@ -81,6 +81,8 @@ class Session(models.Model):
         setup and start experiment
         '''
 
+        self.reset_experiment()
+
         self.started = True
         self.finished = False
         self.current_period = 1
@@ -91,18 +93,22 @@ class Session(models.Model):
             self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
         else:
             self.current_experiment_phase = ExperimentPhase.RUN
-        
-        session_periods = []
 
-        for i in range(self.parameter_set.period_count):
-            session_periods.append(main.models.SessionPeriod(session=self, period_number=i+1))
+        #create parts
+        session_parts = []
+        for p in self.parameter_set.parameter_set_parts.all():
+            session_parts.append(main.models.SessionPart(session=self, parameter_set_part=p))
         
-        main.models.SessionPeriod.objects.bulk_create(session_periods)
+        main.models.SessionPart.objects.bulk_create(session_parts)
+
+        for p in self.session_parts_a.all():
+            p.setup()
 
         self.save()
 
-        for i in self.session_players.all():
-            i.start()
+        #setup players
+        for i in self.session_players_a.all():
+            i.setup()
  
     def reset_experiment(self):
         '''
@@ -115,11 +121,12 @@ class Session(models.Model):
         self.timer_running = False
         self.current_experiment_phase = ExperimentPhase.RUN
 
-        for p in self.session_players.all():
-            p.reset()
-
         self.save()
-        self.session_periods.all().delete()
+
+        for p in self.session_players_a.all():
+            p.reset()
+        
+        self.session_parts_a.all().delete()
     
     def reset_connection_counts(self):
         '''
@@ -259,12 +266,12 @@ class Session(models.Model):
         return json object of model
         '''
               
-        chat = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
-                                                    .filter(session_player__in=self.session_players.all())\
-                                                    .prefetch_related('session_player_recipients')
-                                                    .select_related('session_player__parameter_set_player')
-                                                    .order_by('-timestamp')[:100:-1]
-               ]                                                           
+        # chat = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
+        #                                             .filter(session_player__in=self.session_players.all())\
+        #                                             .prefetch_related('session_player_recipients')
+        #                                             .select_related('session_player__parameter_set_player')
+        #                                             .order_by('-timestamp')[:100:-1]
+        #        ]                                                           
         return{
             "id":self.id,
             "title":self.title,
@@ -277,9 +284,31 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
-            "session_periods":[i.json() for i in self.session_periods.all()],
-            "session_players":[i.json(False) for i in self.session_players.all()],
-            "chat_all" : chat,
+            "session_parts":[i.json() for i in self.session_parts_a.all()],
+            "session_players":[i.json(False) for i in self.session_players_a.all()],
+            # "chat_all" : chat,
+            "invitation_text" : self.invitation_text,
+            "invitation_subject" : self.invitation_subject,
+        }
+    
+    def json_min(self):
+        '''
+        small json model
+        '''
+        return{
+            "id":self.id,
+            "title":self.title,
+            "locked":self.locked,
+            "start_date":self.get_start_date_string(),
+            "started":self.started,
+            "current_experiment_phase":self.current_experiment_phase,
+            "current_period":self.current_period,
+            "time_remaining":self.time_remaining,
+            "timer_running":self.timer_running,
+            "finished":self.finished,
+            "parameter_set":self.parameter_set.json_min(),
+            "session_parts":[i.json() for i in self.session_parts_a.all()],
+            "session_players":[i.json(False) for i in self.session_players_a.all()],
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
         }
@@ -299,7 +328,7 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
 
-            "session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players.all()]
+            "session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players_a.all()]
         }
     
     def json_for_timmer(self):

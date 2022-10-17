@@ -24,8 +24,11 @@ from .parameter_set_player_part import ParameterSetPlayerPart
 
 # session
 from .session import Session
-from .session_period import SessionPeriod
+from .session_part import SessionPart
+from .session_part_period import SessionPartPeriod
+
 from .session_player import SessionPlayer
 from .session_player_chat import SessionPlayerChat
-from .session_player_period import SessionPlayerPeriod
+from .session_player_part import SessionPlayerPart
+from .session_player_part_period import SessionPlayerPartPeriod
 

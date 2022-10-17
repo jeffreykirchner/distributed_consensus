@@ -17,7 +17,7 @@ from main.models import ParameterSetPlayer
 from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
-from main.models import SessionPlayerPeriod
+from main.models import SessionPlayerPart
 
 from main.models import  HelpDocs
 
@@ -45,7 +45,7 @@ admin.site.register(ParameterSet)
 admin.site.register(ParameterSetPlayer)
 admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
-admin.site.register(SessionPlayerPeriod)
+admin.site.register(SessionPlayerPart)
 admin.site.register(HelpDocs)
 
 @admin.register(Session)

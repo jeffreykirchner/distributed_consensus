@@ -91,5 +91,15 @@ class ParameterSetPlayer(models.Model):
             "parameter_set_player_parts" : [i.json() for i in self.parameter_set_player_parts_a.all()]
 
         }
+    
+    def json_min(self):
+        '''
+        small json model
+        '''
+        return{
+
+            "id" : self.id,
+            "id_label" : self.id_label,
+        }
 
 

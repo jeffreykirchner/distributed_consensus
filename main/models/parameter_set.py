@@ -95,26 +95,26 @@ class ParameterSet(models.Model):
             
             self.update_parts_and_periods()
 
-            #load players
-            new_parameter_set_players = new_ps.get("parameter_set_players")
-            for index, p in enumerate(self.parameter_set_players.all()):                
-                p.from_dict(new_parameter_set_players[index])
-            
-            #load random outcomes
-            new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
-            for index, p in enumerate(self.parameter_set_random_outcomes.all()):                
-                p.from_dict(new_parameter_set_random_outcomes[index])
-            
-            #load parts
-            new_parameter_set_parts = new_ps.get("parameter_set_parts")
-            for index, p in enumerate(self.parameter_set_parts.all()):                
-                p.from_dict(new_parameter_set_parts[index])
-            
             #load labels
             new_parameter_set_labels = new_ps.get("parameter_set_labels")
             for index, p in enumerate(self.parameter_set_labels.all()):                
                 p.from_dict(new_parameter_set_labels[index])
 
+            #load parts
+            new_parameter_set_parts = new_ps.get("parameter_set_parts")
+            for index, p in enumerate(self.parameter_set_parts.all()):                
+                p.from_dict(new_parameter_set_parts[index])
+
+            #load random outcomes
+            new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
+            for index, p in enumerate(self.parameter_set_random_outcomes.all()):                
+                p.from_dict(new_parameter_set_random_outcomes[index])
+
+            #load players
+            new_parameter_set_players = new_ps.get("parameter_set_players")
+            for index, p in enumerate(self.parameter_set_players.all()):                
+                p.from_dict(new_parameter_set_players[index])
+            
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
             status = "fail"
@@ -210,6 +210,24 @@ class ParameterSet(models.Model):
 
             "test_mode" : "True" if self.test_mode else "False",
         }
+    
+    def json_min(self):
+        '''
+        small json model
+        '''
+        return {
+            "id" : self.id,
+
+            "part_count" : self.part_count,
+            "period_count" : self.period_count,
+            "period_length" : self.period_length,
+            "label_set_count" : self.label_set_count,
+
+            "private_chat" : "True" if self.private_chat else "False",
+            "show_instructions" : "True" if self.show_instructions else "False",
+            "instruction_set" : self.instruction_set.json_min(),
+        }
+
     
     def json_for_subject(self):
         '''
