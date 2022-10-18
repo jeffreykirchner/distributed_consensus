@@ -19,6 +19,8 @@ from main.models import ParameterSetPlayerPart
 from main.models import ParameterSetPart
 from main.models import ParameterSetPartPeriod
 from main.models import ParameterSetRandomOutcome
+from main.models import ParameterSetLabels
+from main.models import ParameterSetLabelsPeriod
 
 from main.models import Session
 from main.models import SessionPlayer
@@ -101,13 +103,9 @@ class ParameterSetPartPeriodInline(admin.TabularInline):
          return super(ParameterSetPartPeriodAdmin, self).render_change_form(request, context, *args, **kwargs)
     
     def get_parent_object_from_request(self, request):
-        """
-        Returns the parent object from the request or None.
 
-        Note that this only works for Inlines, because the `parent_model`
-        is not available in the regular admin.ModelAdmin as an attribute.
-        """
         resolved = resolve(request.path_info)
+
         if resolved.kwargs:
             return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
         return None
@@ -116,7 +114,7 @@ class ParameterSetPartPeriodInline(admin.TabularInline):
         parent = self.get_parent_object_from_request(request)
 
         if db_field.name == 'parameter_set_random_outcome':            
-            kwargs['queryset'] = ParameterSetRandomOutcome.objects.all()
+            kwargs['queryset'] = parent.parameter_set.parameter_set_random_outcomes.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     extra = 0  
@@ -146,11 +144,33 @@ class ParameterSetPartInline(admin.TabularInline):
     show_change_link = True
     fields = ['mode', 'minimum_for_majority', 'pay_choice_majority', 'pay_choice_minority', 'pay_label_majority', 'pay_label_minority']
 
+@admin.register(ParameterSetLabels)
+class ParameterSetLabelsAdmin(admin.ModelAdmin):
+    
+    readonly_fields=['parameter_set']
+    list_display = ['name']
+
+    inlines = [
+        
+      ]
+
+class ParameterSetLabelsInline(admin.TabularInline):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    extra = 0  
+    model = ParameterSetLabels
+    can_delete = False   
+    show_change_link = True
+    fields = ['name']
+
 @admin.register(ParameterSet)
 class ParameterSetAdmin(admin.ModelAdmin):
     inlines = [
         ParameterSetPlayerInline,
         ParameterSetPartInline,
+        ParameterSetLabelsInline,
       ]
 
     list_display = ['id', 'part_count', 'period_count', 'period_length']
