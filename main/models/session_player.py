@@ -132,11 +132,11 @@ class SessionPlayer(models.Model):
             "connected_count" : self.connected_count,
 
             "parameter_set_player" : self.parameter_set_player.json(),
-
+            "chat_all" : [],
             # "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
             #                                                                        .order_by('-timestamp')[:100:-1]
             #              ] if get_chat else [],
-            # "new_chat_message" : False,           #true on client side when a new un read message comes in
+            "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
