@@ -5,6 +5,7 @@ admin interface
 from django.contrib import admin
 from django.contrib import messages
 from django.conf import settings
+from django.urls import resolve
 
 from main.forms import ParametersForm
 from main.forms import SessionFormAdmin
@@ -98,10 +99,23 @@ class ParameterSetPartPeriodInline(admin.TabularInline):
          context['adminform'].form.fields['parameter_set_random_outcome'].queryset = kwargs['obj'].parameter_set_part.parameter_set.parameter_set_random_outcomes.all()
 
          return super(ParameterSetPartPeriodAdmin, self).render_change_form(request, context, *args, **kwargs)
+    
+    def get_parent_object_from_request(self, request):
+        """
+        Returns the parent object from the request or None.
+
+        Note that this only works for Inlines, because the `parent_model`
+        is not available in the regular admin.ModelAdmin as an attribute.
+        """
+        resolved = resolve(request.path_info)
+        if resolved.kwargs:
+            return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
+        return None
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'parameter_set_random_outcome':
-            
+        parent = self.get_parent_object_from_request(request)
+
+        if db_field.name == 'parameter_set_random_outcome':            
             kwargs['queryset'] = ParameterSetRandomOutcome.objects.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
