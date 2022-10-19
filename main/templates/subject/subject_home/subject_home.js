@@ -16,8 +16,13 @@ var app = Vue.createApp({
                     playerKey : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
+
                     session_player : null, 
                     session : null,
+                    current_choice : null,
+
+                    current_outcome_index : null,
+                    current_outcome_id : null,
 
                     end_game_form_ids: {{end_game_form_ids|safe}},
 
@@ -139,6 +144,7 @@ var app = Vue.createApp({
 
             app.session = messageData.status.session;
             app.session_player = messageData.status.session_player;
+            app.current_choice = messageData.status.current_choice;
 
             if(app.session.started)
             {

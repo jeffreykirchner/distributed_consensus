@@ -212,7 +212,7 @@ class ParameterSetAdmin(admin.ModelAdmin):
 
 admin.site.register(HelpDocs)
 
-class ParameterSetSessionPlayerPartPeriodInline(admin.TabularInline):
+class SessionPlayerPartPeriodInline(admin.TabularInline):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -225,7 +225,7 @@ class ParameterSetSessionPlayerPartPeriodInline(admin.TabularInline):
     readonly_fields = ('choice', 'earnings')
 
 @admin.register(SessionPlayerPart)
-class ParameterSetSessionPlayerPartAdmin(admin.ModelAdmin):
+class SessionPlayerPartAdmin(admin.ModelAdmin):
     
     # def render_change_form(self, request, context, *args, **kwargs):
     #      context['adminform'].form.fields['parameter_set_player'].queryset = kwargs['obj'].parameter_set_player.parameter_set.parameter_set_players.all()
@@ -236,10 +236,10 @@ class ParameterSetSessionPlayerPartAdmin(admin.ModelAdmin):
     list_display = ['session_part', 'session_player', 'parameter_set_player_part']
     fields = ['session_part', 'session_player', 'parameter_set_player_part']
     inlines = [
-        ParameterSetSessionPlayerPartPeriodInline,
+        SessionPlayerPartPeriodInline,
       ]
 
-class ParameterSetSessionPlayerPartInline(admin.TabularInline):
+class SessionPlayerPartInline(admin.TabularInline):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -252,21 +252,21 @@ class ParameterSetSessionPlayerPartInline(admin.TabularInline):
     readonly_fields = ('session_part','session_player','parameter_set_player_part')
 
 @admin.register(SessionPlayer)
-class ParameterSetSessionPlayerAdmin(admin.ModelAdmin):
+class SessionPlayerAdmin(admin.ModelAdmin):
     
     def render_change_form(self, request, context, *args, **kwargs):
          context['adminform'].form.fields['parameter_set_player'].queryset = kwargs['obj'].parameter_set_player.parameter_set.parameter_set_players.all()
 
-         return super(ParameterSetSessionPlayerAdmin, self).render_change_form(request, context, *args, **kwargs)
+         return super(SessionPlayerAdmin, self).render_change_form(request, context, *args, **kwargs)
 
-    readonly_fields=['session']
+    readonly_fields=['session','player_number','player_key']
     list_display = ['parameter_set_player', 'name', 'student_id', 'email',]
-    fields = ['name', 'student_id', 'email', 'parameter_set_player']
+    fields = ['session','name', 'student_id', 'email', 'parameter_set_player','player_number','player_key']
     inlines = [
-        ParameterSetSessionPlayerPartInline,
+        SessionPlayerPartInline,
       ]
 
-class ParameterSetSessionPlayerInline(admin.TabularInline):
+class SessionPlayerInline(admin.TabularInline):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -282,7 +282,7 @@ class ParameterSetSessionPlayerInline(admin.TabularInline):
     fields = ['name', 'student_id', 'email',]
     readonly_fields = ('get_parameter_set_player_id_label',)
 
-class ParameterSetSessionPartPeriodInline(admin.TabularInline):
+class SessionPartPeriodInline(admin.TabularInline):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -295,16 +295,16 @@ class ParameterSetSessionPartPeriodInline(admin.TabularInline):
     readonly_fields = ('session_part', 'parameter_set_part_period')
 
 @admin.register(SessionPart)
-class ParameterSetSessionPartAdmin(admin.ModelAdmin):
+class SessionPartAdmin(admin.ModelAdmin):
        
     readonly_fields=['session', 'parameter_set_part']
     list_display = ['session', 'parameter_set_part']
     fields = ['session', 'parameter_set_part']
     inlines = [
-        ParameterSetSessionPartPeriodInline,
+        SessionPartPeriodInline,
       ]
 
-class ParameterSetSessionPartInline(admin.TabularInline):
+class SessionPartInline(admin.TabularInline):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -318,11 +318,14 @@ class ParameterSetSessionPartInline(admin.TabularInline):
 
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
-    form = SessionFormAdmin
+    
+    readonly_fields=['parameter_set', 'current_session_part']
+    list_display = ['title', 'creator']
+    fields = ['parameter_set', 'creator', 'collaborators', 'current_session_part','title','shared','locked']
 
     inlines = [
-      ParameterSetSessionPlayerInline,  
-      ParameterSetSessionPartInline,
+      SessionPlayerInline,  
+      SessionPartInline,
       ]
 
 #instruction set page

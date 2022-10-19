@@ -9,6 +9,7 @@ from django.db import models
 from main.models import SessionPlayerPart
 from main.models import ParameterSetLabelsPeriod
 from main.models import ParameterSetRandomOutcome
+from main.models import SessionPartPeriod
 
 class SessionPlayerPartPeriod(models.Model):
     '''
@@ -17,6 +18,7 @@ class SessionPlayerPartPeriod(models.Model):
     session_player_part = models.ForeignKey(SessionPlayerPart, on_delete=models.CASCADE, related_name="session_player_part_periods_a")
     parameter_set_labels_period = models.ForeignKey(ParameterSetLabelsPeriod, on_delete=models.CASCADE, related_name="session_player_part_periods_b", blank=True, null=True)
     choice =  models.ForeignKey(ParameterSetRandomOutcome, on_delete=models.CASCADE, related_name="session_player_part_periods_c", blank=True, null=True)
+    session_part_period = models.ForeignKey(SessionPartPeriod, on_delete=models.CASCADE, related_name="session_player_part_periods_d", blank=True, null=True)
 
     earnings = models.IntegerField(verbose_name='Period Earnings', default=0)        #earnings in cents this period
 
@@ -57,5 +59,5 @@ class SessionPlayerPartPeriod(models.Model):
             "id" : self.id,    
             "earnings" : self.earnings,
             "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
-            "choice" : self.choice.json() if self.choice else None,
+            "choice" : self.choice.json() if self.choice else None,           
         }

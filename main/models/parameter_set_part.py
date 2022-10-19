@@ -129,7 +129,6 @@ class ParameterSetPart(models.Model):
             "mode" : self.mode,
             "part_number" : self.part_number,
             "minimum_for_majority" : self.minimum_for_majority,
-            "parameter_set_part_periods" : [p.json() for p in self.parameter_set_part_periods_a.all()],
             "pay_choice_majority" : self.pay_choice_majority,
             "pay_choice_minority" : self.pay_choice_minority,
             "pay_label_majority" : self.pay_label_majority,

@@ -18,6 +18,8 @@ class SessionPart(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_parts_a")
     parameter_set_part = models.ForeignKey(ParameterSetPart, on_delete=models.CASCADE, related_name="session_parts_b", null=True, blank=True)
 
+    current_session_part_period = models.ForeignKey('main.SessionPartPeriod', models.SET_NULL, blank=True, null=True, related_name="session_parts_c")
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
 
@@ -43,6 +45,9 @@ class SessionPart(models.Model):
         
         main.models.SessionPartPeriod.objects.bulk_create(session_part_periods)
 
+        self.current_session_part_period = self.session_part_periods_a.first()
+        self.save()
+
 
     #return json object of class
     def json(self):
@@ -53,5 +58,15 @@ class SessionPart(models.Model):
         return{
             "id" : self.id,
             #"parameter_set_part" : self.parameter_set_part.json(),
+        }
+    
+    def json_for_subject(self):
+        '''
+        json object of model
+        '''
+
+        return{
+            "id" : self.id,
+            "parameter_set_part" : self.parameter_set_part.json_for_subject(),
         }
         

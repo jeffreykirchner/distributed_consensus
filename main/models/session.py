@@ -3,6 +3,7 @@ session model
 '''
 
 from datetime import datetime
+from pickle import TRUE
 from tinymce.models import HTMLField
 
 import logging
@@ -32,6 +33,7 @@ class Session(models.Model):
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sessions_a")
     collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="sessions_b")
+    current_session_part = models.ForeignKey('main.SessionPart', models.SET_NULL, blank=True, null=True, related_name="sessions_c")
 
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
     start_date = models.DateField(default=now)                                   #date of session start
@@ -41,8 +43,7 @@ class Session(models.Model):
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
-    started =  models.BooleanField(default=False)                                #starts session and filll in session
-    current_period = models.IntegerField(default=0)                              #current period of the session
+    started =  models.BooleanField(default=False)                                #starts session and filll in session    
     time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
     timer_running = models.BooleanField(default=False)                           #true when period timer is running
     finished = models.BooleanField(default=False)                                #true after all session periods are complete
@@ -109,6 +110,10 @@ class Session(models.Model):
         #setup players
         for i in self.session_players_a.all():
             i.setup()
+
+        #set current part
+        self.current_session_part = self.session_parts_a.first()
+        self.save()
  
     def reset_experiment(self):
         '''
@@ -279,7 +284,6 @@ class Session(models.Model):
             "start_date":self.get_start_date_string(),
             "started":self.started,
             "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
@@ -302,7 +306,6 @@ class Session(models.Model):
             "start_date":self.get_start_date_string(),
             "started":self.started,
             "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
@@ -322,7 +325,6 @@ class Session(models.Model):
         return{
             "started":self.started,
             "current_experiment_phase":self.current_experiment_phase,
-            "current_period":self.current_period,
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,

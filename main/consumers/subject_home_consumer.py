@@ -342,15 +342,17 @@ def take_get_session_subject(session_player_id):
     #uuid = data["uuid"]
 
     #session = Session.objects.get(id=session_id)
-    try:
-        session_player = SessionPlayer.objects.get(id=session_player_id)
+    #try:
+    session_player = SessionPlayer.objects.get(id=session_player_id)
 
-        return {"session" : session_player.session.json_for_subject(session_player), 
-                "session_player" : session_player.json() }
+    return {"session" : session_player.session.json_for_subject(session_player), 
+            "session_player" : session_player.json(),
+            "current_choice" : session_player.json_current_choice() }
 
-    except ObjectDoesNotExist:
-        return {"session" : None, 
-                "session_player" : None}
+    # except ObjectDoesNotExist:
+    #     return {"session" : None, 
+    #             "session_player" : None,
+    #             "current_choice" : None}
 
 def take_get_session_id(player_key):
     '''

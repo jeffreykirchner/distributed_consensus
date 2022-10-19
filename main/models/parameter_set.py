@@ -225,7 +225,7 @@ class ParameterSet(models.Model):
 
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
-            "instruction_set" : self.instruction_set.json_min(),
+            "instruction_set" : self.instruction_set.json_min(),            
         }
 
     
@@ -245,5 +245,7 @@ class ParameterSet(models.Model):
             "private_chat" : self.private_chat,
 
             "test_mode" : self.test_mode,
+
+            "parameter_set_random_outcomes" : [p.json_for_subject() for p in self.parameter_set_random_outcomes.all()],
         }
 

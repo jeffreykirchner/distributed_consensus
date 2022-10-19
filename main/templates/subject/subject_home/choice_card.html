@@ -1,13 +1,96 @@
 
 <div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
     <div class="card-header fw-bold">                
-        <span class="align-middle">Choice</span>            
+        <span class="align-middle">Your Choice</span>            
 
     </div>
     <div class="card-body">      
-        <div class="row">
-           
-        </div>  
-        
+        <div class="row">          
+
+           <!-- signal -->
+           <div class="col-4 text-center">
+
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        <u>Step 1</u>:
+                    </div>
+                </div>
+
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        Everyone sees the same image:
+                    </div>
+                </div>
+
+                <!-- image -->
+                <div class="row">
+                    <div class="col">
+                        <img v-bind:src="'/static/' + current_choice.session_player_part_period.parameter_set_labels_period.label.image" 
+                             class="signal_image"/>
+                    </div>
+                </div>                
+           </div>
+
+            <!-- choice grid -->
+            <div class="col-8">
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        <u>Step 2</u>:
+                    </div>
+                </div>
+
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        Select one of the choices to report:                       
+                    </div>
+                </div>
+
+                <!-- choices -->
+                <div class="row">
+                    <div class="col text-center">
+
+                        <div class="row justify-content-center mt-4">
+                            <div v-for="(o, index) in session.parameter_set.parameter_set_random_outcomes"
+                                 class="col-auto text-center"
+                                 v-bind:id="'choice_grid_' + o.id"
+                                 v-on:click="take_choice_grid_click(o, index)" >                
+                                <img v-bind:src="'/static/' + o.image" 
+                                     class="choice_image rounded border-success border-2"
+                                     v-bind:class="{'border':index==current_outcome_index}"/>
+                                    
+                            </div>
+                        </div>
+                        
+                   </div>
+                </div>
+
+
+                 <!-- text -->
+                <div class="row mt-4">
+                    <div class="col h5 text-center">
+                        If all [[session.parameter_set.period_count]] of your choices in this part are in the majority you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
+                        If one or more of your choices is <u>not</u> in the majority you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].                
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col text-center">
+                
+                        <button class="btn btn-outline-success"
+                            type="button"
+                            title="Report Choice"
+                            v-bind:disabled="!session.started || reconnecting || working"
+                            v-on:click="sendchoice()">
+                            <span class="h5">Report [['choice text']]</span>
+                        </button>
+                    </div>
+                </div>   
+
+            </div>
+        </div>
     </div>                    
 </div> 

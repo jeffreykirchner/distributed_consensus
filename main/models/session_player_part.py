@@ -49,8 +49,12 @@ class SessionPlayerPart(models.Model):
                                               .parameter_set_labels \
                                               .parameter_set_labels_period_a \
                                               .get(period_number=i+1)  
+            
+            session_part_period = self.session_part.session_part_periods_a.get(parameter_set_part_period__period_number=i+1)
+
             session_player_part_periods.append(main.models.SessionPlayerPartPeriod(session_player_part=self, \
-                                                                                   parameter_set_labels_period=parameter_set_labels_period))
+                                                                                   parameter_set_labels_period=parameter_set_labels_period,
+                                                                                   session_part_period=session_part_period))
         
         main.models.SessionPlayerPartPeriod.objects.bulk_create(session_player_part_periods)
     
@@ -65,6 +69,12 @@ class SessionPlayerPart(models.Model):
                          self.session_player.player_number,
                          self.session_player.parameter_set_player.id_label,
                          self.earnings,])
+    
+    def get_current_session_player_part_period(self):
+        '''
+        return the current session player part period
+        '''
+        return self.session_player_part_periods_a.get(session_part_period=self.session_part.current_session_part_period)
         
     def json_for_subject(self):
         '''

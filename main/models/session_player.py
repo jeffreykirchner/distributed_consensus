@@ -111,6 +111,12 @@ class SessionPlayer(models.Model):
             i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
 
         return instructions
+    
+    def get_current_session_player_part(self):
+        '''
+        return the current session player part
+        '''
+        return self.session_player_parts_b.get(session_part=self.session.current_session_part) if self.session.started else None
 
     def json(self, get_chat=True):
         '''
@@ -165,15 +171,32 @@ class SessionPlayer(models.Model):
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
-        }
+        }    
+    
 
-    def json_min(self, session_player_notice=None):
+    def json_min(self):
         '''
         minimal json object of model
         '''
 
         return{
             "id" : self.id,    
+        }
+    
+    def json_current_choice(self):
+        '''
+        json for current choice
+        '''
+
+        if not self.session.started:
+            return {"id" : self.id,}
+
+        session_player_part_period = self.get_current_session_player_part().get_current_session_player_part_period()
+
+        return{
+            "id" : self.id,    
+            "session_player_part_period" : session_player_part_period.json_for_subject(),
+            "session_part" : self.session.current_session_part.json_for_subject(),           
         }
     
     def json_earning(self):
