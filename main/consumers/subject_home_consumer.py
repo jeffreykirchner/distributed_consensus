@@ -23,6 +23,8 @@ from main.forms import EndGameForm
 from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
+from main.models import SessionPlayerPartPeriod
+from main.models import ParameterSetRandomOutcome
 
 from main.globals import ChatTypes
 from main.globals import round_half_away_from_zero
@@ -535,10 +537,25 @@ def take_choice(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Take choice: {session_id} {session_player_id} {data}")
 
-    data =  data["data"]
+    data = data["data"]
 
+    message = ""
+    result = {"current_index" : data["current_index"]}
+
+    try:
+        with transaction.atomic():
+            session_player_part_period = SessionPlayerPartPeriod.objects.get(id=data["part_period_id"])
+            session_player_part_period.choice = ParameterSetRandomOutcome.objects.get(id=data["random_outcome_id"])
+            session_player_part_period.save()
+
+        result["session_player_part_period"] = session_player_part_period.json_for_subject()
+
+    except ObjectDoesNotExist:      
+        message = "Session Period Part not found"
+        logger.error(f"take_choice : {message}")
+        return {"value" : "fail", "errors" : {"text" : message}, "message" : message}
    
-    return {"value" : "fail", "errors" : {}, "message" : ""}
+    return {"value" : "success", "errors" : {}, "message" : "", "result" : result}
 
 def take_update_next_phase(session_id, session_player_id):
     '''

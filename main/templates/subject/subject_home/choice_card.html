@@ -51,7 +51,7 @@
 
                 <!-- choices -->
                 <div class="row">
-                    <div class="col text-center">
+                    <div class="col text-center" v-if="!get_current_part_period().choice">
 
                         <div class="row justify-content-center mt-4">
                             <div v-for="(o, index) in session.parameter_set.parameter_set_random_outcomes"
@@ -66,19 +66,24 @@
                         </div>
                         
                    </div>
+                   <div class="col text-center" v-else>
+                        <img v-bind:src="'/static/' + get_current_part_period().choice.image" 
+                            class="choice_image rounded border-success border-2 border"/>                            
+                   </div>
                 </div>
 
 
                  <!-- text -->
                 <div class="row mt-4">
                     <div class="col h5 text-center">
-                        If all [[session.parameter_set.period_count]] of your choices in this part are in the majority you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
-                        If one or more of your choices is <u>not</u> in the majority you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].                
+                        If all [[session.parameter_set.period_count]] of your choices in this part are in the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) every period you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
+                        If one or more of your choices is <u>not</u> in the majority in period you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].                
                     </div>
                 </div>
 
                 <div class="row mt-4">
-                    <div class="col text-center">
+
+                    <div class="col text-center" v-if="!get_current_part_period().choice">
                 
                         <button class="btn btn-outline-success"
                             type="button"
@@ -91,6 +96,9 @@
                                          : '---']]                                                    
                             </span>
                         </button>
+                    </div>
+                    <div class="col text-center text-success" v-else>
+                        <span class="h5">Waiting for others.</span>
                     </div>
                 </div>   
 

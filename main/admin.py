@@ -217,12 +217,27 @@ class SessionPlayerPartPeriodInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
+    def get_parent_object_from_request(self, request):
+
+        resolved = resolve(request.path_info)
+
+        if resolved.kwargs:
+            return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
+        return None
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        parent = self.get_parent_object_from_request(request)
+
+        if db_field.name == 'choice':            
+            kwargs['queryset'] = parent.session_player.session.parameter_set.parameter_set_random_outcomes.all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     extra = 0  
     model = SessionPlayerPartPeriod
     can_delete = False   
     show_change_link = True
     fields = ['choice', 'earnings']
-    readonly_fields = ('choice', 'earnings')
+    readonly_fields = ('earnings',)
 
 @admin.register(SessionPlayerPart)
 class SessionPlayerPartAdmin(admin.ModelAdmin):
