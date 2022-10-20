@@ -266,17 +266,33 @@ class Session(models.Model):
 
         return output.getvalue()
 
+    def get_current_session_part_and_period_index(self):
+        '''
+        return the array index of the current session part
+        '''
+
+        part_index = -1
+        period_index = -1
+
+        if self.current_session_part: 
+            part_index = self.current_session_part.parameter_set_part.part_number-1
+            period_index = self.current_session_part.current_session_part_period.parameter_set_part_period.period_number-1
+         
+        return {"part_index" : part_index, "period_index" : period_index}
+
     def json(self):
         '''
         return json object of model
         '''
               
-        # chat = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
+        # chat_all = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
         #                                             .filter(session_player__in=self.session_players.all())\
         #                                             .prefetch_related('session_player_recipients')
         #                                             .select_related('session_player__parameter_set_player')
         #                                             .order_by('-timestamp')[:100:-1]
         #        ]                                                           
+       
+        chat_all = []
         return{
             "id":self.id,
             "title":self.title,
@@ -290,9 +306,10 @@ class Session(models.Model):
             "parameter_set":self.parameter_set.json(),
             "session_parts":[i.json() for i in self.session_parts_a.all()],
             "session_players":[i.json(False) for i in self.session_players_a.all()],
-            # "chat_all" : chat,
+            "chat_all" : chat_all,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
+            "current_index" : self.get_current_session_part_and_period_index(),
         }
     
     def json_min(self):
@@ -330,7 +347,9 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
 
-            "session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players_a.all()]
+            "current_index" : self.get_current_session_part_and_period_index(),
+
+            #"session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players_a.all()]
         }
     
     def json_for_timmer(self):

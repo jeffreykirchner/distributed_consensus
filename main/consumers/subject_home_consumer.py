@@ -126,6 +126,28 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                  "data": result,
                  "sender_channel_name": self.channel_name},
             )
+    
+    async def choice(self, event):
+        '''
+        take choice
+        '''
+        result = await sync_to_async(take_choice)(self.session_id, self.session_player_id, event["message_text"])
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        if result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_choice",
+                 "data": result,
+                 "sender_channel_name": self.channel_name},
+            )
 
     async def next_instruction(self, event):
         '''
@@ -289,16 +311,19 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         handle connection status update from group member
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Connection update")
+        pass
 
     async def update_name(self, event):
         '''
         no group broadcast of name to subjects
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
+    
+    async def update_choice(self, event):
+        '''
+        no group broadcast of choice to subjects
+        '''
+        pass
     
     async def update_next_phase(self, event):
         '''
@@ -320,17 +345,13 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         no group broadcast of avatar to current instruction
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_finish_instructions(self, event):
         '''
         no group broadcast of avatar to current instruction
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
 
 
 #local sync functions  
@@ -344,7 +365,7 @@ def take_get_session_subject(session_player_id):
     #session = Session.objects.get(id=session_id)
     #try:
     session_player = SessionPlayer.objects.get(id=session_player_id)
-
+    
     return {"session" : session_player.session.json_for_subject(session_player), 
             "session_player" : session_player.json(),
             "current_choice" : session_player.json_current_choice() }
@@ -505,6 +526,19 @@ def take_name(session_id, session_player_id, data):
                                 
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
+
+def take_choice(session_id, session_player_id, data):
+    '''
+    take period choice
+    '''
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Take choice: {session_id} {session_player_id} {data}")
+
+    data =  data["data"]
+
+   
+    return {"value" : "fail", "errors" : {}, "message" : ""}
 
 def take_update_next_phase(session_id, session_player_id):
     '''

@@ -1,5 +1,5 @@
 
-<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+<div class="card" v-if="first_load_done && session.started">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Your Choice</span>            
 
@@ -57,10 +57,10 @@
                             <div v-for="(o, index) in session.parameter_set.parameter_set_random_outcomes"
                                  class="col-auto text-center"
                                  v-bind:id="'choice_grid_' + o.id"
-                                 v-on:click="take_choice_grid_click(o, index)" >                
+                                 v-on:click="take_choice_grid_click(o.id, index)" >                
                                 <img v-bind:src="'/static/' + o.image" 
                                      class="choice_image rounded border-success border-2"
-                                     v-bind:class="{'border':index==current_outcome_index}"/>
+                                     v-bind:class="{'border':index==get_current_part_period().current_outcome_index}"/>
                                     
                             </div>
                         </div>
@@ -83,9 +83,13 @@
                         <button class="btn btn-outline-success"
                             type="button"
                             title="Report Choice"
-                            v-bind:disabled="!session.started || reconnecting || working"
+                            v-bind:disabled="!session.started || reconnecting || working || get_current_part_period().current_outcome_index == -1"
                             v-on:click="sendchoice()">
-                            <span class="h5">Report [['choice text']]</span>
+                            <span class="h5">
+                                Report [[get_current_part_period().current_outcome_id >-1 ? 
+                                         session.parameter_set.parameter_set_random_outcomes[get_current_part_period().current_outcome_index].name
+                                         : '---']]                                                    
+                            </span>
                         </button>
                     </div>
                 </div>   

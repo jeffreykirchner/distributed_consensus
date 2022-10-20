@@ -3,25 +3,32 @@
  */
 sendchoice(){
 
+    current_part_period = get_current_part_period();
+
+    if(!current_part_period) return;
+
     app.working = true;
     app.sendMessage("choice",
-                   {"formData" : {choice : null,}});
+                   {"data" : {random_outcome_id : current_part_period.current_outcome_id,
+                              current_index : app.session.current_index}});
                      
 },
 
 /** take result of submitting choice
 */
 takeChoice(messageData){
-
-    app.clearMainFormErrors();
-
+    
     if(messageData.status.value == "success")
     {
-              
+        result = messageData.status.result;
+        current_index = result.current_index;
+
+        part_period = get_part_period(current_index.part_index, current_index.period_index);
+        part_period.choice = result.choice;
     } 
     else
     {
-        app.displayErrors(messageData.status.errors);
+        
     }
 },
 
@@ -30,9 +37,34 @@ takeChoice(messageData){
  */
  take_choice_grid_click(outcome_id, outcome_index){
 
-    if(this.working) return;
+    if(this.working) return;   
 
-    app.current_outcome_index = outcome_index;
-    app.current_outcome_id = outcome_id;
+    session_player_part_period = app.get_current_part_period()
+
+    if(session_player_part_period)
+    {
+        session_player_part_period.current_outcome_id=outcome_id;
+        session_player_part_period.current_outcome_index=outcome_index;
+    }
+},
+
+/**
+ * return current part period
+ */
+get_current_part_period(){
     
+    return app.get_part_period(app.session.current_index.part_index, app.session.current_index.period_index);                         
+},
+
+/**
+ * return part period
+ */
+get_part_period(part_index, period_index){
+
+    if(!app.session) return null;
+
+    if(part_index == -1 || period_index == -1) return null;
+
+    return app.session_player.session_player_parts[part_index]
+                             .session_player_part_periods[period_index];
 },

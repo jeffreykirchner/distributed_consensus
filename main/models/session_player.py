@@ -122,6 +122,11 @@ class SessionPlayer(models.Model):
         '''
         json object of model
         '''
+        # "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
+            #                                                                        .order_by('-timestamp')[:100:-1]
+            #              ] if get_chat else [],
+        chat_all = []
+
         return{
             "id" : self.id,      
             "name" : self.name,
@@ -138,15 +143,15 @@ class SessionPlayer(models.Model):
             "connected_count" : self.connected_count,
 
             "parameter_set_player" : self.parameter_set_player.json(),
-            "chat_all" : [],
-            # "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
-            #                                                                        .order_by('-timestamp')[:100:-1]
-            #              ] if get_chat else [],
+            "chat_all" : chat_all,
+            
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
             "instructions_finished" : self.instructions_finished,
+
+            "session_player_parts" : [p.json_for_subject() for p in self.session_player_parts_b.all()],
 
         }
     
@@ -156,21 +161,21 @@ class SessionPlayer(models.Model):
         session_player_id : int : id number of session player for induvidual chat
         '''
 
+         # "chat_individual" : [c.json_for_subject() for c in  main.models.SessionPlayerChat.objects \
+            #                                                                 .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
+            #                                                                 .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
+            #                                                                         Q(Q(session_player_recipients=self) & Q(session_player=session_player)))
+            #                                                                 .order_by('-timestamp')[:100:-1]
+            #                     ],
+        chat_individual = []
+
         return{
             "id" : self.id,  
-
             "player_number" : self.player_number,
-
-            "chat_individual" : [c.json_for_subject() for c in  main.models.SessionPlayerChat.objects \
-                                                                            .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
-                                                                            .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
-                                                                                    Q(Q(session_player_recipients=self) & Q(session_player=session_player)))
-                                                                            .order_by('-timestamp')[:100:-1]
-                                ],
-
+            "chat_individual" : chat_individual,
             "new_chat_message" : False,           #true on client side when a new un read message comes in
-
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+
         }    
     
 

@@ -19,10 +19,7 @@ var app = Vue.createApp({
 
                     session_player : null, 
                     session : null,
-                    current_choice : null,
-
-                    current_outcome_index : null,
-                    current_outcome_id : null,
+                    current_choice : null,                    
 
                     end_game_form_ids: {{end_game_form_ids|safe}},
 
@@ -92,6 +89,9 @@ var app = Vue.createApp({
                     break;
                 case "finish_instructions":
                     app.takeFinishInstructions(messageData);
+                    break;
+                case "choice":
+                    app.takeChoice(messageData);
                     break;
                 
             }

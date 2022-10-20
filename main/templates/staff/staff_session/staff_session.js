@@ -144,6 +144,9 @@ var app = Vue.createApp({
                 case "email_list":
                     app.takeUpdateEmailList(messageData);
                     break;
+                case "choice":
+                    
+                    break;
             }
 
             this.first_load_done = true;

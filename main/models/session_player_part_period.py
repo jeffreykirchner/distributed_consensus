@@ -59,5 +59,8 @@ class SessionPlayerPartPeriod(models.Model):
             "id" : self.id,    
             "earnings" : self.earnings,
             "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
-            "choice" : self.choice.json() if self.choice else None,           
+            "choice" : self.choice.json() if self.choice else None,      
+
+            "current_outcome_index" : -1,
+            "current_outcome_id" : -1,     
         }

@@ -12,7 +12,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
     parameterset player edit form
     '''
 
-    id_label = forms.CharField(label='Label Used in Chat',
+    id_label = forms.CharField(label='Display Label',
                                widget=forms.TextInput(attrs={"v-model":"current_parameter_set_player.id_label",}))
 
     class Meta:
