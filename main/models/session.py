@@ -15,6 +15,7 @@ from django.conf import settings
 
 from django.dispatch import receiver
 from django.db import models
+from django.db import transaction
 from django.db.models.signals import post_delete
 from django.utils.timezone import now
 from django.core.exceptions import ObjectDoesNotExist
@@ -153,7 +154,7 @@ class Session(models.Model):
         update the number of session players based on the number defined in the parameterset
         '''
 
-        self.session_players.all().delete()
+        self.session_players_a.all().delete()
     
         for count, i in enumerate(self.parameter_set.parameter_set_players.all()):
             new_session_player = main.models.SessionPlayer()
@@ -193,11 +194,28 @@ class Session(models.Model):
 
         self.save()
 
-        result = self.json_for_timmer()
+        result = self.json_for_timer()
 
         return {"value" : status,
                 "result" : result,
                 "end_game" : end_game}
+
+    def check_advance_period(self):
+        '''
+        check if all subjects have submitted their choices.
+        '''
+
+        with transaction.atomic():
+            c = main.models.SessionPlayerPartPeriod.objects.filter(choice=None)\
+                                                           .filter(session_part_period=self.current_session_part.current_session_part_period)\
+                                                           .count()
+
+            if c > 0:
+                return None
+            else:
+                 if self.current_session_part.advance_period():
+                    return self.get_current_session_part_and_period_index()
+
 
     def get_download_summary_csv(self):
         '''
@@ -352,7 +370,7 @@ class Session(models.Model):
             #"session_players":[i.json_for_subject(session_player) for i in session_player.session.session_players_a.all()]
         }
     
-    def json_for_timmer(self):
+    def json_for_timer(self):
         '''
         return json object for timer update
         '''

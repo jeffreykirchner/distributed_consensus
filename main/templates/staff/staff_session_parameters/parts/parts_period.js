@@ -57,6 +57,7 @@ sendUpdatePartPeriod(){
 
     app.sendMessage("update_parameterset_part_period", {"sessionID" : app.sessionID,
                                                         "paramterset_part_period_id" : app.current_parameter_set_part_period.id,
+                                                        "indexes" : app.parametersetPartPeriodBeforeEditIndex,
                                                         "formData" : formData});
 },
 
@@ -71,7 +72,10 @@ takeUpdateParametersetPartPeriod(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        //app.takeGetSession(messageData);       
+        result = messageData.status.result;  
+        app.session.parameter_set.parameter_set_parts[result.indexes.i] .parameter_set_part_periods[result.indexes.j] = result.parameter_set_part_period;
+                                                              
         app.editParametersetPartPeriodModal.hide();        
     } 
     else

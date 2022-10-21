@@ -98,7 +98,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_player_part)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        #message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
         message["messageType"] = "update_parameterset_player_part"
@@ -212,7 +212,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_part_period)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        #message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
         message["messageType"] = "update_parameterset_part_period"
@@ -261,7 +261,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_labels_period)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        #message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
         message["messageType"] = "update_parameterset_labels_period"
@@ -440,7 +440,9 @@ def take_update_parameterset_player_part(data):
         #print("valid form")             
         form.save()              
 
-        return {"value" : "success"}                      
+        return {"value" : "success",
+                "result":{"indexes":data["indexes"],
+                          "parameter_set_player_part":parameter_set_player_part.json()}}                      
                                 
     logger.info("Invalid parameterset player part form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
@@ -622,7 +624,9 @@ def take_update_parameterset_part_period(data):
         #print("valid form")             
         form.save()              
 
-        return {"value" : "success"}                      
+        return {"value" : "success",
+                "result":{"indexes":data["indexes"],
+                          "parameter_set_part_period":parameter_set_part_period.json()}}                      
                                 
     logger.info("Invalid parameterset part period form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
@@ -708,7 +712,11 @@ def take_update_parameterset_labels_period(data):
         #print("valid form")             
         form.save()              
 
-        return {"value" : "success"}                      
+        parameter_set_labels_period = ParameterSetLabelsPeriod.objects.get(id=parameterset_labels_period_id)
+
+        return {"value" : "success", 
+                "result":{"indexes":data["indexes"],
+                          "parameter_set_labels_period":parameter_set_labels_period.json()}}                      
                                 
     logger.info("Invalid parameterset labels period form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}

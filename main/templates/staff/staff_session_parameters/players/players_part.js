@@ -53,13 +53,14 @@ sendUpdateParametersetPlayerPart(){
     app.working = true;
 
     var parameter_set_player_part = app.session.session_players[app.parametersetPlayerPartBeforeEditIndex.i]
-                                                 .parameter_set_player.parameter_set_player_parts[app.parametersetPlayerPartBeforeEditIndex.j]
+                                                 .parameter_set_player.parameter_set_player_parts[app.parametersetPlayerPartBeforeEditIndex.j];
 
     formData = parameter_set_player_part;
 
     app.sendMessage("update_parameterset_player_part", {"sessionID" : app.sessionID,
-                                                          "paramterset_player_part_id" : app.current_parameter_set_player_part.id,
-                                                          "formData" : formData});
+                                                        "paramterset_player_part_id" : app.current_parameter_set_player_part.id,
+                                                        "indexes" : app.parametersetPlayerPartBeforeEditIndex,
+                                                        "formData" : formData});
 },
 
 /** handle result of updating parameter set player
@@ -73,7 +74,9 @@ takeUpdateParametersetPlayerPart(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        //app.takeGetSession(messageData);     
+        result = messageData.status.result;  
+        app.session.session_players[result.indexes.i].parameter_set_player.parameter_set_player_parts[result.indexes.j]=result.parameter_set_player_part;
         app.editParametersetPlayerPartModal.hide();        
     } 
     else

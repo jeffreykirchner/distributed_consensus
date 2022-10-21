@@ -73,7 +73,7 @@ takeUpdateParametersetLabels(messageData){
 
     if(messageData.status.value == "success")
     {
-        // app.takeGetSession(messageData);       
+        app.session=null;       
         app.editParametersetLabelsModal.hide();    
         window.location.reload();    
     } 

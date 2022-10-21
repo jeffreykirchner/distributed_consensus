@@ -57,6 +57,7 @@ sendUpdateLabelsPeriod(){
 
     app.sendMessage("update_parameterset_labels_period", {"sessionID" : app.sessionID,
                                                           "parameterset_labels_period_id" : app.current_parameter_set_labels_period.id,
+                                                          "indexes" : app.parametersetLabelsBeforeEditIndex,
                                                           "formData" : formData});
 },
 
@@ -81,7 +82,8 @@ takeUpdateParametersetLabelsPeriod(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        result = messageData.status.result;       
+        app.session.parameter_set.parameter_set_labels[result.indexes.i].parameter_set_labels_period[result.indexes.j] = result.parameter_set_labels_period;
         app.editParametersetLabelsPeriodModal.hide();        
     } 
     else

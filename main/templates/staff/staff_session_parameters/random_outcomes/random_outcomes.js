@@ -79,8 +79,8 @@ takeUpdateRandomOutcome(messageData){
 
     if(messageData.status.value == "success")
     {
-        //app.takeGetSession(messageData);       
-        app.editRandomOutcomeModal.hide();        
+        //app.takeGetSession(messageData);     
+        app.session=null;         
         window.location.reload();
     } 
     else
@@ -105,8 +105,7 @@ sendRemoveRandomOutcome(){
 takeRemoveRandomOutcome(messageData){
     app.cancelModal=false;
     //app.clearMainFormErrors();
-    //app.takeGetSession(messageData);   
-    app.editRandomOutcomeModal.hide();
+    app.session=null;   
     window.location.reload();
 },
 
@@ -124,5 +123,6 @@ takeAddRandomOutcome(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
     //app.takeGetSession(messageData); 
+    app.session=null;
     window.location.reload();
 },

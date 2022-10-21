@@ -47,6 +47,20 @@ class SessionPart(models.Model):
 
         self.current_session_part_period = self.session_part_periods_a.first()
         self.save()
+        
+    def advance_period(self):
+        '''
+        advance to next period
+        '''
+        if self.current_session_part_period.parameter_set_part_period.period_number==self.parameter_set_part.parameter_set.period_count:
+            return False
+
+        current_period_number = self.current_session_part_period.parameter_set_part_period.period_number
+
+        self.current_session_part_period.parameter_set_part_period = self.session_part_periods_a.filter(parameter_set_part_period__period_number=current_period_number+1)
+        self.save()
+
+        return True
 
 
     #return json object of class

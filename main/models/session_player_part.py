@@ -57,7 +57,7 @@ class SessionPlayerPart(models.Model):
                                                                                    session_part_period=session_part_period))
         
         main.models.SessionPlayerPartPeriod.objects.bulk_create(session_player_part_periods)
-    
+
     def write_summary_download_csv(self, writer):
         '''
         take csv writer and add row
