@@ -147,7 +147,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_random_outcome)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = {}
 
         message = {}
         message["messageType"] = "update_parameterset_random_outcome"
@@ -163,7 +163,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_remove_parameterset_random_outcome)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = {}
 
         message = {}
         message["messageType"] = "remove_parameterset_random_outcome"
@@ -179,7 +179,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_add_paramterset_random_outcome)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = {}
 
         message = {}
         message["messageType"] = "add_parameterset_random_outcome"
@@ -245,7 +245,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_labels)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = {}
 
         message = {}
         message["messageType"] = "update_parameterset_labels"

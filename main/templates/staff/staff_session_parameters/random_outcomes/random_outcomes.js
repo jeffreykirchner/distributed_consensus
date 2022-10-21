@@ -79,7 +79,7 @@ takeUpdateRandomOutcome(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        //app.takeGetSession(messageData);       
         app.editRandomOutcomeModal.hide();        
         window.location.reload();
     } 
@@ -105,7 +105,7 @@ sendRemoveRandomOutcome(){
 takeRemoveRandomOutcome(messageData){
     app.cancelModal=false;
     //app.clearMainFormErrors();
-    app.takeGetSession(messageData);   
+    //app.takeGetSession(messageData);   
     app.editRandomOutcomeModal.hide();
     window.location.reload();
 },
@@ -123,6 +123,6 @@ sendAddRandomOutcome(player_id){
 takeAddRandomOutcome(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
-    app.takeGetSession(messageData); 
+    //app.takeGetSession(messageData); 
     window.location.reload();
 },
