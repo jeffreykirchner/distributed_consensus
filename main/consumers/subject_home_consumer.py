@@ -327,6 +327,21 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         pass
     
+    async def update_next_period(self, event):
+        '''
+        update session period
+        '''
+
+        message_data = {}
+        message_data["status"] = event["data"]
+        message_data["status"]["result"]["current_choice"] = await sync_to_async(take_get_subject_current_choice)(self.session_player_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
     async def update_next_phase(self, event):
         '''
         update session phase
@@ -365,17 +380,29 @@ def take_get_session_subject(session_player_id):
     #uuid = data["uuid"]
 
     #session = Session.objects.get(id=session_id)
-    #try:
-    session_player = SessionPlayer.objects.get(id=session_player_id)
-    
-    return {"session" : session_player.session.json_for_subject(session_player), 
-            "session_player" : session_player.json(),
-            "current_choice" : session_player.json_current_choice() }
+    try:
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+        
+        return {"session" : session_player.session.json_for_subject(session_player), 
+                "session_player" : session_player.json(),
+                "current_choice" : session_player.json_current_choice() }
 
-    # except ObjectDoesNotExist:
-    #     return {"session" : None, 
-    #             "session_player" : None,
-    #             "current_choice" : None}
+    except ObjectDoesNotExist:
+        return {"session" : None, 
+                "session_player" : None,
+                "current_choice" : None}
+
+def take_get_subject_current_choice(session_player_id):
+    '''
+    return the current choice for session_player_id
+    '''
+    try:
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+        
+        return session_player.json_current_choice
+
+    except ObjectDoesNotExist:
+        return None
 
 def take_get_session_id(player_key):
     '''

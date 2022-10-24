@@ -93,6 +93,9 @@ var app = Vue.createApp({
                 case "choice":
                     app.takeChoice(messageData);
                     break;
+                case "update_next_period":
+                    app.takeNextPeriod(messageData);
+                    break;
                 
             }
 

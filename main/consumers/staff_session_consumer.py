@@ -503,14 +503,24 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_avatar(self, event):
-        '''
-        send update avatar notice to staff screens
-        '''
 
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        #check if all choices are in
+        result = await sync_to_async(take_check_all_choices_in)(self.session_id, event["message_text"])
+
+        if result["value"] == "success":
+
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_next_period",
+                     "data": result["status"],
+                     "sender_channel_name": self.channel_name},
+                )
+
+    async def update_next_period(self, event):
+        '''
+        update session period
+        '''
 
         message_data = {}
         message_data["status"] = event["data"]
@@ -917,3 +927,15 @@ def take_email_list(session_id, data):
     
     return {"value" : "success", "result" : {"session":session.json()}}
     
+def take_check_all_choices_in(session_id, data):
+    '''
+    check if all choices are in for current period
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    if v:=session.check_advance_period():
+        return {"value" : "success", 
+                "result" : {"current_index" : v}}
+
+    return {"value" : "fail", "result" : {}}

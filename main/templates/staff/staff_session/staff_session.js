@@ -145,7 +145,10 @@ var app = Vue.createApp({
                     app.takeUpdateEmailList(messageData);
                     break;
                 case "choice":
-                    
+                    app.takeChoice(messageData);
+                    break;
+                case "update_next_period":
+                    app.takeNextPeriod(messageData);
                     break;
             }
 

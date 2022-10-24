@@ -69,3 +69,12 @@ get_part_period(part_index, period_index){
     return app.session_player.session_player_parts[part_index]
                              .session_player_part_periods[period_index];
 },
+
+/** take advance to next period
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+takeNextPeriod(messageData){
+    result = messageData.status.result;
+    app.session.current_index = result.current_index;
+    app.current_choice = result.current_choice;
+},
