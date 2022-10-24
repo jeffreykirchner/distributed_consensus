@@ -231,7 +231,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_part_period"
+        message["messageType"] = "get_session"
         message["messageData"] = message_data
 
         # Send message to WebSocket
@@ -280,7 +280,7 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_labels_period"
+        message["messageType"] = "get_session"
         message["messageData"] = message_data
 
         # Send message to WebSocket

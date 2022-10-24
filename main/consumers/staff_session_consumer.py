@@ -505,7 +505,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
         #check if all choices are in
-        result = await sync_to_async(take_check_all_choices_in)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_check_all_choices_in)(self.session_id, {})
 
         if result["value"] == "success":
 
@@ -513,7 +513,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                     self.room_group_name,
                     {"type": "update_next_period",
-                     "data": result["status"],
+                     "data": result,
                      "sender_channel_name": self.channel_name},
                 )
 

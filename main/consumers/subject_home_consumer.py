@@ -399,7 +399,7 @@ def take_get_subject_current_choice(session_player_id):
     try:
         session_player = SessionPlayer.objects.get(id=session_player_id)
         
-        return session_player.json_current_choice
+        return session_player.json_current_choice()
 
     except ObjectDoesNotExist:
         return None

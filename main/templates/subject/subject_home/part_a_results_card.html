@@ -1,0 +1,18 @@
+
+<div class="card" v-if="first_load_done && session.started">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Your Results</span>           
+
+    </div>
+    <div class="card-body">      
+        <button class="btn btn-outline-success"
+            type="button"
+            title="Finished Reviewing Results"
+            v-bind:disabled="!session.started || reconnecting || working"
+            v-on:click="readyToGoOn()">
+            <span class="h5">
+               Ready to Go On                                                    
+            </span>
+        </button>
+    </div>                    
+</div> 

@@ -4,6 +4,8 @@ session part model
 
 #import logging
 
+from operator import truediv
+from tabnanny import verbose
 from django.db import models
 
 from main.models import Session
@@ -19,6 +21,9 @@ class SessionPart(models.Model):
     parameter_set_part = models.ForeignKey(ParameterSetPart, on_delete=models.CASCADE, related_name="session_parts_b", null=True, blank=True)
 
     current_session_part_period = models.ForeignKey('main.SessionPartPeriod', models.SET_NULL, blank=True, null=True, related_name="session_parts_c")
+
+    show_results = models.BooleanField(default=False, verbose_name="Shown results to subject")
+    
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -46,21 +51,29 @@ class SessionPart(models.Model):
         main.models.SessionPartPeriod.objects.bulk_create(session_part_periods)
 
         self.current_session_part_period = self.session_part_periods_a.first()
+        self.results_shown=False
+
         self.save()
         
     def advance_period(self):
         '''
         advance to next period
         '''
+
         if self.current_session_part_period.parameter_set_part_period.period_number==self.parameter_set_part.parameter_set.period_count:
             return False
 
         current_period_number = self.current_session_part_period.parameter_set_part_period.period_number
 
-        self.current_session_part_period.parameter_set_part_period = self.session_part_periods_a.filter(parameter_set_part_period__period_number=current_period_number+1)
+        self.current_session_part_period = self.session_part_periods_a.get(parameter_set_part_period__period_number=current_period_number+1)
         self.save()
 
         return True
+    
+    def calc_results(self):
+        '''
+        calculate results for this period
+        '''
 
 
     #return json object of class
@@ -82,5 +95,6 @@ class SessionPart(models.Model):
         return{
             "id" : self.id,
             "parameter_set_part" : self.parameter_set_part.json_for_subject(),
+            "show_results" : self.show_results,
         }
         

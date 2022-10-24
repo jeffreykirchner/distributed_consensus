@@ -21,6 +21,7 @@ class SessionPlayerPart(models.Model):
     parameter_set_player_part = models.ForeignKey(ParameterSetPlayerPart, on_delete=models.CASCADE, related_name="session_player_parts_c", null=True, blank=True)
 
     earnings = models.IntegerField(verbose_name='Part Earnings', default=0)        #earnings in cents this period
+    results_complete = models.BooleanField(default=False, verbose_name="Results Complete")
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -84,6 +85,7 @@ class SessionPlayerPart(models.Model):
         return{
             "id" : self.id,    
             "earnings" : self.earnings,
-            "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()]
+            "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()],
+            "results_complete" : self.results_complete,
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }

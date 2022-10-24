@@ -25,6 +25,7 @@ import main
 from main.models import ParameterSet
 
 from main.globals import ExperimentPhase
+from main.globals import PartModes
 
 #experiment sessoin
 class Session(models.Model):
@@ -213,9 +214,43 @@ class Session(models.Model):
             if c > 0:
                 return None
             else:
-                 if self.current_session_part.advance_period():
+                if self.current_session_part.advance_period():
                     return self.get_current_session_part_and_period_index()
+                elif self.advance_part():
+                    return self.get_current_session_part_and_period_index()                     
 
+    def advance_part(self):
+        '''
+        advance to the next session part
+        '''
+
+        if self.current_session_part.parameter_set_part.part_number==self.parameter_set.part_count:
+            if self.current_session_part.parameter_set_part.mode == PartModes.A:
+
+                if not self.show_results:
+                    self.show_results = True
+                    self.save()
+
+                    #calc and send Part A results
+
+                    return False
+                else:
+
+                    c = self.session_player_parts_a.filter(results_complete=False).count()
+
+                    if c > 0:
+                        return False
+                
+                return True
+            else:
+                return False
+
+        current_part_number = self.current_session_part.parameter_set_part.part_number
+
+        self.current_session_part = self.session_parts_a.get(parameter_set_part__part_number=current_part_number+1)
+        self.save()
+
+        return True
 
     def get_download_summary_csv(self):
         '''
@@ -296,7 +331,9 @@ class Session(models.Model):
             part_index = self.current_session_part.parameter_set_part.part_number-1
             period_index = self.current_session_part.current_session_part_period.parameter_set_part_period.period_number-1
          
-        return {"part_index" : part_index, "period_index" : period_index}
+        return {"part_index" : part_index, 
+                "period_index" : period_index,
+           }
 
     def json(self):
         '''
