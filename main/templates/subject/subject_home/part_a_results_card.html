@@ -5,14 +5,24 @@
 
     </div>
     <div class="card-body">      
-        <button class="btn btn-outline-success"
-            type="button"
-            title="Finished Reviewing Results"
-            v-bind:disabled="!session.started || reconnecting || working"
-            v-on:click="readyToGoOn()">
-            <span class="h5">
-               Ready to Go On                                                    
-            </span>
-        </button>
+
+        <!-- ready to go on -->
+        <div class="text-center text-success" v-if="session_player.session_player_parts[session.current_index.part_index].results_complete">
+            <span class="h5">Waiting for others.</span>
+        </div>
+
+        <div class="text-center" v-else>
+            <button class="btn btn-outline-success"
+                type="button"
+                title="Finished Reviewing Results"
+                v-bind:disabled="!session.started || reconnecting || working"
+                v-on:click="sendReadyToGoOn()">
+                <span class="h5">
+                Ready to Go On                                                    
+                </span>
+            </button>
+        </div>
+
+        
     </div>                    
 </div> 

@@ -595,6 +595,33 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_ready_to_go_on(self, event):
+        '''
+        check if all subjects are ready to go on
+        '''
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        #check if all choices are in
+        result = await sync_to_async(take_check_all_choices_in)(self.session_id, {})
+
+        if result["value"] == "success":
+
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_next_period",
+                     "data": result,
+                     "sender_channel_name": self.channel_name},
+                )
+
 #local async function
 
 #local sync functions    

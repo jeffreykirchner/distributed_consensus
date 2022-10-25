@@ -57,7 +57,7 @@ class ParameterSetPlayerPart(models.Model):
         message = "Parameters loaded successfully."
 
         return message
-
+    
     def json(self):
         '''
         return json object of model

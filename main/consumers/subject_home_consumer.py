@@ -23,6 +23,7 @@ from main.forms import EndGameForm
 from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
+from main.models import SessionPlayerPart
 from main.models import SessionPlayerPartPeriod
 from main.models import ParameterSetRandomOutcome
 
@@ -175,7 +176,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     
     async def finish_instructions(self, event):
         '''
-        fisish instructions
+        finish instructions
         '''
         result = await sync_to_async(take_finish_instructions)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
@@ -191,6 +192,28 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_finish_instructions",
+                 "data": result,
+                 "sender_channel_name": self.channel_name},
+            )
+    
+    async def ready_to_go_on(self, event):
+        '''
+        subject is finsihed reviewing results of part
+        '''
+        result = await sync_to_async(take_ready_to_go_on)(self.session_id, self.session_player_id, event["message_text"])
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        if result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_ready_to_go_on",
                  "data": result,
                  "sender_channel_name": self.channel_name},
             )
@@ -367,6 +390,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     async def update_finish_instructions(self, event):
         '''
         no group broadcast of avatar to current instruction
+        '''
+        pass
+    
+    async def update_ready_to_go_on(self, event):
+        '''
+        no group broadcast ready to go on
         '''
         pass
 
@@ -665,10 +694,37 @@ def take_finish_instructions(session_id, session_player_id, data):
 
     except ObjectDoesNotExist:
         logger.warning(f"take_next_instruction : {session_player_id}")
-        return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        return {"value" : "fail", "errors" : {}, "message" : "Error"}       
     
     return {"value" : "success",
             "result" : {"instructions_finished" : session_player.instructions_finished,
                         "id" : session_player_id,
                         "current_instruction_complete" : session_player.current_instruction_complete, 
                         }}
+
+def take_ready_to_go_on(session_id, session_player_id, data):
+    '''
+    take ready to go on
+    '''
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Take ready to go on: {session_id} {session_player_id} {data}")
+
+    data = data["data"]
+
+    message = ""
+    result = {"current_index" : data["current_index"]}
+
+    try:       
+        with transaction.atomic():
+            session_player_part = SessionPlayerPart.objects.get(id=data["player_part_id"])
+            session_player_part.results_complete = True
+            session_player_part.save()
+
+            result["session_player_part"] = session_player_part.json_for_subject()
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_ready_to_go_on : {session_player_id}")
+        return {"value" : "fail", "errors" : {}, "message" : "Error"}       
+    
+    return {"value" : "success", "errors" : {}, "message" : "", "result" : result}

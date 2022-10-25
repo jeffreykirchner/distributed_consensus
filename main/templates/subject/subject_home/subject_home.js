@@ -96,6 +96,9 @@ var app = Vue.createApp({
                 case "update_next_period":
                     app.takeNextPeriod(messageData);
                     break;
+                case "ready_to_go_on":
+                    app.takeReadyToGoOn(messageData);
+                    break;
                 
             }
 

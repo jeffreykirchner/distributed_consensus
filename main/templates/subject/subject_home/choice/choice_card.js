@@ -75,6 +75,44 @@ get_part_period(part_index, period_index){
 */
 takeNextPeriod(messageData){
     result = messageData.status.result;
-    app.session.current_index = result.current_index;
-    app.current_choice = result.current_choice;
+
+    if(messageData.status.value == "success")
+    {
+        app.session.current_index = result.current_index;
+        app.current_choice = result.current_choice;
+    }
+    else
+    {
+
+    }
+},
+
+sendReadyToGoOn(){
+
+    app.working = true;
+    current_index = app.session.current_index;
+    app.sendMessage("ready_to_go_on",
+                   {"data" : {player_part_id : app.session_player.session_player_parts[current_index.part_index].id,
+                              current_index : current_index
+                              }});
+},
+
+/** take ready to go on
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+takeReadyToGoOn(messageData){
+    if(messageData.status.value == "success")
+    {
+        result = messageData.status.result;
+
+        current_index = result.current_index;
+
+        player_part = app.session_player.session_player_parts[current_index.part_index];
+        player_part.results_complete = result.session_player_part.results_complete;
+        
+    }
+    else
+    {
+
+    }
 },

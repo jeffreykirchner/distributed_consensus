@@ -196,12 +196,17 @@ class SessionPlayer(models.Model):
         if not self.session.started:
             return {"id" : self.id,}
 
-        session_player_part_period = self.get_current_session_player_part().get_current_session_player_part_period()
+        session_player_part = self.get_current_session_player_part()
+
+        session_player_part_period = session_player_part.get_current_session_player_part_period()
 
         return{
             "id" : self.id,    
-            "session_player_part_period" : session_player_part_period.json_for_subject(),
-            "session_part" : self.session.current_session_part.json_for_subject(),           
+
+            #"session_player_part" : session_player_part.json_for_subject(),
+            "session_player_part_period" : session_player_part_period.json_for_subject(),            
+            "session_part" : self.session.current_session_part.json_for_subject(),   
+            "session_player_part_period_group" : session_player_part_period.get_group_labels(),    
         }
     
     def json_earning(self):

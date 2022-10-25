@@ -3,6 +3,7 @@ session model
 '''
 
 from datetime import datetime
+from operator import truediv
 from pickle import TRUE
 from tinymce.models import HTMLField
 
@@ -223,27 +224,28 @@ class Session(models.Model):
         '''
         advance to the next session part
         '''
+        #check that if part A show results
+        if self.current_session_part.parameter_set_part.mode == PartModes.A:
 
-        if self.current_session_part.parameter_set_part.part_number==self.parameter_set.part_count:
-            if self.current_session_part.parameter_set_part.mode == PartModes.A:
+            if not self.current_session_part.show_results:
+                self.current_session_part.show_results = True
+                self.current_session_part.save()
 
-                if not self.show_results:
-                    self.show_results = True
-                    self.save()
+                self.current_session_part.session_player_parts_a.all().update(results_complete=False)
 
-                    #calc and send Part A results
+                #calc and send Part A results
 
-                    return False
-                else:
-
-                    c = self.session_player_parts_a.filter(results_complete=False).count()
-
-                    if c > 0:
-                        return False
-                
                 return True
             else:
-                return False
+
+                c = self.current_session_part.session_player_parts_a.filter(results_complete=False).count()
+
+                if c > 0:
+                    return True
+
+        #check end game
+        if self.current_session_part.parameter_set_part.part_number==self.parameter_set.part_count:
+            pass           
 
         current_part_number = self.current_session_part.parameter_set_part.part_number
 

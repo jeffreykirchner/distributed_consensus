@@ -87,5 +87,6 @@ class SessionPlayerPart(models.Model):
             "earnings" : self.earnings,
             "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()],
             "results_complete" : self.results_complete,
+            "results" : {}
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }

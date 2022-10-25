@@ -1,0 +1,108 @@
+
+<div class="card" v-if="first_load_done && session.started">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Your Choice</span>            
+
+    </div>
+    <div class="card-body">      
+        <div class="row">          
+
+           <!-- signal -->
+           <div class="col-4 text-center">
+
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        <u>Step 1</u>:
+                    </div>
+                </div>
+
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        Everyone sees the same image:
+                    </div>
+                </div>
+
+                <!-- image -->
+                <div class="row">
+                    <div class="col">
+                        <img v-bind:src="'/static/' + current_choice.session_player_part_period.parameter_set_labels_period.label.image" 
+                             class="signal_image"/>
+                    </div>
+                </div>                
+           </div>
+
+            <!-- choice grid -->
+            <div class="col-8">
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        <u>Step 2</u>:
+                    </div>
+                </div>
+
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        Select one of the choices to report:                       
+                    </div>
+                </div>
+
+                <!-- choices -->
+                <div class="row">
+                    <div class="col text-center" v-if="!get_current_part_period().choice">
+
+                        <div class="row justify-content-center mt-4">
+                            <div v-for="(o, index) in session.parameter_set.parameter_set_random_outcomes"
+                                 class="col-auto text-center"
+                                 v-bind:id="'choice_grid_' + o.id"
+                                 v-on:click="take_choice_grid_click(o.id, index)" >                
+                                <img v-bind:src="'/static/' + o.image" 
+                                     class="choice_image rounded border-success border-2"
+                                     v-bind:class="{'border':index==get_current_part_period().current_outcome_index}"/>
+                                    
+                            </div>
+                        </div>
+                        
+                   </div>
+                   <div class="col text-center" v-else>
+                        <img v-bind:src="'/static/' + get_current_part_period().choice.image" 
+                            class="choice_image rounded border-success border-2 border"/>                            
+                   </div>
+                </div>
+
+
+                 <!-- text -->
+                <div class="row mt-4">
+                    <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">
+                        If all [[session.parameter_set.period_count]] of your choices in this part are in the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) every period you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
+                        If one or more of your choices is <u>not</u> in the majority in period you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].                
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+
+                    <div class="col text-center" v-if="!get_current_part_period().choice">
+                
+                        <button class="btn btn-outline-success"
+                            type="button"
+                            title="Report Choice"
+                            v-bind:disabled="!session.started || reconnecting || working || get_current_part_period().current_outcome_index == -1"
+                            v-on:click="sendchoice()">
+                            <span class="h5">
+                                Report [[get_current_part_period().current_outcome_id >-1 ? 
+                                         session.parameter_set.parameter_set_random_outcomes[get_current_part_period().current_outcome_index].name
+                                         : '---']]                                                    
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col text-center text-success" v-else>
+                        <span class="h5">Waiting for others.</span>
+                    </div>
+                </div>   
+
+            </div>
+        </div>
+    </div>                    
+</div> 
