@@ -5,10 +5,9 @@
 
     </div>
     <div class="card-body">      
-        <div class="row">          
-
-           <!-- signal -->
-           <div class="col-4 text-center">
+        <div class="row mb-4">
+             <!-- signal -->
+           <div class="col text-center">
 
                 <!-- text -->
                 <div class="row">
@@ -27,18 +26,64 @@
                 <!-- image -->
                 <div class="row">
                     <div class="col">
-                        <img v-bind:src="'/static/' + current_choice.session_player_part_period.parameter_set_labels_period.label.image" 
-                             class="signal_image"/>
+                        <img v-bind:src="'/static/' + current_choice.session_part_period.parameter_set_part_period.parameter_set_random_outcome.image" 
+                            class="signal_image"/>
                     </div>
                 </div>                
-           </div>
+            </div> 
 
-            <!-- choice grid -->
-            <div class="col-8">
+        </div>
+        <div class="row mb-4">          
+           
+           <!-- labels -->
+           <div class="col">
                 <!-- text -->
                 <div class="row">
                     <div class="col h5 text-center">
                         <u>Step 2</u>:
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col h5 text-center">
+                        We have assinged the following labels to your group members this period:
+                    </div>
+                </div>
+
+                <!-- choices -->
+                <div class="row">
+                    <div class="col text-center">
+
+                        <div class="row justify-content-center mt-4">
+                            <div v-for="(o, index) in current_choice.session_player_part_period_group"
+                                 class="col-auto text-center"
+                                 v-bind:id="'label_grid_' + o.parameter_set_labels_period.id">                                     
+                                 
+                                <div class="text-center h5">
+                                    Player [[o.id_label]] <span v-if="o.session_player_id==session_player.id">(You)</span>
+                                </div>
+                                 
+                                <img v-bind:src="'/static/' + o.parameter_set_labels_period.label.image" 
+                                     class="signal_image rounded border-warning border-2"
+                                     v-bind:class="{'border':o.session_player_id==session_player.id}"/>
+                                    
+                            </div>
+                        </div>
+                        
+                   </div>                   
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row">            
+             <!-- choice grid -->
+             <div class="col">
+                <!-- text -->
+                <div class="row">
+                    <div class="col h5 text-center">
+                        <u>Step 3</u>:
                     </div>
                 </div>
 
@@ -75,9 +120,10 @@
 
                  <!-- text -->
                 <div class="row mt-4">
-                    <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">
-                        If all [[session.parameter_set.period_count]] of your choices in this part are in the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) every period you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
-                        If one or more of your choices is <u>not</u> in the majority in period you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].                
+                    <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">                        
+                        If your assigned label from step 2 matches the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) choice from step 3 you earn $[[current_choice.session_part.parameter_set_part.pay_label_majority]].<br>
+                        If your assigned label from step 2 does <u>not</u> match the majority choice from step 3 you instead earn $[[current_choice.session_part.parameter_set_part.pay_label_minority]].<br><br>
+                        We will randomly pay you for 1 of the [[session.parameter_set.period_count]] periods in this part.
                     </div>
                 </div>
 

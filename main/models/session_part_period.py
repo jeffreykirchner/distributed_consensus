@@ -42,4 +42,14 @@ class SessionPartPeriod(models.Model):
             "id" : self.id,
             #"parameter_set_part_period" : self.parameter_set_part_period.json(),
         }
+    
+    def json_for_subject(self):
+        '''
+        json object of model
+        '''
+
+        return{
+            "id" : self.id,
+            "parameter_set_part_period" : self.parameter_set_part_period.json_for_subject(),
+        }
         

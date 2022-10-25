@@ -205,7 +205,8 @@ class SessionPlayer(models.Model):
 
             #"session_player_part" : session_player_part.json_for_subject(),
             "session_player_part_period" : session_player_part_period.json_for_subject(),            
-            "session_part" : self.session.current_session_part.json_for_subject(),   
+            "session_part" : self.session.current_session_part.json_for_subject(), 
+            "session_part_period" : self.session.current_session_part.current_session_part_period.json_for_subject(),   
             "session_player_part_period_group" : session_player_part_period.get_group_labels(),    
         }
     
