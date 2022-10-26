@@ -17,9 +17,9 @@ var app = Vue.createApp({
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
 
-                    session_player : null, 
+                    session_player : {}, 
                     session : null,
-                    current_choice : null,                    
+                    current_choice : {id:-1},                    
 
                     end_game_form_ids: {{end_game_form_ids|safe}},
 
@@ -166,7 +166,7 @@ var app = Vue.createApp({
                                 
                 if(this.session.current_experiment_phase != 'Instructions')
                 {
-                    app.updateChatDisplay();               
+                    //app.updateChatDisplay();               
                 }
             }
 

@@ -45,10 +45,9 @@
 {% block content %}
 
 <!-- modals -->
+{%include "subject/subject_home/summary/end_game_modal.html"%}
 
-
-<div v-if="session">
-
+<div v-if="current_choice.hasOwnProperty('session_part')">
 
     <!-- instructions -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
@@ -58,7 +57,7 @@
     </div>
 
     <!-- experiment -->
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-if="current_choice.hasOwnProperty('session_part') && session.current_experiment_phase == 'Run'">
         <div class="col-md-9">
             <div v-if="current_choice.session_part.parameter_set_part.mode=='A' && !current_choice.session_part.show_results">
                 {%include "subject/subject_home/choice_a_card.html"%}
@@ -96,6 +95,7 @@
     </div>
 
 </div>
+
 <div v-else>
     <div class="col text-end">
         <i class="fas fa-cog fa-spin fa-2x"></i>

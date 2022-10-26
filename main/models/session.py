@@ -140,7 +140,7 @@ class Session(models.Model):
         '''
         reset connection counts
         '''
-        self.session_players.all().update(connecting=False, connected_count=0)
+        self.session_players_a.all().update(connecting=False, connected_count=0)
     
     def get_current_session_period(self):
         '''
