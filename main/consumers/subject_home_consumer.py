@@ -466,7 +466,7 @@ def take_chat(session_id, session_player_id, data):
     session_player_chat = SessionPlayerChat()
 
     session_player_chat.session_player = session_player
-    session_player_chat.session_period = session.get_current_session_period()
+    session_player_chat.session_part = session.current_session_part
 
     if not session.started:
         return  {"value" : "fail", "result" : {"message" : "Session not started."}, }

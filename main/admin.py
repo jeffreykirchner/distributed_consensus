@@ -236,8 +236,8 @@ class SessionPlayerPartPeriodInline(admin.TabularInline):
     model = SessionPlayerPartPeriod
     can_delete = False   
     show_change_link = True
-    fields = ['choice', 'earnings']
-    readonly_fields = ('earnings',)
+    fields = ['choice']
+    #readonly_fields = ('',)
 
 @admin.register(SessionPlayerPart)
 class SessionPlayerPartAdmin(admin.ModelAdmin):
@@ -314,7 +314,7 @@ class SessionPartAdmin(admin.ModelAdmin):
        
     readonly_fields=['session', 'parameter_set_part']
     list_display = ['session', 'parameter_set_part']
-    fields = ['session', 'parameter_set_part']
+    fields = ['session', 'parameter_set_part', 'show_results']
     inlines = [
         SessionPartPeriodInline,
       ]

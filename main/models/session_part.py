@@ -5,8 +5,10 @@ session part model
 #import logging
 
 from operator import truediv
+from re import A
 from tabnanny import verbose
 from django.db import models
+from main.globals.sessions import PartModes
 
 from main.models import Session
 from main.models import ParameterSetPart
@@ -24,7 +26,6 @@ class SessionPart(models.Model):
 
     show_results = models.BooleanField(default=False, verbose_name="Shown results to subject")
     
-
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
 
@@ -74,7 +75,13 @@ class SessionPart(models.Model):
         '''
         calculate results for this period
         '''
+        if self.parameter_set_part.mode == main.globals.PartModes.A:
+            for i in self.session_part_periods_a.all():
+                i.paid = True
+                i.save()
 
+        for i in self.session_player_parts_a.all():
+            i.calc_majority_choice()
 
     #return json object of class
     def json(self):

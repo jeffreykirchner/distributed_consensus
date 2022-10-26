@@ -2,9 +2,10 @@
 session player part 
 '''
 
-#import logging
+import logging
 
 from django.db import models
+from django.db.models import Sum
 
 from main.models import SessionPlayer
 from main.models import SessionPart
@@ -76,6 +77,57 @@ class SessionPlayerPart(models.Model):
         return the current session player part period
         '''
         return self.session_player_part_periods_a.get(session_part_period=self.session_part.current_session_part_period)
+    
+    def calc_majority_choice(self):
+        '''
+        calc majority choice and earnings for this part
+        '''
+        logger = logging.getLogger(__name__)
+
+        #calc majority choice for group
+        for i in self.session_player_part_periods_a.all():
+            i.calc_majority_choice()
+        
+
+        #mode A payment
+        if self.session_part.parameter_set_part.mode == main.globals.PartModes.A:
+            fail = False
+            self.earnings = self.session_part.parameter_set_part.pay_choice_majority
+
+            for i in self.session_player_part_periods_a.all():
+                if i.majority_choice != i.choice:
+                    fail = True
+                    break
+
+            if fail:
+                self.earnings = self.session_part.parameter_set_part.pay_choice_minority
+
+        #mode B payment
+        elif self.session_part.parameter_set_part.mode == main.globals.PartModes.B:
+
+            self.earnings = 0
+            for i in self.session_player_part_periods_a.filter(session_part_period__paid=True):
+                if i.majority_choice == i.parameter_set_labels_period.label:
+                    self.earnings += self.session_part.parameter_set_part.pay_label_majority
+                else:
+                    self.earnings += self.session_part.parameter_set_part.pay_label_minority
+
+        #mode C payment
+        elif self.session_part.parameter_set_part.mode == main.globals.PartModes.B:
+            
+            self.earnings = 0
+            for i in self.session_player_part_periods_a.filter(session_part_period__paid=True):
+                if i.majority_choice == i.parameter_set_labels_period.label:
+                    self.earnings += self.session_part.parameter_set_part.pay_label_majority
+                else:
+                    self.earnings += self.session_part.parameter_set_part.pay_label_minority
+                
+                if i.majority_choice == i.choice:
+                    self.earnings += self.session_part.parameter_set_part.pay_choice_majority
+                else:
+                    self.earnings += self.session_part.parameter_set_part.pay_choice_minority
+
+        self.save()
         
     def json_for_subject(self):
         '''

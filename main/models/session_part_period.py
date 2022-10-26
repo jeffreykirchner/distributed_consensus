@@ -8,6 +8,7 @@ from django.db import models
 
 from main.models import SessionPart
 from main.models import ParameterSetPartPeriod
+from main.models import ParameterSetRandomOutcome
 
 import main
 
@@ -17,6 +18,8 @@ class SessionPartPeriod(models.Model):
     '''
     session_part = models.ForeignKey(SessionPart, on_delete=models.CASCADE, related_name="session_part_periods_a")
     parameter_set_part_period = models.ForeignKey(ParameterSetPartPeriod, on_delete=models.CASCADE, related_name="session_part_periods_b", null=True, blank=True)
+    
+    paid = models.BooleanField(default=False, verbose_name='Pay subjects for this period')              #true if subjects are paid for this period
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -50,6 +53,7 @@ class SessionPartPeriod(models.Model):
 
         return{
             "id" : self.id,
-            "parameter_set_part_period" : self.parameter_set_part_period.json_for_subject(),
+            "parameter_set_part_period" : self.parameter_set_part_period.json_for_subject(),       
+            "paid" : self.paid,     
         }
         
