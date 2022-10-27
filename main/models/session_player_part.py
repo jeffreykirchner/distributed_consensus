@@ -105,7 +105,7 @@ class SessionPlayerPart(models.Model):
         #mode B payment
         elif self.session_part.parameter_set_part.mode == main.globals.PartModes.B:
 
-            self.earnings = 0
+            self.earnings = 0            
             for i in self.session_player_part_periods_a.filter(session_part_period__paid=True):
                 if i.majority_choice == i.parameter_set_labels_period.label:
                     self.earnings += self.session_part.parameter_set_part.pay_label_majority
@@ -113,7 +113,7 @@ class SessionPlayerPart(models.Model):
                     self.earnings += self.session_part.parameter_set_part.pay_label_minority
 
         #mode C payment
-        elif self.session_part.parameter_set_part.mode == main.globals.PartModes.B:
+        elif self.session_part.parameter_set_part.mode == main.globals.PartModes.C:
             
             self.earnings = 0
             for i in self.session_player_part_periods_a.filter(session_part_period__paid=True):

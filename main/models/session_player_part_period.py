@@ -2,7 +2,7 @@
 session player period results
 '''
 
-#import logging
+import logging
 
 from django.db import models
 
@@ -29,8 +29,7 @@ class SessionPlayerPartPeriod(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"ID: {self.session_player_part.session_player} \
-                 , Period {self.parameter_set_labels_period.period_number}"
+        return f"ID:{self.session_player_part.session_player}, Part:{self.session_player_part}, Period:{self.parameter_set_labels_period.period_number}"
 
     class Meta:
         
@@ -66,6 +65,8 @@ class SessionPlayerPartPeriod(models.Model):
         '''
         calc majority choice for this period
         '''
+        logger = logging.getLogger(__name__)
+
         random_outcomes = self.parameter_set_labels_period.parameter_set_labels.parameter_set.parameter_set_random_outcomes.all()
         random_outcome_counts = []
 
@@ -77,6 +78,8 @@ class SessionPlayerPartPeriod(models.Model):
             random_outcome_counts.append(v)
         
         random_outcome_counts_sorted = sorted(random_outcome_counts, key=lambda d: d['sum'], reverse=True) 
+
+        #logger.info(f'Player:{self.session_player_part.session_player.parameter_set_player.id_label}, random_outcome_counts_sorted: {random_outcome_counts_sorted}')
 
         if random_outcome_counts_sorted[0]['sum'] >= self.session_part_period.session_part.parameter_set_part.minimum_for_majority:
             self.majority_choice = random_outcome_counts_sorted[0]['random_outcome']

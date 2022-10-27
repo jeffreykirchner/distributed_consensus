@@ -30,7 +30,7 @@ class SessionPart(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.parameter_set_part}"
 
     class Meta:
         constraints = [
