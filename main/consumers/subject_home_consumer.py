@@ -399,7 +399,20 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         pass
 
+    async def update_final_results(self, event):
+        '''
+        send final results
+        '''
 
+        message_data = {}
+        message_data["status"] = {"value":"success", 
+                                  "result": await sync_to_async(take_get_session_subject)(self.session_player_id)}
+
+        message = {}
+        message["messageType"] = "final_results"
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''

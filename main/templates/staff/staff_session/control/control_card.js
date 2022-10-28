@@ -286,3 +286,20 @@ take_payment_periods(messageData){
         this.payment_periods_result = messageData.status.message;
     } 
 },
+
+/** take final result
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+takeFinalResults(messageData){
+    if(messageData.status.value == "success")
+    {
+        result = messageData.status.result;        
+        app.session = result.session;
+        app.paymentPeriodsModal.hide();
+        this.payment_periods_result = "";
+    }
+    else
+    {
+
+    }
+},

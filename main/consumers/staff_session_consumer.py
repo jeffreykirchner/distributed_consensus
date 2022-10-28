@@ -388,7 +388,17 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        # Send message to WebSocket
+        if message_data["status"]["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        else:
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_final_results",
+                     "data": message_data["status"],
+                     "sender_channel_name": self.channel_name},
+                )
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -637,6 +647,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "data": result,
                      "sender_channel_name": self.channel_name},
                 )
+
+    async def update_final_results(self, event):
+        '''
+        send final results
+        '''
+
+        message_data = {"status":{"value":"success",
+                                  "result":{"session" : await sync_to_async(take_get_session)(self.connection_uuid)}
+                                 }}
+        message = {}
+        message["messageType"] = "final_results"
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
 #local sync functions    
 def take_get_session(session_key):
@@ -1023,6 +1047,9 @@ def take_payment_periods(session_id, data):
     #calc results
     for i in session.session_parts_a.exclude(parameter_set_part__mode=PartModes.A):
         i.calc_results()
+
+    session.current_experiment_phase = ExperimentPhase.RESULTS
+    session.save()
            
     return {"value" : "success", 
             "result" : {}}

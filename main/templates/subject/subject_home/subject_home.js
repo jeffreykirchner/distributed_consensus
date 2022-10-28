@@ -99,6 +99,9 @@ var app = Vue.createApp({
                 case "ready_to_go_on":
                     app.takeReadyToGoOn(messageData);
                     break;
+                case "final_results":
+                    app.takeFinalResults(messageData);
+                    break;
                 
             }
 
@@ -272,6 +275,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/test_mode/test_mode.js"%}
         {%include "subject/subject_home/instructions/instructions_card.js"%}
         {%include "subject/subject_home/choice/choice_card.js"%}
+        {%include "subject/subject_home/results/results_card.js"%}
     
         /** clear form error messages
         */

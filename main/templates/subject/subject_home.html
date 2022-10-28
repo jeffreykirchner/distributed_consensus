@@ -90,11 +90,7 @@
 
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Results'">
         <div class="col-12 fs-4 fw-bold text-center">
-            <br>
-            <br>
-            <br>
-            <br>
-            Please wait while we calculate the results.              
+            {%include "subject/subject_home/final_results_card.html"%}
         </div>    
     </div>
 

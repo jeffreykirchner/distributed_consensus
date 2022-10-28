@@ -155,6 +155,9 @@ var app = Vue.createApp({
                 case "payment_periods":
                     app.take_payment_periods(messageData);
                     break;
+                case "final_results":
+                    app.takeFinalResults(messageData);
+                    break;
             }
 
             this.first_load_done = true;
