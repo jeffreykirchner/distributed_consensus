@@ -963,6 +963,8 @@ def take_check_all_choices_in(session_id, data):
 
     if v:=session.check_advance_period():
         return {"value" : "success", 
-                "result" : {"current_index" : v}}
+                "result" : {"current_index" : v,
+                            "current_experiment_phase":session.current_experiment_phase,
+                            }}
 
     return {"value" : "fail", "result" : {}}

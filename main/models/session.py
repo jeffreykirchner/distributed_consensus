@@ -236,7 +236,9 @@ class Session(models.Model):
 
         #check end game
         if self.current_session_part.parameter_set_part.part_number==self.parameter_set.part_count:
-            pass           
+            self.current_experiment_phase = ExperimentPhase.PAY
+            self.save()
+            return True         
 
         current_part_number = self.current_session_part.parameter_set_part.part_number
 
@@ -379,6 +381,7 @@ class Session(models.Model):
             "session_players":[i.json(False) for i in self.session_players_a.all()],
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
+            "current_index" : self.get_current_session_part_and_period_index(),
         }
     
     def json_for_subject(self, session_player):

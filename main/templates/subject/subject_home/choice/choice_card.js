@@ -79,6 +79,7 @@ takeNextPeriod(messageData){
     if(messageData.status.value == "success")
     {
         app.session.current_index = result.current_index;
+        app.session.current_experiment_phase = result.current_experiment_phase;
         app.current_choice = result.current_choice;
     }
     else

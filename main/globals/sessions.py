@@ -20,6 +20,8 @@ class ExperimentPhase(models.TextChoices):
     '''
     INSTRUCTIONS = 'Instructions', _('Instructions')
     RUN = 'Run', _('Run')
+    PAY = 'Pay', _('Pay')
+    RESULTS = 'Results', _('Results')
     DONE = 'Done', _('Done')
 
 class PartModes(models.TextChoices):
