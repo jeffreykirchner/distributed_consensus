@@ -91,7 +91,7 @@ class SessionPart(models.Model):
 
         return{
             "id" : self.id,
-            #"parameter_set_part" : self.parameter_set_part.json(),
+            "parameter_set_part" : self.parameter_set_part.json(),
         }
     
     def json_for_subject(self):

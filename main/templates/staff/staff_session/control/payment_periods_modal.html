@@ -1,0 +1,42 @@
+{% load crispy_forms_tags %}
+<div class="modal fade" id="paymentPeriodsModal" tabindex="-1" aria-labelledby="paymentPeriodsModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Payment Periods</h5>                
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div v-for="(s, index) in session.session_parts"  v-bind:key="s.id">
+                    <div v-if="s.parameter_set_part.mode != 'A'" class="mb-4">
+                        <label v-bind:for="'payment_input_' + s.id">Part [[s.parameter_set_part.part_number]]</label>
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="Period(s) Paid" 
+                               aria-label="Payment Period" 
+                               v-bind:id="'payment_input_' + s.id">
+                               
+                    </div>
+                </div>
+                
+                <div class="text-center text-muted mb-4">
+                    Separate periods with commas.
+                </div>
+
+                <div class="text-center text-danger" v-show="payment_periods_result != ''">
+                    Error: [[payment_periods_result]]
+                </div>
+                
+            </div>
+            <div class="modal-footer">                                          
+                <button type="button" 
+                        title="Send payment periods."
+                        class="btn btn-outline-success" 
+                        v-on:click = "send_payment_periods()" 
+                        v-bind:disabled = "reconnecting || working">                        
+                    Send <i class="fas fa-share-square"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -36,6 +36,8 @@ var app = Vue.createApp({
                     emailDefaultSubject : "{{parameters.invitation_subject}}",
                     emailDefaultText : `{{parameters.invitation_text|safe}}`,
 
+                    payment_periods_result : "",       //result from upload payment periods
+
                     csv_email_list : "",           //csv email list
 
                     //modals
@@ -150,6 +152,9 @@ var app = Vue.createApp({
                 case "update_next_period":
                     app.takeNextPeriod(messageData);
                     break;
+                case "payment_periods":
+                    app.take_payment_periods(messageData);
+                    break;
             }
 
             this.first_load_done = true;
@@ -178,6 +183,7 @@ var app = Vue.createApp({
              app.editSessionModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editSessionModal'), {keyboard: false})            
              app.sendMessageModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sendMessageModal'), {keyboard: false})            
              app.uploadEmailModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadEmailModal'), {keyboard: false})
+             app.paymentPeriodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('paymentPeriodsModal'), {keyboard: false})
  
              document.getElementById('editSubjectModal').addEventListener('hidden.bs.modal', app.hideEditSubject);
              document.getElementById('editSessionModal').addEventListener('hidden.bs.modal', app.hideEditSession);
@@ -216,34 +222,6 @@ var app = Vue.createApp({
             
             app.updateChatDisplay();
             app.updatePhaseButtonText();    
-        },
-
-        /**update text of move on button based on current state
-         */
-        updatePhaseButtonText(){
-            if(this.session.finished && this.session.current_experiment_phase == "Done")
-            {
-                this.move_to_next_phase_text = '** Experiment complete **';
-            }
-            else if(this.session.finished && this.session.current_experiment_phase != "Done")
-            {
-                this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
-            }
-            else if(this.session.current_experiment_phase == "Run")
-            {
-                this.move_to_next_phase_text = 'Running ...';
-            }
-            else if(this.session.started && !this.session.finished)
-            {
-                if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
-                {
-                    this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
-                }
-                else
-                {
-                    this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
-                }
-            }
         },
 
         /** take updated data from goods being moved by another player
@@ -308,6 +286,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
+        {%include "staff/staff_session/status/status_card.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

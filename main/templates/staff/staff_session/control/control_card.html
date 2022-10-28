@@ -9,6 +9,7 @@
         </span>
         
     </div>
+
     <div class="card-body"> 
 
         <!-- start button -->
@@ -52,7 +53,7 @@
         </div>
 
         <!-- next experiment phase -->
-        <div class="row mt-2" v-show="(session.started && session.current_experiment_phase!='Run') || (session.finished)">
+        <div class="row mt-2" v-show="(session.started && session.current_experiment_phase!='Run' && session.current_experiment_phase!='Pay') || (session.finished)">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-primary"
@@ -60,6 +61,19 @@
                         title="Move to next phase"
                         v-bind:disabled="reconnecting || working || session.current_experiment_phase=='Done'">
                     <span v-html="move_to_next_phase_text"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- select payment periods -->
+        <div class="row mt-2" v-show="session.current_experiment_phase =='Pay'">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "show_payment_modal()"
+                        title="Show Payment"
+                        v-bind:disabled="reconnecting || working">
+                    Choose Pay Periods <i class="fas fa-dice"></i>
                 </button>
             </div>
         </div>

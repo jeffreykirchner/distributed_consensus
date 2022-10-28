@@ -78,6 +78,26 @@
         </div>
     </div>
 
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Pay'">
+        <div class="col-12 fs-4 fw-bold text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            Please wait while we calculate the results.              
+        </div>    
+    </div>
+
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Results'">
+        <div class="col-12 fs-4 fw-bold text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            Please wait while we calculate the results.              
+        </div>    
+    </div>
+
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
         <div class="col-12 fs-4 fw-bold text-center">
             <br>

@@ -19,10 +19,18 @@
         </div>
         <div class="row">
             <div class="col text-end pe-1">
+                Current Part:
+            </div>
+            <div class="col text-start ps-1">
+                [[session.current_index.part_index+1]] of [[session.parameter_set.part_count]]
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col text-end pe-1">
                 Current Period:
             </div>
             <div class="col text-start ps-1">
-                [[session.current_period]] of [[session.parameter_set.period_count]]
+                [[session.current_index.period_index+1]] of [[session.parameter_set.period_count]]
             </div>
         </div>  
         <div class="row">

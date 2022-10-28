@@ -1,3 +1,31 @@
+/**update text of move on button based on current state
+         */
+ updatePhaseButtonText(){
+    if(this.session.finished && this.session.current_experiment_phase == "Done")
+    {
+        this.move_to_next_phase_text = '** Experiment complete **';
+    }
+    else if(this.session.finished && this.session.current_experiment_phase != "Done")
+    {
+        this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+    }
+    else if(this.session.current_experiment_phase == "Run")
+    {
+        this.move_to_next_phase_text = 'Running ...';
+    }
+    else if(this.session.started && !this.session.finished)
+    {
+        if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
+        {
+            this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
+        }
+        else
+        {
+            this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
+        }
+    }
+},
+
 /**start the experiment
 */
 start_experiment(){
@@ -210,4 +238,51 @@ fillDefaultInvitation(){
     this.sendMessageModalForm.subject = this.emailDefaultSubject;
     
     tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
+},
+
+/** show edit subject modal
+*/
+show_payment_modal(){
+    
+    app.paymentPeriodsModal.toggle();
+},
+
+/** show edit subject modal
+*/
+send_payment_periods(){
+
+    if (!confirm('Send Payment Periods?')) {
+        return;
+    }
+
+    payment_periods = [];
+
+    for(let i=0;i<app.session.session_parts.length;i++)
+    {
+        if(app.session.session_parts[i].parameter_set_part.mode != 'A')
+        {
+            session_part = app.session.session_parts[i];
+            value = document.getElementById('payment_input_' + session_part.id).value;
+            v = {id:session_part.id, periods: value};
+            payment_periods.push(v);
+        }
+    }
+
+    app.working = true;
+    app.sendMessage("payment_periods", {payment_periods:payment_periods});
+},
+
+/** show edit subject modal
+*/
+take_payment_periods(messageData){
+
+    if(messageData.status.value == "success")
+    {           
+        app.paymentPeriodsModal.hide();
+        this.payment_periods_result = "";
+    } 
+    else
+    {
+        this.payment_periods_result = messageData.status.message;
+    } 
 },

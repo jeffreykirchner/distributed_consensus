@@ -21,6 +21,7 @@ from main.consumers import StaffSubjectUpdateMixin
 
 from main.forms import SessionForm
 from main.forms import StaffEditNameEtcForm
+from main.globals.sessions import PartModes
 
 from main.models import Session
 from main.models import Parameters
@@ -28,6 +29,7 @@ from main.models import Parameters
 from main.globals import send_mass_email_service
 from main.globals import ExperimentPhase
 
+import main
 class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
@@ -374,6 +376,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def payment_periods(self, event):
+        '''
+        take payment periods
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_payment_periods)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
     #consumer updates
     async def update_start_experiment(self, event):
         '''
@@ -622,8 +638,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "sender_channel_name": self.channel_name},
                 )
 
-#local async function
-
 #local sync functions    
 def take_get_session(session_key):
     '''
@@ -633,12 +647,12 @@ def take_get_session(session_key):
     session = None
     logger = logging.getLogger(__name__)
 
-    # try:        
-    session = Session.objects.get(session_key=session_key)
-    return session.json_min()
-    # except ObjectDoesNotExist:
-    #     logger.warning(f"staff get_session session, not found: {session_key}")
-    #     return {}
+    try:        
+        session = Session.objects.get(session_key=session_key)
+        return session.json_min()
+    except ObjectDoesNotExist:
+         logger.warning(f"staff get_session session, not found: {session_key}")
+         return {}
 
 def take_update_session_form(session_id, data):
     '''
@@ -929,7 +943,7 @@ def take_email_list(session_id, data):
     try:        
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_send_invitations session, not found: {session_id}")
+        logger.warning(f"take_send_invitations session not found: {session_id}")
         return {"status":"fail", "result":"session not found"}
     
     raw_list = data["csv_data"]
@@ -968,3 +982,47 @@ def take_check_all_choices_in(session_id, data):
                             }}
 
     return {"value" : "fail", "result" : {}}
+
+def take_payment_periods(session_id, data):
+    '''
+    take payment periods
+    '''
+    logger = logging.getLogger(__name__)
+    logger.info(f'take_payment_periods: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_payment_periods session not found: {session_id}")
+        return {"status":"fail", 
+                "message":"Session not found",
+                "result":{}}
+
+    #store paid periods
+    try:
+        payment_periods = data["payment_periods"]
+
+        for p in payment_periods:
+            session_part = session.session_parts_a.get(id=p['id'])
+            
+            main.models.SessionPartPeriod.objects.filter(session_part=session_part).update(paid=False)
+
+            periods=p['periods'].split(",")
+
+            for i in periods:
+                session_part_period = session_part.session_part_periods_a.get(parameter_set_part_period__period_number=int(i.strip()))
+                session_part_period.paid = True
+                session_part_period.save()           
+
+    except Exception  as e:
+        logger.warning(f"take_payment_periods error: {e}")
+        return {"status":"fail", 
+                "message":"Invalid Entry",
+                "result" : {}}
+    
+    #calc results
+    for i in session.session_parts_a.exclude(parameter_set_part__mode=PartModes.A):
+        i.calc_results()
+           
+    return {"value" : "success", 
+            "result" : {}}

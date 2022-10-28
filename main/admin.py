@@ -306,7 +306,7 @@ class SessionPartPeriodInline(admin.TabularInline):
     model = SessionPartPeriod
     can_delete = False   
     show_change_link = True
-    fields = ['session_part', 'parameter_set_part_period']
+    fields = ['session_part', 'parameter_set_part_period', 'paid']
     readonly_fields = ('session_part', 'parameter_set_part_period')
 
 @admin.register(SessionPart)
@@ -336,7 +336,7 @@ class SessionAdmin(admin.ModelAdmin):
     
     readonly_fields=['parameter_set', 'current_session_part']
     list_display = ['title', 'creator']
-    fields = ['parameter_set', 'creator', 'collaborators', 'current_session_part','title','shared','locked']
+    fields = ['parameter_set', 'creator', 'collaborators', 'current_session_part', 'title','current_experiment_phase','shared','locked',]
 
     inlines = [
       SessionPlayerInline,  
