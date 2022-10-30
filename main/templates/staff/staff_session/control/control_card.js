@@ -5,9 +5,13 @@
     {
         this.move_to_next_phase_text = '** Experiment complete **';
     }
-    else if(this.session.current_experiment_phase == "Results")
+    else if(this.session.current_experiment_phase == "Names")
     {
         this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+    }
+    else if(this.session.current_experiment_phase == "Results")
+    {
+        this.move_to_next_phase_text = 'Enter Names <i class="far fa-address-card"></i>';
     }
     else if(this.session.current_experiment_phase == "Run")
     {
@@ -114,6 +118,7 @@ next_experiment_phase(){
 takeNextPhase(messageData){
     
     app.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    app.session.finished = messageData.status.finished;
     app.updatePhaseButtonText();
 
 },
@@ -124,6 +129,7 @@ takeNextPhase(messageData){
 takeUpdateNextPhase(messageData){
     
     app.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    app.session.finished = messageData.status.finished;
     app.updatePhaseButtonText();
 },
 

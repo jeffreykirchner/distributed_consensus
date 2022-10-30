@@ -370,10 +370,10 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update session phase
         '''
 
-        result = await sync_to_async(take_update_next_phase)(self.session_id, self.session_player_id)
+        # result = await sync_to_async(take_update_next_phase)(self.session_id, self.session_player_id)
 
         message_data = {}
-        message_data["status"] = result
+        message_data["status"] = event["data"]
 
         message = {}
         message["messageType"] = event["type"]

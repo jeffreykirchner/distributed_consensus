@@ -133,7 +133,7 @@ var app = Vue.createApp({
              {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
-            if(app.session.finished)
+            if(app.session.current_experiment_phase == 'Names')
             {
                 this.showEndGameModal();
             }
@@ -211,20 +211,7 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            this.session.started = result.started;
-            this.session.current_period = result.current_period;
             this.session.time_remaining = result.time_remaining;
-            this.session.timer_running = result.timer_running;
-            this.session.finished = result.finished;
-
-            //update subject earnings
-            this.session_player.earnings = result.session_player_earnings.earnings;
-
-            //session complete
-            if(app.session.finished)
-            {
-                this.showEndGameModal();
-            }            
         },
 
         /**
@@ -250,13 +237,16 @@ var app = Vue.createApp({
          * @param messageData {json}
         */
         takeUpdateNextPhase(messageData){
-            app.endGameModal.hide();
 
-            this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
-            this.session.session_players = messageData.status.session_players;
-            this.session_player = messageData.status.session_player;
+            app.session.current_experiment_phase = messageData.status.current_experiment_phase;
+            app.session.finished = messageData.status.finished;
 
-            app.updateChatDisplay();          
+            app.updateChatDisplay();    
+            
+            if(app.session.current_experiment_phase == 'Names')
+            {
+                this.showEndGameModal();
+            }
         },
 
         /** hide choice grid modal modal

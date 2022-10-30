@@ -781,6 +781,9 @@ def take_next_phase(session_id, data):
         session.current_experiment_phase = ExperimentPhase.RUN
 
     elif session.current_experiment_phase == ExperimentPhase.RESULTS:
+        session.current_experiment_phase = ExperimentPhase.NAMES
+
+    elif session.current_experiment_phase == ExperimentPhase.NAMES:
         session.current_experiment_phase = ExperimentPhase.DONE
         session.finished = True
 
@@ -790,6 +793,7 @@ def take_next_phase(session_id, data):
     
     return {"value" : status,
             "current_experiment_phase" : session.current_experiment_phase,
+            "finished" : session.finished,
             }
 
 def take_start_timer(session_id, data):

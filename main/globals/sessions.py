@@ -22,6 +22,7 @@ class ExperimentPhase(models.TextChoices):
     RUN = 'Run', _('Run')
     PAY = 'Pay', _('Pay')
     RESULTS = 'Results', _('Results')
+    NAMES = 'Names', _('Names')
     DONE = 'Done', _('Done')
 
 class PartModes(models.TextChoices):
