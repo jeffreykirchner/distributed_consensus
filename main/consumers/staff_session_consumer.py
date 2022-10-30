@@ -166,7 +166,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                     self.room_group_name,
                     {"type": "update_next_phase",
-                    "data": message_data["status"],
+                     "data": message_data["status"],
                      "sender_channel_name": self.channel_name},
                 )
 
@@ -780,7 +780,7 @@ def take_next_phase(session_id, data):
     if session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
         session.current_experiment_phase = ExperimentPhase.RUN
 
-    elif session.current_experiment_phase == ExperimentPhase.RUN:
+    elif session.current_experiment_phase == ExperimentPhase.RESULTS:
         session.current_experiment_phase = ExperimentPhase.DONE
         session.finished = True
 

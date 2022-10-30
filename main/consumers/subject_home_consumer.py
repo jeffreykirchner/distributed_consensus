@@ -568,7 +568,7 @@ def take_name(session_id, session_player_id, data):
     #     return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
     
     session = Session.objects.get(id=session_id)
-    session_player = session.session_players.get(id=session_player_id)
+    session_player = session.session_players_a.get(id=session_player_id)
 
     if not session.finished:
         return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
@@ -640,8 +640,7 @@ def take_update_next_phase(session_id, session_player_id):
 
         return {"value" : "success",
                 "session" : session_player.session.json_for_subject(session_player),
-                "session_player" : session_player.json(),
-                "session_players" : [p.json_for_subject(session_player) for p in session.session_players.all()]}
+                "session_player" : session_player.json()}
 
     except ObjectDoesNotExist:
         logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")
