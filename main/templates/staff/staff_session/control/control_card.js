@@ -17,17 +17,21 @@
     {
         this.move_to_next_phase_text = 'Running ...';
     }
-    else if(this.session.started && !this.session.finished)
+    else if(this.session.current_experiment_phase == "Instructions")
     {
-        if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
-        {
-            this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
-        }
-        else
-        {
-            this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
-        }
+        this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
     }
+    // else if(this.session.started && !this.session.finished)
+    // {
+    //     if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
+    //     {
+    //         this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
+    //     }
+    //     else
+    //     {
+    //         this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
+    //     }
+    // }
 },
 
 /**start the experiment
@@ -284,8 +288,12 @@ take_payment_periods(messageData){
 
     if(messageData.status.value == "success")
     {           
+        result = messageData.status.result;
+
         app.paymentPeriodsModal.hide();
         this.payment_periods_result = "";
+        app.session = result.session;
+        app.updatePhaseButtonText();
     } 
     else
     {
@@ -303,6 +311,7 @@ takeFinalResults(messageData){
         app.session = result.session;
         app.paymentPeriodsModal.hide();
         this.payment_periods_result = "";
+        app.updatePhaseButtonText();
     }
     else
     {

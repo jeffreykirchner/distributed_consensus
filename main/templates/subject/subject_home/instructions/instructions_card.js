@@ -1,19 +1,24 @@
-
 /**
  * Given the page number return the requested instruction text
  * @param pageNumber : int
  */
-getInstructionPage(pageNumber){
+getInstructionPage(){
 
-    for(i=0;i<this.instruction_pages.length;i++)
-    {
-        if(this.instruction_pages[i].page_number==pageNumber)
-        {
-            return this.instruction_pages[i].text_html;
-        }
-    }
+    part_index = app.session.current_index.part_index;
 
-    return "Text not found";
+    return app.instruction_pages[part_index][app.get_instruction_page_index()].text_html
+},
+
+get_instruction_page_index(){
+    return app.get_current_session_player_part().current_instruction;
+},
+
+get_current_session_player_part(){
+    return app.session_player.session_player_parts[app.session.current_index.part_index];
+},
+
+get_current_number_of_instruction_pages(){
+    return app.instruction_pages[app.session.current_index.part_index].length;
 },
 
 /**
@@ -34,9 +39,11 @@ takeNextInstruction(messageData){
     if(messageData.status.value == "success")
     {
         result = messageData.status.result;       
+
+        session_player_part = this.session_player.session_player_parts[app.session.current_index.part_index];
         
-        this.session_player.current_instruction = result.current_instruction;
-        this.session_player.current_instruction_complete = result.current_instruction_complete;
+        session_player_part.current_instruction = result.current_instruction;
+        session_player_part.current_instruction_complete = result.current_instruction_complete;
 
         this.processInstructionPage();
         this.instructionDisplayScroll();
@@ -66,9 +73,11 @@ takeFinishInstructions(messageData){
     if(messageData.status.value == "success")
     {
         result = messageData.status.result;       
+
+        session_player_part = this.session_player.session_player_parts[app.session.current_index.part_index];
         
-        this.session_player.instructions_finished = result.instructions_finished;
-        this.session_player.current_instruction_complete = result.current_instruction_complete;
+        session_player_part.instructions_finished = result.instructions_finished;
+        session_player_part.current_instruction_complete = result.current_instruction_complete;
     } 
     else
     {
@@ -82,27 +91,29 @@ takeFinishInstructions(messageData){
 processInstructionPage(){
 
     //update view when instructions changes
-    switch(this.session_player.current_instruction){
-        case 1:            
-            break; 
-        case 2:
-            break;
-        case 3:            
-            break;
-        case 4:
-            break; 
-        case 5:           
-            break;
-        case 6:
-            break;
-    }
+    // switch(this.session_player.current_instruction){
+    //     case 1:            
+    //         break; 
+    //     case 2:
+    //         break;
+    //     case 3:            
+    //         break;
+    //     case 4:
+    //         break; 
+    //     case 5:           
+    //         break;
+    //     case 6:
+    //         break;
+    // }
 
-    if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
+    session_player_part = this.session_player.session_player_parts[app.session.current_index.part_index];
+
+    if(session_player_part.current_instruction_complete < session_player_part.current_instruction)
     {
-        this.session_player.current_instruction_complete = this.session_player.current_instruction;
+        session_player_part.current_instruction_complete = session_player_part.current_instruction;
     }
 
-        
+    app.instructionDisplayScroll();    
 },
 
 /**

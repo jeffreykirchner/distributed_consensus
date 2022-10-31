@@ -11,6 +11,7 @@ from django.db.utils import IntegrityError
 from main.globals import PartModes
 
 from main.models import ParameterSet
+from main.models import InstructionSet
 
 import main
 
@@ -19,6 +20,7 @@ class ParameterSetPart(models.Model):
     parameter set part
     '''    
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_parts")
+    instruction_set = models.ForeignKey(InstructionSet, on_delete=models.CASCADE, related_name="parameter_set_parts_b")
 
     mode = models.CharField(max_length=100, choices=PartModes.choices, default=PartModes.A)
     part_number = models.IntegerField(verbose_name='Part Number', default=0)
@@ -58,6 +60,7 @@ class ParameterSetPart(models.Model):
             self.pay_choice_minority = new_ps.get("pay_choice_minority")
             self.pay_label_majority = new_ps.get("pay_label_majority")
             self.pay_label_minority = new_ps.get("pay_label_minority")
+            self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
 
             #parameter_set_part_periods
             new_parameter_set_part_periods = new_ps.get("parameter_set_part_periods")
@@ -118,6 +121,7 @@ class ParameterSetPart(models.Model):
             "pay_choice_minority" : self.pay_choice_minority,
             "pay_label_majority" : self.pay_label_majority,
             "pay_label_minority" : self.pay_label_minority,
+            "instruction_set" : self.instruction_set.json_min(),
         }
     
     def json_for_subject(self):
@@ -133,5 +137,6 @@ class ParameterSetPart(models.Model):
             "pay_choice_minority" : self.pay_choice_minority,
             "pay_label_majority" : self.pay_label_majority,
             "pay_label_minority" : self.pay_label_minority,
+            "instruction_set" : self.instruction_set.json_min(),
         }
 

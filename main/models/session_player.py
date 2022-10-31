@@ -39,10 +39,6 @@ class SessionPlayer(models.Model):
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
     name_submitted = models.BooleanField(default=False, verbose_name='Name submitted')                  #true if subject has submitted name and student id
 
-    current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
-    current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
-    instructions_finished = models.BooleanField(verbose_name='Instructions Finished', default=False)             #true once subject has completed instructions
-
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -104,11 +100,13 @@ class SessionPlayer(models.Model):
         return a proccessed list of instructions to the subject
         '''
 
-        instructions = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
+        instructions = []
+        for p in self.parameter_set_player.parameter_set.parameter_set_parts.all():
+            instructions.append([i.json() for i in p.instruction_set.instructions.all()])
  
-        for i in instructions:
-            i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
-            i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
+            for i in instructions[p.part_number-1]:
+                i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
+                i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
 
         return instructions
     
@@ -147,12 +145,7 @@ class SessionPlayer(models.Model):
             
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
-            "current_instruction" : self.current_instruction,
-            "current_instruction_complete" : self.current_instruction_complete,
-            "instructions_finished" : self.instructions_finished,
-
             "session_player_parts" : [p.json_for_subject() for p in self.session_player_parts_b.all()],
-
         }
     
     def json_for_subject(self, session_player):

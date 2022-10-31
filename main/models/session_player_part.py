@@ -24,6 +24,10 @@ class SessionPlayerPart(models.Model):
     earnings = models.IntegerField(verbose_name='Part Earnings', default=0)        #earnings in cents this period
     results_complete = models.BooleanField(default=False, verbose_name="Results Complete")
 
+    current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
+    current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
+    instructions_finished = models.BooleanField(verbose_name='Instructions Finished', default=False)             #true once subject has completed instructions
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -139,6 +143,9 @@ class SessionPlayerPart(models.Model):
             "earnings" : self.earnings,
             "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()],
             "results_complete" : self.results_complete,
-            "results" : {}
+            "results" : {},
+            "current_instruction" : self.current_instruction,
+            "current_instruction_complete" : self.current_instruction_complete,
+            "instructions_finished" : self.instructions_finished,
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }

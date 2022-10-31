@@ -47,11 +47,12 @@ takeNextInstruction(messageData){
         let result = messageData.status.result;
 
         session_player = this.findSessionPlayer(result.id);
+        session_player_part = session_player.session_player_parts[app.session.current_index.part_index];
 
         if(session_player)
         {
-            session_player.current_instruction = result.current_instruction;
-            session_player.current_instruction_complete = result.current_instruction_complete;
+            session_player_part.current_instruction = result.current_instruction;
+            session_player_part.current_instruction_complete = result.current_instruction_complete;
         }       
     }
  },
@@ -66,11 +67,12 @@ takeFinishedInstructions(messageData){
         let result = messageData.status.result;
 
         session_player = this.findSessionPlayer(result.id);
+        session_player_part = session_player.session_player_parts[app.session.current_index.part_index];
 
         if(session_player)
         {
-            session_player.instructions_finished = result.instructions_finished;
-            session_player.current_instruction_complete = result.current_instruction_complete;
+            session_player_part.instructions_finished = result.instructions_finished;
+            session_player_part.current_instruction_complete = result.current_instruction_complete;
         }       
     }
  },

@@ -8,16 +8,12 @@ from django.db.utils import IntegrityError
 
 from main import globals
 
-from main.models import InstructionSet
-
 import main
 
 class ParameterSet(models.Model):
     '''
     parameter set
     '''    
-    instruction_set = models.ForeignKey(InstructionSet, on_delete=models.CASCADE, related_name="parameter_sets")
-
     part_count = models.IntegerField(verbose_name='Number or parts.', default=3)                              #number of parts in the experiment
     period_count = models.IntegerField(verbose_name='Number of periods per part.', default=10)                #number of periods in each part of the experiment
     period_length = models.IntegerField(verbose_name='Period Length, Production', default=20)                 #period length in seconds
@@ -137,8 +133,12 @@ class ParameterSet(models.Model):
         self.parameter_set_parts.filter(part_number__gt=self.part_count).delete()
 
         for i in range(self.part_count):
-           obj, created = main.models.ParameterSetPart.objects.get_or_create(parameter_set=self,
-                                                                             part_number=i+1)
+           v = main.models.ParameterSetPart.objects.filter(parameter_set=self,                                                                             
+                                                           part_number=i+1).first()
+           if not v:
+                main.models.ParameterSetPart.objects.create(parameter_set=self,
+                                                            instruction_set=main.models.InstructionSet.objects.first(),
+                                                            part_number=i+1) 
                                                                             
         #add remove label set
         difference = self.parameter_set_labels.all().count() - self.label_set_count
@@ -201,7 +201,6 @@ class ParameterSet(models.Model):
 
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
-            "instruction_set" : self.instruction_set.json_min(),
 
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
             "parameter_set_parts" : [p.json() for p in self.parameter_set_parts.all()],
@@ -224,8 +223,7 @@ class ParameterSet(models.Model):
             "label_set_count" : self.label_set_count,
 
             "private_chat" : "True" if self.private_chat else "False",
-            "show_instructions" : "True" if self.show_instructions else "False",
-            "instruction_set" : self.instruction_set.json_min(),            
+            "show_instructions" : "True" if self.show_instructions else "False",          
         }
 
     

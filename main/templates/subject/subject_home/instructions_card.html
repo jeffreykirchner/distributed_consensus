@@ -3,13 +3,15 @@
         <span class="align-middle">Instructions</span>       
             
         <span class="float-end">
-            Page [[session_player.current_instruction]] of [[instruction_pages.length]]
+            Page [[get_current_session_player_part().current_instruction+1]] of [[get_current_number_of_instruction_pages()]]
         </span>
         
     </div>
     <div class="card-body"> 
         <div class="row instructions">
-            <div id="instructions_frame" class="col-md border" v-html = "getInstructionPage(session_player.current_instruction)">
+            <div id="instructions_frame" 
+                 class="col-md border" 
+                 v-html = "getInstructionPage()">
 
             </div>
         </div>    
@@ -28,7 +30,7 @@
                             type="button" 
                             title="Previous Instruction Page"
                             id="instructions_previous_id"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction == 1"
+                            v-bind:disabled="reconnecting || working || get_instruction_page_index() == 0"
                             v-on:click="sendNextInstruction(-1)"><i class="far fa-arrow-alt-circle-left"></i> Back</button>
             
                     <!-- next button -->
@@ -36,7 +38,10 @@
                             type="button" 
                             title="Next Instruction Page"
                             id="instructions_next_id"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
+                            v-bind:disabled="reconnecting || 
+                                             working || 
+                                             get_current_session_player_part().current_instruction == get_current_number_of_instruction_pages()-1 || 
+                                             get_current_session_player_part().current_instruction_complete < get_current_session_player_part().current_instruction"
                             v-on:click="sendNextInstruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
                     
                     <!-- start button -->
@@ -44,12 +49,13 @@
                             type="button" 
                             title="Finished with Instructions"
                             id="instructions_start_id"
-                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instruction_pages.length"
+                            v-show="!get_current_session_player_part().instructions_finished && 
+                                     get_current_session_player_part().current_instruction_complete == get_current_number_of_instruction_pages()-1"
                             v-bind:disabled="reconnecting || working"
                             v-on:click="sendFinishInstructions()">Start <i class="far fa-check-circle"></i></button>
 
                     <!-- waiting -->
-                    <span class="ms-2" v-show="session_player.instructions_finished" tabindex="-1">
+                    <span class="ms-2" v-show="get_current_session_player_part().instructions_finished" tabindex="-1">
                         Waiting for others.
                     </span>
                 </span>

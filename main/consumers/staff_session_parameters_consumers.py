@@ -358,7 +358,6 @@ def take_update_parameterset(data):
         return
     
     form_data_dict = form_data
-    form_data_dict["instruction_set"] = form_data_dict["instruction_set"]["id"]
 
     form = ParameterSetForm(form_data_dict, instance=session.parameter_set)
 
@@ -372,7 +371,6 @@ def take_update_parameterset(data):
                                 
     logger.info("Invalid paramterset form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
-
 
 def take_update_parameterset_player(data):
     '''
@@ -486,7 +484,6 @@ def take_add_parameterset_player(data):
 
     session.update_player_count()
 
-
 def take_update_parameterset_random_outcome(data):
     '''
     update parameterset random outcome
@@ -558,7 +555,6 @@ def take_remove_parameterset_random_outcome(data):
     
     return {"value" : "success"}
 
-
 def take_update_parameterset_part(data):
     '''
     update parameterset part
@@ -577,6 +573,7 @@ def take_update_parameterset_part(data):
         return
     
     form_data_dict = form_data
+    form_data_dict["instruction_set"] = form_data_dict["instruction_set"]["id"]
 
     # for field in form_data:            
     #     form_data_dict[field["name"]] = field["value"]

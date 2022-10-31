@@ -909,7 +909,7 @@ def take_update_subject(session_id, data):
 
     if form.is_valid():
 
-        session_player = session.session_players.get(id=form_data["id"])
+        session_player = session.session_players_a.get(id=form_data["id"])
         session_player.name = form.cleaned_data["name"]
         session_player.student_id = form.cleaned_data["student_id"]
         session_player.email = form.cleaned_data["email"]

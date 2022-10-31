@@ -243,6 +243,11 @@ class Session(models.Model):
         current_part_number = self.current_session_part.parameter_set_part.part_number
 
         self.current_session_part = self.session_parts_a.get(parameter_set_part__part_number=current_part_number+1)
+       
+        #check show instructions
+        if self.parameter_set.show_instructions:
+            self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
+
         self.save()
 
         return True

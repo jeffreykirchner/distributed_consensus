@@ -66,7 +66,6 @@ class ParameterSetPlayer(models.Model):
             parameter_set_player_parts[index].parameter_set_part = i
             parameter_set_player_parts[index].save()
 
-
     def json(self):
         '''
         return json object of model

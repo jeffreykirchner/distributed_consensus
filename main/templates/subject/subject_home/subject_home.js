@@ -176,7 +176,7 @@ var app = Vue.createApp({
             if(this.session.current_experiment_phase == 'Instructions')
             {
                 setTimeout(this.processInstructionPage, 1000);
-                this.instructionDisplayScroll();
+                //this.instructionDisplayScroll();
             }
 
             if(!app.first_load_done)

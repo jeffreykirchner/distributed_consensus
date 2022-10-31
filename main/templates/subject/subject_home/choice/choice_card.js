@@ -6,6 +6,7 @@ sendchoice(){
     current_part_period = app.get_current_part_period();
 
     if(!current_part_period) return;
+    if(app.session.current_experiment_phase == 'Instructions') return;
 
     app.working = true;
     app.sendMessage("choice",

@@ -18,7 +18,7 @@ var app = Vue.createApp({
   
                     current_parameter_set_player : {id:0,}, 
                     current_parameter_set_player_part : {id:0, parameter_set_labels:{id:0}},
-                    current_parameter_set_part : {id:0,},    
+                    current_parameter_set_part : {id:0,instruction_set:{id:0}},    
                     current_parameter_set_part_period : {id:0, parameter_set_random_outcome:{id:0}},
                     current_random_outcome : {id:0,}, 
                     current_parameter_set_labels : {id:0,}, 

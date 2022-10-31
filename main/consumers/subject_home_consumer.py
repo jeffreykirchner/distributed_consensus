@@ -658,22 +658,29 @@ def take_next_instruction(session_id, session_player_id, data):
     try:       
 
         session = Session.objects.get(id=session_id)
-        session_player = session.session_players.get(id=session_player_id)
+        session_part = session.current_session_part
+        session_player = session.session_players_a.get(id=session_player_id)
+        session_player_part = session_player.get_current_session_player_part()
 
         direction = data["direction"]
 
         #move to next instruction
         if direction == 1:
             #advance furthest instruction complete
-            if session_player.current_instruction_complete < session_player.current_instruction:
-                session_player.current_instruction_complete = copy(session_player.current_instruction)
+            if session_player_part.current_instruction_complete < session_player_part.current_instruction:
+                session_player_part.current_instruction_complete = copy(session_player_part.current_instruction)
 
-            if session_player.current_instruction < session.parameter_set.instruction_set.instructions.count():
-                session_player.current_instruction += 1
-        elif session_player.current_instruction > 1:
-             session_player.current_instruction -= 1
+            if session_player_part.current_instruction < session_part.parameter_set_part.instruction_set.instructions.count()-1:
+                session_player_part.current_instruction += 1
+            
+            #check if last page, no actions on last page.
+            if session_player_part.current_instruction == session_part.parameter_set_part.instruction_set.instructions.count()-1:
+                session_player_part.current_instruction_complete = copy(session_player_part.current_instruction)
+            
+        elif session_player_part.current_instruction > 0:
+             session_player_part.current_instruction -= 1
 
-        session_player.save()
+        session_player_part.save()
 
     except ObjectDoesNotExist:
         logger.warning(f"take_next_instruction not found: {session_player_id}")
@@ -683,9 +690,9 @@ def take_next_instruction(session_id, session_player_id, data):
         return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."}       
     
     return {"value" : "success",
-            "result" : {"current_instruction" : session_player.current_instruction,
+            "result" : {"current_instruction" : session_player_part.current_instruction,
                         "id" : session_player_id,
-                        "current_instruction_complete" : session_player.current_instruction_complete, 
+                        "current_instruction_complete" : session_player_part.current_instruction_complete, 
                         }}
 
 def take_finish_instructions(session_id, session_player_id, data):
@@ -699,20 +706,21 @@ def take_finish_instructions(session_id, session_player_id, data):
     try:       
 
         session = Session.objects.get(id=session_id)
-        session_player = session.session_players.get(id=session_player_id)
+        session_part = session.current_session_part
+        session_player = session.session_players_a.get(id=session_player_id)
+        session_player_part = session_player.get_current_session_player_part()
 
-        session_player.current_instruction_complete = session.parameter_set.instruction_set.instructions.count()
-        session_player.instructions_finished = True
-        session_player.save()
+        session_player_part.instructions_finished = True
+        session_player_part.save()
 
     except ObjectDoesNotExist:
         logger.warning(f"take_next_instruction : {session_player_id}")
         return {"value" : "fail", "errors" : {}, "message" : "Error"}       
     
     return {"value" : "success",
-            "result" : {"instructions_finished" : session_player.instructions_finished,
+            "result" : {"instructions_finished" : session_player_part.instructions_finished,
                         "id" : session_player_id,
-                        "current_instruction_complete" : session_player.current_instruction_complete, 
+                        "current_instruction_complete" : session_player_part.current_instruction_complete, 
                         }}
 
 def take_ready_to_go_on(session_id, session_player_id, data):
