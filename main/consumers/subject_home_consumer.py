@@ -29,6 +29,7 @@ from main.models import ParameterSetRandomOutcome
 
 from main.globals import ChatTypes
 from main.globals import round_half_away_from_zero
+from main.globals import ExperimentPhase
 
 from main.decorators import check_sesison_started_ws
 
@@ -570,7 +571,7 @@ def take_name(session_id, session_player_id, data):
     session = Session.objects.get(id=session_id)
     session_player = session.session_players_a.get(id=session_player_id)
 
-    if not session.finished:
+    if not session.current_experiment_phase == ExperimentPhase.NAMES:
         return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
                 "message" : "Session not complete."}
 

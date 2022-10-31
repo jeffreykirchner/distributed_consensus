@@ -33,9 +33,9 @@ class SessionPlayer(models.Model):
     connecting = models.BooleanField(default=False, verbose_name='Consumer is connecting')              #true when a consumer is connceting
     connected_count = models.IntegerField(verbose_name='Number of consumer connections', default=0)     #number of consumers connected to this subject
 
-    name = models.CharField(verbose_name='Full Name', max_length = 100, default="")                     #subject's full name
-    student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="")              #subject's student ID number
-    email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True, null=True)   #subject's email address
+    name = models.CharField(verbose_name='Full Name', max_length = 100, default="", blank=True, null=True)             #subject's full name
+    student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="", blank=True, null=True)      #subject's student ID number
+    email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True, null=True)                  #subject's email address
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
     name_submitted = models.BooleanField(default=False, verbose_name='Name submitted')                  #true if subject has submitted name and student id
 

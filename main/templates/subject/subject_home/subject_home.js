@@ -221,7 +221,6 @@ var app = Vue.createApp({
             if(this.end_game_modal_visible) return;
    
             app.endGameModal.toggle();
-
             this.end_game_modal_visible = true;
         },
 
@@ -247,12 +246,17 @@ var app = Vue.createApp({
             {
                 this.showEndGameModal();
             }
+            else
+            {
+                this.hideEndGameModal();
+            }
         },
 
         /** hide choice grid modal modal
         */
         hideEndGameModal(){
             this.end_game_modal_visible=false;
+            app.endGameModal.hide();
         },
 
         //do nothing on when enter pressed for post
