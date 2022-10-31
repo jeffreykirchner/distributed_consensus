@@ -99,14 +99,50 @@ class SessionPlayer(models.Model):
         '''
         return a proccessed list of instructions to the subject
         '''
+        parameter_set = self.parameter_set_player.parameter_set
+        parameter_set_part = self.get_current_session_player_part().session_part.parameter_set_part
+
+        outcome_image_html = "<div class='row'>"
+        outcome_name_list = ""
+
+        for index, i in enumerate(parameter_set.parameter_set_random_outcomes.all()):
+            outcome_image_html += "<div class='col-auto'>"
+            outcome_image_html += f'<img src="/static/{i.image}" class="signal_image">'
+            outcome_image_html += "</div>"
+
+            if index==0:
+                outcome_name_list = i.name
+            elif parameter_set.parameter_set_random_outcomes.all().count()-1 == index:
+                outcome_name_list += f' or {i.name}'
+            else:
+                outcome_name_list += f', {i.name}'
+
+        outcome_image_html += "</div>"
 
         instructions = []
-        for p in self.parameter_set_player.parameter_set.parameter_set_parts.all():
+        for p in parameter_set.parameter_set_parts.all():
             instructions.append([i.json() for i in p.instruction_set.instructions.all()])
  
             for i in instructions[p.part_number-1]:
-                i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
-                i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.parameter_set_players.count()-1))
+                
+                i["text_html"] = i["text_html"].replace("#player_id_label#", self.parameter_set_player.id_label)
+                i["text_html"] = i["text_html"].replace("#number_of_players#", str(parameter_set.parameter_set_players.count()-1))
+                
+                i["text_html"] = i["text_html"].replace("#part_count#", str(parameter_set.part_count))
+                i["text_html"] = i["text_html"].replace("#part_count-1#", str(parameter_set.part_count-1))
+                i["text_html"] = i["text_html"].replace("#period_count#", str(parameter_set.period_count))
+
+                i["text_html"] = i["text_html"].replace("#outcome_images#", outcome_image_html)
+                i["text_html"] = i["text_html"].replace("#outcome_name_list#", outcome_name_list)
+
+                i["text_html"] = i["text_html"].replace("#pay_choice_majority#", str(parameter_set_part.pay_choice_majority))
+                i["text_html"] = i["text_html"].replace("#pay_choice_minority#", str(parameter_set_part.pay_choice_minority))
+                i["text_html"] = i["text_html"].replace("#pay_label_majority#",  str(parameter_set_part.pay_label_majority))
+                i["text_html"] = i["text_html"].replace("#pay_label_minority#",  str(parameter_set_part.pay_label_minority))
+
+                i["text_html"] = i["text_html"].replace("#minimum_for_majority-1#",  str(parameter_set_part.minimum_for_majority-1))
+                
+
 
         return instructions
     
