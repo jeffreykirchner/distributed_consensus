@@ -8,7 +8,7 @@
 
         <div class="row">
             <div class="col text-center mb-4">
-                Period Reports
+                
             </div>
         </div>
 
@@ -19,13 +19,30 @@
                     <table class="table table-condensed"> 
                         <thead>
                             <tr>
-                                <th scope="col" class = "">
+                                <th scope="col">
+                                    
+                                </th>
+                                <th scope="col">
+                                    
+                                </th>
+                                <th scope="col" class ="text-center" v-bind:colspan="get_current_session_player_part().group_members.length">
+                                    Period Reports
+                                </th>
+                                <th scope="col">
+                                    
+                                </th>
+                                <th scope="col">
+                                    
+                                </th>
+                            </tr>
+                            <tr>
+                                <th scope="col" class = "text-center">
                                     Period
                                 </th>
                                 <th scope="col" class = "text-center">
                                     Image Shown to Everyone
                                 </th>
-                                <th v-for="(p, index) in get_current_session_player_part().group_members" v-bind:key="'part_a_table_head_'+p.id">
+                                <th class = "text-center" v-for="(p, index) in get_current_session_player_part().group_members" v-bind:key="'part_a_table_head_'+p.id">
                                     Person [[p.id_label]] <span v-if="p.id==session_player.id">(You)</span>
                                 </th>
                                 <th scope="col" class = "text-center">
@@ -34,11 +51,11 @@
                                 <th scope="col" class = "text-center">
                                     You are in the majority
                                 </th>                           
-                            </tr>
+                            </tr>                           
                         </thead>
                         <tbody id="player_list">
                             <tr v-for="(p, index) in get_current_session_player_part().session_player_part_periods" v-bind:key="p.id">
-                                <td class="text-nowrap">
+                                <td class="text-nowrap text-center">
                                     [[index+1]]
                                 </td>
                                 <td class="text-nowrap text-center">
@@ -48,7 +65,42 @@
                                     </div>
                                     <div>
                                         [[p.parameter_set_part_period.parameter_set_random_outcome.name]]
-                                    </div>                                      
+                                    </div>                                                                          
+                                </td>
+                                <td class="text-nowrap text-center" style="background-color:ghostwhite;"
+                                    v-for="(g, index) in p.group_choices" v-bind:key="'part_a_table_body_'+p.id+'_'+g.id">
+                                    <div>
+                                        <img v-bind:src="'/static/' + g.choice.image" 
+                                             class="result_image" />  
+                                    </div>
+                                    <div>
+                                        [[g.choice.name]]
+                                    </div>
+                                </td>
+                                <td class="text-nowrap text-center">
+                                    <div v-if="!p.majority_choice">
+                                        No Majority
+                                    </div>
+                                    <div v-else>
+                                        <div>
+                                            <img v-bind:src="'/static/' + p.majority_choice.image" 
+                                                 class="result_image" />  
+                                        </div>
+                                        <div>
+                                            [[p.majority_choice.name]]
+                                        </div> 
+                                    </div>                                                                         
+                                </td>
+                                <td class="text-nowrap text-center">
+                                    <div v-if="!p.majority_choice" class="text-danger fw-bold">
+                                        No
+                                    </div>
+                                    <div v-else-if="p.majority_choice.id == p.choice.id">
+                                        Yes
+                                    </div>
+                                    <div v-else class="text-danger fw-bold">
+                                        No
+                                    </div>
                                 </td>
                                                            
                             </tr>
@@ -61,8 +113,10 @@
         </div>
 
         <div class="row">
-            <div class="col text-center mb-4">
-                Your earnings for this part:
+            <div class="col text-center mb-4 h5">
+                If all [[session.parameter_set.period_count]] of your choices in this part are in the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) every period you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
+                If one or more of your choices is <u>not</u> in the majority in period you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].<br><br>
+                Your earnings for this part: $[[get_current_session_player_part().earnings]]
             </div>
         </div>
 

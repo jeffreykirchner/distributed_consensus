@@ -132,6 +132,8 @@ class SessionPlayerPart(models.Model):
                     self.earnings += self.session_part.parameter_set_part.pay_choice_minority
 
         self.save()
+        
+        self.session_player.update_earnings()
 
     def get_group_number(self):
         '''
@@ -156,7 +158,7 @@ class SessionPlayerPart(models.Model):
 
         return{
             "id" : self.id,    
-            "earnings" : self.earnings,
+            "earnings" : f'{self.earnings:.2f}',
             "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()],
             "results_complete" : self.results_complete,
             "results" : results,

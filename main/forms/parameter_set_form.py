@@ -46,5 +46,5 @@ class ParameterSetForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSet
-        fields =['part_count', 'period_count', 'period_length', 'show_instructions', 'test_mode',
-                 'label_set_count']
+        fields =['part_count', 'period_count', 'period_length', 'label_set_count', 'show_instructions', 'test_mode',]
+                 

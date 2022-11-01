@@ -111,20 +111,14 @@ doTestModeRun()
 {
     //do chat
     let go = true;
-
-    if(go)
-        if(this.chat_text != "")
-        {
-            document.getElementById("send_chat_id").click();
-            go=false;
-        }
-    
+        
     if(app.session.finished) return;
+    if(app.working) return;
         
     if(go)
-        switch (this.randomNumber(1, 3)){
+        switch (this.randomNumber(1, 1)){
             case 1:
-                this.doTestModeChat();
+                this.doTestModeChoice();
                 break;
             
             case 2:
@@ -136,31 +130,26 @@ doTestModeRun()
         }
 },
 
-/**
- * test mode chat
- */
-doTestModeChat(){
+doTestModeChoice()
+{
+    session_player_part_period = app.get_current_part_period();
 
-    if(app.session.parameter_set.private_chat)
+    if(app.current_choice.session_part.parameter_set_part.mode=='A' && 
+       app.current_choice.session_part.show_results && 
+       !app.session_player.session_player_parts[app.session.current_index.part_index].results_complete)
     {
-        session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
-
-        if(session_player_local.id == this.session_player.id || this.session.current_experiment_phase == "Instructions")
-        {
-            document.getElementById("chat_all_id").click();
-        }
-        else
-        {
-            document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
-        }        
+        app.sendReadyToGoOn();
     }
-    else
-    {
-        document.getElementById("chat_all_id").click();
+    else if(session_player_part_period.current_outcome_id == -1)
+    {//select one of the choices
+        index = randomNumber(0, app.session.parameter_set.parameter_set_random_outcomes.length-1);
+        parameter_set_random_outcome = app.session.parameter_set.parameter_set_random_outcomes[index];
+        app.take_choice_grid_click(parameter_set_random_outcome.id, index);
     }
-
-    this.chat_text = this.randomString(5, 20);
+    else if(!session_player_part_period.choice)
+    {//send choice
+        app.sendchoice();
+    }   
 },
-
 
 {%endif%}

@@ -42,6 +42,10 @@
         height: auto;  
         cursor: pointer;
     }
+
+    .report_table_1{
+        background-color: gainsboro;
+    }
        
 </style>
 
@@ -61,6 +65,14 @@
         </div>
     </div>
 
+     <!-- results part a -->
+     <div class="row justify-content-lg-center mt-4" v-cloak v-if="current_choice.session_part.parameter_set_part.mode=='A' && 
+                                                                   current_choice.session_part.show_results">
+        <div class="col-md">
+            {%include "subject/subject_home/part_a_results_card.html"%}
+        </div>
+    </div>
+
     <!-- experiment -->
     <div class="row justify-content-lg-center mt-4" v-cloak 
          v-if="current_choice.hasOwnProperty('session_part') && 
@@ -69,10 +81,7 @@
         <div class="col-md-9">
             <div v-if="current_choice.session_part.parameter_set_part.mode=='A' && !current_choice.session_part.show_results">
                 {%include "subject/subject_home/choice_a_card.html"%}
-            </div>
-            <div v-if="current_choice.session_part.parameter_set_part.mode=='A' && current_choice.session_part.show_results">
-                {%include "subject/subject_home/part_a_results_card.html"%}
-            </div>
+            </div>            
             <div v-if="current_choice.session_part.parameter_set_part.mode=='B' ">
                 {%include "subject/subject_home/choice_b_card.html"%}
             </div>

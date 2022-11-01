@@ -9,6 +9,7 @@ import logging
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
@@ -94,6 +95,14 @@ class SessionPlayer(models.Model):
 
         for p in self.session_player_parts_b.all():
             p.setup()
+        
+    def update_earnings(self):
+        '''
+        update total earnings
+        '''
+        v = self.session_player_parts_b.all().aggregate(Sum('earnings'))
+        self.earnings = v['earnings__sum']
+        self.save()
 
     def get_instruction_set(self):
         '''
@@ -168,7 +177,7 @@ class SessionPlayer(models.Model):
             "email" : self.email,
             "name_submitted" : self.name_submitted,
 
-            "earnings" : self.earnings,
+            "earnings" : f'{self.earnings:.2f}',
 
             "player_number" : self.player_number,
             "player_key" : self.player_key,
