@@ -99,7 +99,7 @@ class TestStaffConsumer(TestCase):
         self.session_large.save()
 
         #check minimum majority        
-        group_1_players = self.session_large.session_players_a.all()[0].session_player_parts_b.all()[1].session_player_part_periods_a.all()[0].get_group_memebers()
+        group_1_players = self.session_large.session_players_a.all()[0].session_player_parts_b.all()[1].session_player_part_periods_a.all()[0].get_group_members()
         
         self.assertEqual("Part 2",self.session_large.current_session_part.__str__())
 

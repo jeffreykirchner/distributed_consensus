@@ -35,7 +35,7 @@ class SessionPlayerPartPeriod(models.Model):
         
         verbose_name = 'Session Player Part Period'
         verbose_name_plural = 'Session Player Part Periods'
-        ordering = ['session_player_part', 'parameter_set_labels_period']
+        ordering = ['session_player_part__session_player', 'parameter_set_labels_period__period_number']
         constraints = [
             models.UniqueConstraint(fields=['session_player_part', 'parameter_set_labels_period'], name='unique_session_player_period_part'),
         ]
@@ -44,7 +44,7 @@ class SessionPlayerPartPeriod(models.Model):
         '''
         return list of labels for group
         '''        
-        return [i.json_for_group() for i in self.get_group_memebers()]
+        return [i.json_for_group() for i in self.get_group_members()]
     
     def get_group_number(self):
         '''
@@ -52,7 +52,7 @@ class SessionPlayerPartPeriod(models.Model):
         '''
         return self.session_player_part.parameter_set_player_part.group
     
-    def get_group_memebers(self):
+    def get_group_members(self):
         '''
         return a list of SessionPlayerPartPeriod who in are this group
         '''
@@ -73,7 +73,7 @@ class SessionPlayerPartPeriod(models.Model):
         for i in random_outcomes:
 
             v = {'random_outcome' : i,
-                 'sum' : self.get_group_memebers().filter(choice=i).count()}
+                 'sum' : self.get_group_members().filter(choice=i).count()}
 
             random_outcome_counts.append(v)
         
@@ -84,7 +84,6 @@ class SessionPlayerPartPeriod(models.Model):
         if random_outcome_counts_sorted[0]['sum'] >= self.session_part_period.session_part.parameter_set_part.minimum_for_majority:
             self.majority_choice = random_outcome_counts_sorted[0]['random_outcome']
             self.save()
-
 
     def write_summary_download_csv(self, writer):
         '''
@@ -102,16 +101,20 @@ class SessionPlayerPartPeriod(models.Model):
         json object of model
         '''
 
+        group_choices = [i.json_for_group() if i.choice else None for i in self.get_group_members()]
+
         return{
             "id" : self.id,    
             #"earnings" : self.earnings,
             "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
+            "parameter_set_part_period" : self.session_part_period.parameter_set_part_period.json(),
             "choice" : self.choice.json() if self.choice else None,      
 
             "current_outcome_index" : -1,
             "current_outcome_id" : -1,   
 
             "majority_choice" : self.majority_choice.json_for_subject() if self.majority_choice else None,
+            "group_choices" : group_choices,
         }
     
     def json_for_group(self):
@@ -124,5 +127,6 @@ class SessionPlayerPartPeriod(models.Model):
             "session_player_id" : self.session_player_part.session_player.id,
             "id_label" : self.session_player_part.session_player.parameter_set_player.id_label,
             "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
+            "choice" : self.choice.json() if self.choice else None, 
         }
          

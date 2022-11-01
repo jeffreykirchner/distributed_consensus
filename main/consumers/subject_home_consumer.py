@@ -414,6 +414,22 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_current_session_part_result(self, event):
+        '''
+        send current part results
+        '''
+
+        message_data = {}
+        message_data["status"] = {"value":"success", 
+                                  "result": await sync_to_async(take_get_session_subject)(self.session_player_id)}
+
+        message = {}
+        message["messageType"] = "update_current_session_part_result"
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''

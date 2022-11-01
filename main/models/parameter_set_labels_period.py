@@ -1,5 +1,5 @@
 '''
-parameter set
+parameter set part label period
 '''
 import logging
 import random
@@ -18,7 +18,7 @@ import main
 
 class ParameterSetLabelsPeriod(models.Model):
     '''
-    parameter set part
+    parameter set part label period
     '''    
     parameter_set_labels = models.ForeignKey(ParameterSetLabels, on_delete=models.CASCADE, related_name="parameter_set_labels_period_a")
     label =  models.ForeignKey(ParameterSetRandomOutcome, models.SET_NULL, related_name="parameter_set_labels_period_b", null=True, blank=True)

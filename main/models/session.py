@@ -3,9 +3,9 @@ session model
 '''
 
 from datetime import datetime
-from operator import truediv
-from pickle import TRUE
 from tinymce.models import HTMLField
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 import logging
 import uuid
@@ -79,6 +79,23 @@ class Session(models.Model):
         get a formatted string of start date
         '''
         return  self.start_date.strftime("%#m/%#d/%Y")
+    
+    def get_group_channel_name(self):
+        '''
+        return channel name for group
+        '''
+        page_key = f"session-{self.id}"
+        room_name = f"{self.channel_key}"
+        return  f'{page_key}-{room_name}'
+    
+    def send_message_to_group(self, message_type, message_data):
+        '''
+        send socket message to group
+        '''
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(self.get_group_channel_name(),
+                                                {"type" : message_type,
+                                                 "data" : message_data})
 
     def start_experiment(self):
         '''
@@ -225,7 +242,9 @@ class Session(models.Model):
                 self.current_session_part.session_player_parts_a.all().update(results_complete=False)
 
                 #calc and send Part A results
-
+                self.current_session_part.calc_results()
+                self.send_message_to_group("update_current_session_part_result", {})
+                
                 return True
             else:
 
@@ -333,7 +352,7 @@ class Session(models.Model):
          
         return {"part_index" : part_index, 
                 "period_index" : period_index,
-           }
+               }
 
     def json(self):
         '''

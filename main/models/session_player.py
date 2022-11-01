@@ -215,6 +215,8 @@ class SessionPlayer(models.Model):
 
         return{
             "id" : self.id,    
+            "player_number" : self.player_number,
+            "id_label" : self.parameter_set_player.id_label,
         }
     
     def json_current_choice(self):

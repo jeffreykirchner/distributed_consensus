@@ -102,6 +102,8 @@ var app = Vue.createApp({
                 case "final_results":
                     app.takeFinalResults(messageData);
                     break;
+                case "update_current_session_part_result":
+                    app.takeCurrentPartResult(messageData);
                 
             }
 

@@ -132,20 +132,37 @@ class SessionPlayerPart(models.Model):
                     self.earnings += self.session_part.parameter_set_part.pay_choice_minority
 
         self.save()
-        
+
+    def get_group_number(self):
+        '''
+        return group number
+        '''
+        return self.parameter_set_player_part.group
+    
+    def get_group_members(self):
+        '''
+        return a list of SessionPlayerPartPeriod who in are this group
+        '''
+
+        return main.models.SessionPlayerPart.objects.filter(session_part=self.session_part) \
+                                                    .filter(parameter_set_player_part__group=self.get_group_number())
+
     def json_for_subject(self):
         '''
         json object of model
         '''
+
+        results = {}
 
         return{
             "id" : self.id,    
             "earnings" : self.earnings,
             "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()],
             "results_complete" : self.results_complete,
-            "results" : {},
+            "results" : results,
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
             "instructions_finished" : self.instructions_finished,
+            "group_members" : [i.session_player.json_min() for i in self.get_group_members()]
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }

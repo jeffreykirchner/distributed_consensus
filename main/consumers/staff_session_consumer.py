@@ -484,10 +484,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         handle connection status update from group member
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Connection update")
-
-        #update not from a client
         if event["data"]["value"] == "fail":
             return
 
@@ -661,6 +657,13 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_current_session_part_result(self, event):
+        '''
+        send current part results
+        '''
+
+        pass
 
 #local sync functions    
 def take_get_session(session_key):
