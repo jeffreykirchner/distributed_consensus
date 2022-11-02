@@ -951,7 +951,7 @@ def take_send_invitations(session_id, data):
     message_text = message_text.replace("[contact email]", p.contact_email)
 
     user_list = []
-    for session_subject in session.session_players.exclude(email=None).exclude(email=""):
+    for session_subject in session.session_players_a.exclude(email=None).exclude(email=""):
         user_list.append({"email" : session_subject.email,
                           "variables": [{"name" : "log in link",
                                          "text" : p.site_url + reverse('subject_home', kwargs={'player_key': session_subject.player_key})
@@ -986,7 +986,7 @@ def take_email_list(session_id, data):
         raw_list[i] = re.split(r',|\t', raw_list[i])
 
         if raw_list[i][0] != "Last Name":
-            p = session.session_players.filter(player_number=counter).first()
+            p = session.session_players_a.filter(player_number=counter).first()
 
             if p:
                 p.name = raw_list[i][0] + " " + raw_list[i][1]

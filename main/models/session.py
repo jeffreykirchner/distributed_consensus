@@ -281,7 +281,7 @@ class Session(models.Model):
 
         writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
 
-        session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
+        session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players_a.all()) \
                                                                         .order_by('session_period__period_number', 'session_player__player_number')
 
         for p in session_player_periods.all():
@@ -299,7 +299,7 @@ class Session(models.Model):
 
         writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action", "Info", "Info (JSON)", "Timestamp"])
 
-        session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players.all())
+        session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players_a.all())
 
         for p in session_player_chats.all():
             p.write_action_download_csv(writer)
@@ -314,7 +314,7 @@ class Session(models.Model):
 
         writer = csv.writer(output)
 
-        session_players = self.session_players.all()
+        session_players = self.session_players_a.all()
 
         for p in session_players:
             writer.writerow([p.student_id, p.earnings])
@@ -331,7 +331,7 @@ class Session(models.Model):
 
         writer.writerow(['Name', 'Student ID', 'Earnings'])
 
-        session_players = self.session_players.all()
+        session_players = self.session_players_a.all()
 
         for p in session_players:
             writer.writerow([p.name, p.student_id, p.earnings])
@@ -360,7 +360,7 @@ class Session(models.Model):
         '''
               
         # chat_all = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
-        #                                             .filter(session_player__in=self.session_players.all())\
+        #                                             .filter(session_player__in=self.session_players_a.all())\
         #                                             .prefetch_related('session_player_recipients')
         #                                             .select_related('session_player__parameter_set_player')
         #                                             .order_by('-timestamp')[:100:-1]
@@ -441,7 +441,7 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "session_players":session_players,
-            "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
+            "session_player_earnings": [i.json_earning() for i in self.session_players_a.all()]
         }
         
 @receiver(post_delete, sender=Session)

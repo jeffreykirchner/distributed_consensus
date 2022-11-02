@@ -36,7 +36,7 @@ class SubjectHomeAutoConnectView(View):
 
             try:
                 with transaction.atomic():
-                    session_player = session.session_players.filter(connecting=False, connected_count=0).first()
+                    session_player = session.session_players_a.filter(connecting=False, connected_count=0).first()
 
                     if session_player:
                         player_key = session_player.player_key
@@ -50,7 +50,7 @@ class SubjectHomeAutoConnectView(View):
                 raise Http404("Connections are full.")
         else:
             try:
-                player_key = session.session_players.get(player_number=player_number).player_key
+                player_key = session.session_players_a.get(player_number=player_number).player_key
             except ObjectDoesNotExist:
                 raise Http404("Subject not found.")
 

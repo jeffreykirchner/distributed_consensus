@@ -504,7 +504,7 @@ def take_chat(session_id, session_player_id, data):
     #result["recipients"] = []
 
     session = Session.objects.get(id=session_id)
-    session_player = session.session_players.get(id=session_player_id)
+    session_player = session.session_players_a.get(id=session_player_id)
     
     session_player_chat = SessionPlayerChat()
 
@@ -539,13 +539,13 @@ def take_chat(session_id, session_player_id, data):
     session_player_chat.save()
 
     if recipients == "all":
-        session_player_chat.session_player_recipients.add(*session.session_players.all())
+        session_player_chat.session_player_recipients.add(*session.session_players_a.all())
 
-        result["recipients"] = [i.id for i in session.session_players.all()]
+        result["recipients"] = [i.id for i in session.session_players_a.all()]
     else:
         sesson_player_target = SessionPlayer.objects.get(id=recipients)
 
-        if sesson_player_target in session.session_players.all():
+        if sesson_player_target in session.session_players_a.all():
             session_player_chat.session_player_recipients.add(sesson_player_target)
         else:
             session_player_chat.delete()

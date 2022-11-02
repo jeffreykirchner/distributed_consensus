@@ -32,7 +32,7 @@ class TestSubjectConsumer(TestCase):
         '''
         test get session subject from consumer
         '''
-        session_player_1 = self.session.session_players.get(player_number=1)
+        session_player_1 = self.session.session_players_a.get(player_number=1)
 
         data = {'recipients': 'all', 'text': 'hello!'}
 
