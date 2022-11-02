@@ -69,7 +69,7 @@
      <div class="row justify-content-lg-center mt-4" v-cloak v-if="current_choice.session_part.parameter_set_part.mode=='A' && 
                                                                    current_choice.session_part.show_results">
         <div class="col-md">
-            {%include "subject/subject_home/part_a_results_card.html"%}
+            {%include "subject/subject_home/choice_a_results_card.html"%}
         </div>
     </div>
 
@@ -106,7 +106,7 @@
     </div>
 
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Results'">
-        <div class="col-12 fs-4 fw-bold text-center">
+        <div class="col-12">
             {%include "subject/subject_home/final_results_card.html"%}
         </div>    
     </div>

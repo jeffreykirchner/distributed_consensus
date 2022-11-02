@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mb-4">
             <div class="col">
 
                 <div class="table-responsive">
@@ -46,7 +46,7 @@
                                     Person [[p.id_label]] <span v-if="p.id==session_player.id">(You)</span>
                                 </th>
                                 <th scope="col" class = "text-center">
-                                    Majority Report
+                                    Majority Reported
                                 </th>
                                 <th scope="col" class = "text-center">
                                     You are in the majority
@@ -112,15 +112,10 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col text-center mb-4 h5">
-                If all [[session.parameter_set.period_count]] of your choices in this part are in the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) every period you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
-                If one or more of your choices is <u>not</u> in the majority in period you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].<br><br>
-                Your earnings for this part: $[[get_current_session_player_part().earnings]]
-            </div>
-        </div>
+        <!-- text -->
+        {%include "subject/subject_home/snippets/choice_a_text.html"%}
 
-        <div class="row">
+        <div class="row mt-4">
             <div class="col">
 
                 <!-- ready to go on -->

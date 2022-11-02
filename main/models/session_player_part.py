@@ -165,6 +165,7 @@ class SessionPlayerPart(models.Model):
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
             "instructions_finished" : self.instructions_finished,
-            "group_members" : [i.session_player.json_min() for i in self.get_group_members()]
+            "group_members" : [i.session_player.json_min() for i in self.get_group_members()],
+            "mode" : self.session_part.parameter_set_part.mode,
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }

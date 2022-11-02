@@ -1,0 +1,6 @@
+<div class="row">
+    <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">
+        If all [[session.parameter_set.period_count]] of your choices in this part are in the majority ([[current_choice.session_part.parameter_set_part.minimum_for_majority]]+ people) every period you earn $[[current_choice.session_part.parameter_set_part.pay_choice_majority]].<br>
+        If one or more of your choices is <u>not</u> in the majority in period you instead earn $[[current_choice.session_part.parameter_set_part.pay_choice_minority]].                
+    </div>
+</div>
