@@ -231,7 +231,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         #get session json object
         result = await sync_to_async(take_get_session_subject)(self.session_player_id)
-
+        result["instruction_pages"] = await sync_to_async(take_get_instruction_set)(self.session_player_id)
+ 
         message_data = {}
         message_data["status"] = result
 
@@ -450,6 +451,18 @@ def take_get_session_subject(session_player_id):
         return {"session" : None, 
                 "session_player" : None,
                 "current_choice" : None}
+
+def take_get_instruction_set(session_player_id):
+    '''
+    return the instruction set
+    '''
+    try:
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+
+        return session_player.get_instruction_set()
+
+    except ObjectDoesNotExist:
+        return []
 
 def take_get_subject_current_choice(session_player_id):
     '''

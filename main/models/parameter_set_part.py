@@ -133,10 +133,10 @@ class ParameterSetPart(models.Model):
             "mode" : self.mode,
             "part_number" : self.part_number,
             "minimum_for_majority" : self.minimum_for_majority,
-            "pay_choice_majority" : self.pay_choice_majority,
-            "pay_choice_minority" : self.pay_choice_minority,
-            "pay_label_majority" : self.pay_label_majority,
-            "pay_label_minority" : self.pay_label_minority,
+            "pay_choice_majority" : str(self.pay_choice_majority),
+            "pay_choice_minority" : str(self.pay_choice_minority),
+            "pay_label_majority" : str(self.pay_label_majority),
+            "pay_label_minority" : str(self.pay_label_minority),
             "instruction_set" : self.instruction_set.json_min(),
         }
 

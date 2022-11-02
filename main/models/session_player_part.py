@@ -161,11 +161,10 @@ class SessionPlayerPart(models.Model):
             "earnings" : f'{self.earnings:.2f}',
             "session_player_part_periods" : [i.json_for_subject() for i in self.session_player_part_periods_a.all()],
             "results_complete" : self.results_complete,
-            "results" : results,
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
             "instructions_finished" : self.instructions_finished,
             "group_members" : [i.session_player.json_min() for i in self.get_group_members()],
-            "mode" : self.session_part.parameter_set_part.mode,
+            "session_part" : self.session_part.json_for_subject(),
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }

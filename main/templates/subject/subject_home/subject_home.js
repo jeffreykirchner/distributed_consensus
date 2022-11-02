@@ -192,6 +192,9 @@ var app = Vue.createApp({
         */
         takeUpdateStartExperiment(messageData){
             app.takeGetSession(messageData);
+
+            result = messageData.status;
+            app.instruction_pages = result.instruction_pages;
         },
 
         /** update reset status

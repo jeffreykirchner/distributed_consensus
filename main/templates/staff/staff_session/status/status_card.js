@@ -15,6 +15,8 @@ takeNextPeriod(messageData){
     {        
         app.session.current_index = result.current_index;
         app.session.current_experiment_phase = result.current_experiment_phase;
+
+        app.updatePhaseButtonText();
     }
     else
     {

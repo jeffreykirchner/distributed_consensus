@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Pay'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-if="session.current_experiment_phase == 'Pay'">
         <div class="col-12 fs-4 fw-bold text-center">
             <br>
             <br>
@@ -105,13 +105,13 @@
         </div>    
     </div>
 
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Results'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-if="session.current_experiment_phase == 'Results'">
         <div class="col-12">
             {%include "subject/subject_home/final_results_card.html"%}
         </div>    
     </div>
 
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-if="session.current_experiment_phase == 'Done'">
         <div class="col-12 fs-4 fw-bold text-center">
             <br>
             <br>

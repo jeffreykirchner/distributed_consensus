@@ -68,14 +68,15 @@ doTestMode(){
  */
  doTestModeInstructions()
  {
-    if(this.session_player.instructions_finished) return;
-    if(this.working) return;
-    
-   
-    if(this.session_player.current_instruction == this.session_player.current_instruction_complete)
+    session_player_part = this.session_player.session_player_parts[app.session.current_index.part_index];
+
+    if(session_player_part.instructions_finished) return;
+    if(this.working) return;    
+
+    if(this.get_instruction_page_index() == session_player_part.current_instruction_complete)
     {
 
-        if(this.session_player.current_instruction == this.instruction_pages.length)
+        if(this.get_instruction_page_index() == this.get_current_number_of_instruction_pages()-1)
             document.getElementById("instructions_start_id").click();
         else
             document.getElementById("instructions_next_id").click();

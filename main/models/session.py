@@ -317,7 +317,7 @@ class Session(models.Model):
         session_players = self.session_players.all()
 
         for p in session_players:
-            writer.writerow([p.student_id, p.earnings/100])
+            writer.writerow([p.student_id, p.earnings])
 
         return output.getvalue()
     
@@ -334,7 +334,7 @@ class Session(models.Model):
         session_players = self.session_players.all()
 
         for p in session_players:
-            writer.writerow([p.name, p.student_id, p.earnings/100])
+            writer.writerow([p.name, p.student_id, p.earnings])
 
         return output.getvalue()
 

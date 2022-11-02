@@ -249,7 +249,7 @@ class SessionPlayerPartAdmin(admin.ModelAdmin):
 
     readonly_fields=['session_part', 'session_player', 'parameter_set_player_part']
     list_display = ['session_part', 'session_player', 'parameter_set_player_part']
-    fields = ['session_part', 'session_player', 'parameter_set_player_part', 'current_instruction', 'current_instruction_complete', 'instructions_finished']
+    fields = ['session_part', 'session_player', 'parameter_set_player_part', 'current_instruction', 'current_instruction_complete', 'instructions_finished', 'results_complete']
     inlines = [
         SessionPlayerPartPeriodInline,
       ]
@@ -263,7 +263,7 @@ class SessionPlayerPartInline(admin.TabularInline):
     model = SessionPlayerPart
     can_delete = False   
     show_change_link = True
-    fields = ['session_part', 'session_player', 'parameter_set_player_part', 'current_instruction', 'current_instruction_complete', 'instructions_finished']
+    fields = ['session_part', 'session_player', 'parameter_set_player_part', 'current_instruction', 'current_instruction_complete', 'instructions_finished', 'results_complete']
     readonly_fields = ('session_part','session_player','parameter_set_player_part')
 
 @admin.register(SessionPlayer)

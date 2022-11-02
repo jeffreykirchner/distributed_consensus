@@ -12,14 +12,14 @@
     else if(this.session.current_experiment_phase == "Results")
     {
         this.move_to_next_phase_text = 'Enter Names <i class="far fa-address-card"></i>';
+    }    
+    else if(this.session.current_experiment_phase == "Instructions")
+    {
+        this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
     }
     else if(this.session.current_experiment_phase == "Run")
     {
         this.move_to_next_phase_text = 'Running ...';
-    }
-    else if(this.session.current_experiment_phase == "Instructions")
-    {
-        this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
     }
     // else if(this.session.started && !this.session.finished)
     // {

@@ -117,6 +117,12 @@
 
         <div class="row mt-4">
             <div class="col">
+                Your earnings for this part: $[[get_current_session_player_part().earnings]]
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
 
                 <!-- ready to go on -->
                 <div class="text-center text-success" v-if="session_player.session_player_parts[session.current_index.part_index].results_complete">

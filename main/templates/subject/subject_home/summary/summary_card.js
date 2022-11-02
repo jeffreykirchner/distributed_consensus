@@ -1,7 +1,8 @@
 sendName(){
 
     app.working = true;
-    app.sendMessage("name", {"formData" : {name : app.session_player.name, student_id : app.session_player.student_id}});
+    app.sendMessage("name", {"formData" : {name : document.getElementById("id_name").value, 
+                                           student_id : document.getElementById("id_student_id").value}});
                      
 },
 

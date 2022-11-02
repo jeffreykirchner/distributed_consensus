@@ -82,7 +82,7 @@
                                 [[p.student_id=="" ? "---" : p.student_id]]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                $[[(p.earnings/100).toFixed(2)]]
+                                $[[p.earnings]]
                             </td>                            
                             <td class="player_table_cell text-nowrap">
                                 <a v-bind:href="p.login_link">Login Link</a>

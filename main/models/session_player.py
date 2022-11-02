@@ -108,8 +108,13 @@ class SessionPlayer(models.Model):
         '''
         return a proccessed list of instructions to the subject
         '''
+        current_session_player_part = self.get_current_session_player_part()
+
+        if not current_session_player_part:
+            return []
+
         parameter_set = self.parameter_set_player.parameter_set
-        parameter_set_part = self.get_current_session_player_part().session_part.parameter_set_part
+        parameter_set_part = current_session_player_part.session_part.parameter_set_part
 
         outcome_image_html = "<div class='row'>"
         outcome_name_list = ""
@@ -264,7 +269,7 @@ class SessionPlayer(models.Model):
         return earnings in dollar format
         '''
 
-        return f'${(self.earnings/100):.2f}'
+        return f'${(self.earnings):.2f}'
 
 
         
