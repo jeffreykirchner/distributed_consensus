@@ -168,3 +168,17 @@ class SessionPlayerPart(models.Model):
             "session_part" : self.session_part.json_for_subject(),
             #"parameter_set_player_part" : self.parameter_set_player_part.json(),
         }
+    
+    def json_for_staff_session(self):
+        '''
+        json for staff session screen
+        '''
+        return{
+            "id" : self.id,    
+            "earnings" : f'{self.earnings:.2f}',
+            
+            "results_complete" : self.results_complete,
+            "current_instruction" : self.current_instruction,
+            "current_instruction_complete" : self.current_instruction_complete,
+            "instructions_finished" : self.instructions_finished,
+        }

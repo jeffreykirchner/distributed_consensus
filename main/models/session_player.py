@@ -218,7 +218,8 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json(),           
+            "parameter_set_player" : self.parameter_set_player.json(),      
+            "session_player_parts" : [p.json_for_staff_session() for p in self.session_player_parts_b.all()],     
         }
     
     
