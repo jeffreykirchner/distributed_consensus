@@ -649,9 +649,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         send final results
         '''
 
-        message_data = {"status":{"value":"success",
-                                  "result":{"session" : await sync_to_async(take_get_session)(self.connection_uuid)}
-                                 }}
+        message_data = await sync_to_async(take_update_final_results)(self.session_id)
+
         message = {}
         message["messageType"] = "final_results"
         message["messageData"] = message_data
@@ -676,10 +675,27 @@ def take_get_session(session_key):
 
     try:        
         session = Session.objects.get(session_key=session_key)
-        return session.json_min()
+        return session.json_for_staff_session()
     except ObjectDoesNotExist:
          logger.warning(f"staff get_session session, not found: {session_key}")
          return {}
+
+def take_update_final_results(session_id):
+    '''
+    return session with specified id
+    param: session_key {uuid} session uuid
+    '''
+    session = None
+    logger = logging.getLogger(__name__)
+
+    try:        
+        session = Session.objects.get(id=session_id)
+ 
+    except ObjectDoesNotExist:
+         logger.warning(f"staff get_session session, not found: {session_id}")
+         return {"status":"fail", "errors":{}}
+
+    return {"value" : "success", "current_experiment_phase" : session.current_experiment_phase}    
 
 def take_update_session_form(session_id, data):
     '''
@@ -1052,8 +1068,10 @@ def take_payment_periods(session_id, data):
                 "result" : {}}
     
     #calc results
+    logger.info("Start calc results")
     for i in session.session_parts_a.exclude(parameter_set_part__mode=PartModes.A):
         i.calc_results()
+    logger.info("End calc results")
 
     session.current_experiment_phase = ExperimentPhase.RESULTS
     session.save()

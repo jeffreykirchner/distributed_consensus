@@ -408,7 +408,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = {"value":"success", 
-                                  "result": await sync_to_async(take_get_session_subject)(self.session_player_id)}
+                                  "result": await sync_to_async(take_get_update_final_result)(self.session_id, self.session_player_id)}
 
         message = {}
         message["messageType"] = "final_results"
@@ -423,7 +423,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = {"value":"success", 
-                                  "result": await sync_to_async(take_get_session_subject)(self.session_player_id)}
+                                  "result": await sync_to_async(take_get_update_current_session_part_result)(self.session_id, self.session_player_id)}
 
         message = {}
         message["messageType"] = "update_current_session_part_result"
@@ -451,6 +451,45 @@ def take_get_session_subject(session_player_id):
         return {"session" : None, 
                 "session_player" : None,
                 "current_choice" : None}
+
+def take_get_update_current_session_part_result(session_id, session_player_id):
+    '''
+    return result for current session_part
+    '''
+    try:
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+        
+        return {
+                "session_player" : session_player.json(),
+                 }
+
+    except ObjectDoesNotExist:
+        return {
+                "session_player" : None,
+                }
+
+def take_get_update_final_result(session_id, session_player_id):
+    '''
+    return result for current session_part
+    '''
+    logger = logging.getLogger(__name__) 
+
+    try:
+        logger.info(f"take_get_update_final_result: Start {session_player_id}")
+
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+        session = Session.objects.get(id=session_id)
+
+        return {
+                "session_player_parts" : [p.json_for_subject() for p in session_player.session_player_parts_b.all()],
+                "earnings" : f'{session_player.earnings:.2f}',
+                "current_experiment_phase" : session.current_experiment_phase,
+                 }
+
+    except ObjectDoesNotExist:
+        return {
+                "session_player" : None,
+                }
 
 def take_get_instruction_set(session_player_id):
     '''

@@ -128,7 +128,7 @@ class SessionPlayerPartPeriod(models.Model):
             "id" : self.id,  
             "session_player_id" : self.session_player_part.session_player.id,
             "id_label" : self.session_player_part.session_player.parameter_set_player.id_label,
-            "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
-            "choice" : self.choice.json() if self.choice else None, 
+            "parameter_set_labels_period" : self.parameter_set_labels_period.json_for_subject(),
+            "choice" : self.choice.json_for_subject() if self.choice else None, 
         }
          

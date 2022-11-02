@@ -305,12 +305,13 @@ take_payment_periods(messageData){
  * @param messageData {json} result of update, either sucess or fail with errors
 */
 takeFinalResults(messageData){
-    if(messageData.status.value == "success")
-    {
-        result = messageData.status.result;        
-        app.session = result.session;
+    if(messageData.value == "success")
+    {     
+        app.session.current_experiment_phase = messageData.current_experiment_phase;
+
         app.paymentPeriodsModal.hide();
         this.payment_periods_result = "";
+
         app.updatePhaseButtonText();
     }
     else

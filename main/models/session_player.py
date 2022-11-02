@@ -198,6 +198,30 @@ class SessionPlayer(models.Model):
             "session_player_parts" : [p.json_for_subject() for p in self.session_player_parts_b.all()],
         }
     
+    def json_for_staff_session(self):
+        '''
+        get json object for staff home screen
+        '''
+
+        return{
+            "id" : self.id,      
+            "name" : self.name,
+            "student_id" : self.student_id,   
+            "email" : self.email,
+            "name_submitted" : self.name_submitted,
+
+            "earnings" : f'{self.earnings:.2f}',
+
+            "player_number" : self.player_number,
+            "player_key" : self.player_key,
+
+            "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
+            "connected_count" : self.connected_count,
+
+            "parameter_set_player" : self.parameter_set_player.json(),           
+        }
+    
+    
     def json_for_subject(self, session_player):
         '''
         json model for subject screen

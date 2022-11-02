@@ -408,6 +408,28 @@ class Session(models.Model):
             "current_index" : self.get_current_session_part_and_period_index(),
         }
     
+    def json_for_staff_session(self):
+        '''
+        small json model
+        '''
+        return{
+            "id":self.id,
+            "title":self.title,
+            "locked":self.locked,
+            "start_date":self.get_start_date_string(),
+            "started":self.started,
+            "current_experiment_phase":self.current_experiment_phase,
+            "time_remaining":self.time_remaining,
+            "timer_running":self.timer_running,
+            "finished":self.finished,
+            "parameter_set":self.parameter_set.json_min(),
+            "session_parts":[i.json() for i in self.session_parts_a.all()],
+            "session_players":[i.json_for_staff_session() for i in self.session_players_a.all()],
+            "invitation_text" : self.invitation_text,
+            "invitation_subject" : self.invitation_subject,
+            "current_index" : self.get_current_session_part_and_period_index(),
+        }
+    
     def json_for_subject(self, session_player):
         '''
         json object for subject screen

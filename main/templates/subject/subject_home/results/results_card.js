@@ -5,9 +5,10 @@ takeFinalResults(messageData){
     if(messageData.status.value == "success")
     {
         result = messageData.status.result;        
-        app.session = result.session;        
-        app.session_player = result.session_player;
-        app.current_choice = result.current_choice;
+        app.session.current_experiment_phase = result.current_experiment_phase;        
+        app.session_player.session_player_parts = result.session_player_parts;
+        app.session_player.earnings = result.earnings;
+        //app.current_choice = result.current_choice;
     }
     else
     {
@@ -22,9 +23,9 @@ takeCurrentPartResult(messageData){
     if(messageData.status.value == "success")
     {
         result = messageData.status.result;        
-        app.session = result.session;        
+        //app.session = result.session;        
         app.session_player = result.session_player;
-        app.current_choice = result.current_choice;
+        //app.current_choice = result.current_choice;
     }
     else
     {
