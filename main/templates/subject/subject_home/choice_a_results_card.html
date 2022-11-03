@@ -130,7 +130,8 @@
                 </div>
 
                 <div class="text-center" v-else>
-                    <button class="btn btn-outline-success"
+                    <button class="btn"
+                        v-bind:class="tick_tock=='tick' ? 'btn-success' : 'btn-outline-success'"
                         type="button"
                         title="Finished Reviewing Results"
                         v-bind:disabled="!session.started || reconnecting || working"

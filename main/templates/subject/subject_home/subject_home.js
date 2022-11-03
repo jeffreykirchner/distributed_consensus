@@ -35,6 +35,8 @@ var app = Vue.createApp({
 
                     // modals
                     endGameModal : null,
+
+                    tick_tock : 'tick',
                 }},
     methods: {
 
@@ -144,6 +146,7 @@ var app = Vue.createApp({
             }
 
             app.do_timer();
+            app.do_timer_2();
          },
 
          /**
@@ -161,8 +164,18 @@ var app = Vue.createApp({
                     }
                 }
             }
-            
+
             setTimeout(app.do_timer, 1000);
+        },
+
+        do_timer_2(){
+
+            if(app.tick_tock == 'tick')
+                app.tick_tock = 'tock';
+            else
+                app.tick_tock = 'tick';
+            
+            setTimeout(app.do_timer_2, 500);
         },
 
         /** send winsock request to get session info

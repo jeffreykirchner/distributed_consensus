@@ -131,7 +131,8 @@
 
                     <div class="col text-center" v-if="!get_current_part_period().choice">
                 
-                        <button class="btn btn-outline-success"
+                        <button class="btn"
+                            v-bind:class="(tick_tock=='tick' && session.time_remaining==0) ? 'btn-success' : 'btn-outline-success'"
                             type="button"
                             title="Report Choice"
                             v-bind:disabled="!session.started || reconnecting || working || get_current_part_period().current_outcome_index == -1"

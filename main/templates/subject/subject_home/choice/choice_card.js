@@ -82,6 +82,7 @@ takeNextPeriod(messageData){
         app.session.current_index = result.current_index;
         app.session.current_experiment_phase = result.current_experiment_phase;
         app.current_choice = result.current_choice;
+        app.session.time_remaining = app.session.parameter_set.period_length;
     }
     else
     {
