@@ -16,7 +16,7 @@ class ParameterSet(models.Model):
     '''    
     part_count = models.IntegerField(verbose_name='Number or parts.', default=3)                              #number of parts in the experiment
     period_count = models.IntegerField(verbose_name='Number of periods per part.', default=10)                #number of periods in each part of the experiment
-    period_length = models.IntegerField(verbose_name='Period Length, Production', default=20)                 #period length in seconds
+    period_length = models.IntegerField(verbose_name='Period Length, Production', default=10)                 #period length in seconds
     label_set_count = models.IntegerField(verbose_name='Number or label sets.', default=3)  
 
     private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                           #if true subjects can privately chat one on one

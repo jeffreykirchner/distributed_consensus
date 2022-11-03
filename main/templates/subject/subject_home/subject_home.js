@@ -142,7 +142,28 @@ var app = Vue.createApp({
             {
                 this.showEndGameModal();
             }
+
+            app.do_timer();
          },
+
+         /**
+          * run timer
+          */
+        do_timer(){
+            if(app.session.started)
+            {
+                if(app.session.current_experiment_phase == 'Run' && 
+                   app.current_choice.session_part_period.parameter_set_part_period.period_number>1)
+                {
+                    if(app.session.time_remaining>0)
+                    {
+                        app.session.time_remaining -= 1;
+                    }
+                }
+            }
+            
+            setTimeout(app.do_timer, 1000);
+        },
 
         /** send winsock request to get session info
         */
