@@ -319,3 +319,24 @@ takeFinalResults(messageData){
 
     }
 },
+
+send_refresh_screens(messageData){
+    if (!confirm('Refresh the cliet and server screens?')) {
+        return;
+    }
+
+    app.working = true;
+    app.sendMessage("refresh_screens", {});
+},
+
+take_refresh_screens(messageData){
+    if(messageData.value == "success")
+    {           
+        result = messageData.result
+        app.session = result.session;
+    } 
+    else
+    {
+       
+    }
+},

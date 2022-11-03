@@ -431,6 +431,21 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_refresh_screens(self, event):
+        '''
+        refresh staff screen
+        '''
+        message_data = {}
+        message_data["status"] = {"value":"success", 
+                                  "result": await sync_to_async(take_get_session_subject)(self.session_player_id)}
+
+        message = {}
+        message["messageType"] = "refresh_screens"
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        pass
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''
@@ -459,9 +474,10 @@ def take_get_update_current_session_part_result(session_id, session_player_id):
     try:
         session_player = SessionPlayer.objects.get(id=session_player_id)
         
-        return {
+        return {"session" : session_player.session.json_for_subject(session_player), 
                 "session_player" : session_player.json(),
-                 }
+                "current_choice" : session_player.json_current_choice(),}
+                 
 
     except ObjectDoesNotExist:
         return {

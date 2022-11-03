@@ -65,6 +65,19 @@
             </div>
         </div>
 
+        <!-- refresh clients -->
+        <div class="row mt-2" v-show="(session.started) || (session.finished)">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-warning"
+                        v-on:click = "send_refresh_screens()"
+                        title="Refresh Screens"
+                        v-bind:disabled="reconnecting || working || session.current_experiment_phase=='Done'">
+                    Refresh Clients <i class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+
         <!-- select payment periods -->
         <div class="row mt-2" v-show="session.current_experiment_phase =='Pay'">
             <div class="col-md text-center">

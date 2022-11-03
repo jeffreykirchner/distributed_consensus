@@ -399,6 +399,25 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "data": message_data["status"],
                      "sender_channel_name": self.channel_name},
                 )
+                
+    async def refresh_screens(self, event):
+        '''
+        refresh client and server screens
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_refresh_screens)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_refresh_screens",
+                     "data": {},
+                     "sender_channel_name": self.channel_name},
+                )
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -661,6 +680,22 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         send current part results
         '''
+
+        pass
+
+    async def update_refresh_screens(self, event):
+        '''
+        refresh staff screen
+        '''
+
+        message_data = {"value" : "success", "result" : {}}
+        message_data["result"]["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
+
+        message = {}
+        message["messageType"] = "refresh_screens"
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
         pass
 
@@ -1078,3 +1113,10 @@ def take_payment_periods(session_id, data):
            
     return {"value" : "success", 
             "result" : {}}
+
+def take_refresh_screens(session_id, data):
+    '''
+    refresh screen
+    '''
+
+    return take_check_all_choices_in(session_id, data)

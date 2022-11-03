@@ -104,6 +104,9 @@ var app = Vue.createApp({
                     break;
                 case "update_current_session_part_result":
                     app.takeCurrentPartResult(messageData);
+                case "refresh_screens":
+                    app.take_refresh_screens(messageData);
+                    break;
                 
             }
 

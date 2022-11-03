@@ -158,6 +158,9 @@ var app = Vue.createApp({
                 case "final_results":
                     app.takeFinalResults(messageData);
                     break;
+                case "refresh_screens":
+                    app.take_refresh_screens(messageData);
+                    break;
             }
 
             this.first_load_done = true;
