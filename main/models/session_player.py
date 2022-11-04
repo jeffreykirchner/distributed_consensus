@@ -116,22 +116,40 @@ class SessionPlayer(models.Model):
         parameter_set = self.parameter_set_player.parameter_set
         parameter_set_part = current_session_player_part.session_part.parameter_set_part
 
+        #outcome images
         outcome_image_html = "<div class='row'>"
         outcome_name_list = ""
 
-        for index, i in enumerate(parameter_set.parameter_set_random_outcomes.all()):
+        parameter_set_random_outcomes = parameter_set.parameter_set_random_outcomes.all()
+        for index, i in enumerate(parameter_set_random_outcomes):
             outcome_image_html += "<div class='col-auto'>"
             outcome_image_html += f'<img src="/static/{i.image}" class="signal_image">'
             outcome_image_html += "</div>"
 
             if index==0:
                 outcome_name_list = i.name
-            elif parameter_set.parameter_set_random_outcomes.all().count()-1 == index:
+            elif parameter_set_random_outcomes.count()-1 == index:
                 outcome_name_list += f' or {i.name}'
             else:
                 outcome_name_list += f', {i.name}'
 
         outcome_image_html += "</div>"
+
+        #group list
+        group_list = ""
+        group_memebers = current_session_player_part.get_group_members().all()
+       
+        for index, i in enumerate(group_memebers):
+            id_label = f'Player {i.session_player.parameter_set_player.id_label}'
+            if i.session_player==self:
+                id_label += ' (You)'
+                
+            if index==0:
+                group_list = f'{id_label}'
+            elif group_memebers.count()-1 == index:
+                group_list += f' and {id_label}'
+            else:
+                group_list += f', {id_label}'
 
         instructions = []
         for p in parameter_set.parameter_set_parts.all():
@@ -142,12 +160,15 @@ class SessionPlayer(models.Model):
                 i["text_html"] = i["text_html"].replace("#player_id_label#", self.parameter_set_player.id_label)
                 i["text_html"] = i["text_html"].replace("#number_of_players#", str(parameter_set.parameter_set_players.count()-1))
                 
+                i["text_html"] = i["text_html"].replace("#current_part#", str(parameter_set_part.part_number))
                 i["text_html"] = i["text_html"].replace("#part_count#", str(parameter_set.part_count))
                 i["text_html"] = i["text_html"].replace("#part_count-1#", str(parameter_set.part_count-1))
                 i["text_html"] = i["text_html"].replace("#period_count#", str(parameter_set.period_count))
 
                 i["text_html"] = i["text_html"].replace("#outcome_images#", outcome_image_html)
                 i["text_html"] = i["text_html"].replace("#outcome_name_list#", outcome_name_list)
+
+                i["text_html"] = i["text_html"].replace("#group_list#", group_list)
 
                 i["text_html"] = i["text_html"].replace("#pay_choice_majority#", str(parameter_set_part.pay_choice_majority))
                 i["text_html"] = i["text_html"].replace("#pay_choice_minority#", str(parameter_set_part.pay_choice_minority))
