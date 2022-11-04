@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
 from main.models import ParameterSetPlayer
@@ -40,6 +41,9 @@ class SessionPlayer(models.Model):
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
     name_submitted = models.BooleanField(default=False, verbose_name='Name submitted')                  #true if subject has submitted name and student id
 
+    status_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                    #json model of player object
+    parameter_set_player_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)      #json model of parameter_set_player
+        
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -73,6 +77,9 @@ class SessionPlayer(models.Model):
         self.session_player_parts_b.all().delete()
         self.session_player_chats_b.all().delete()
 
+        self.status_json = {}
+        self.parameter_set_player_json = {}
+
         self.save()
     
     def setup(self):
@@ -85,16 +92,22 @@ class SessionPlayer(models.Model):
         #session player parts
         session_player_parts = []
 
+        self.parameter_set_player_json = self.parameter_set_player.parameter_set.json_for_subject()
+
         for p in self.parameter_set_player.parameter_set_player_parts_a.all():
             sp = self.session.session_parts_a.get(parameter_set_part=p.parameter_set_part)  
             session_player_parts.append(main.models.SessionPlayerPart(session_part=sp, \
                                                                       session_player=self, \
                                                                       parameter_set_player_part=p))
-        
+            
         main.models.SessionPlayerPart.objects.bulk_create(session_player_parts)
 
         for p in self.session_player_parts_b.all():
             p.setup()
+
+        self.parameter_set_player_json = self.parameter_set_player.json_for_subject()
+        
+        self.save()
         
     def update_earnings(self):
         '''
@@ -143,7 +156,7 @@ class SessionPlayer(models.Model):
             id_label = f'Player {i.session_player.parameter_set_player.id_label}'
             if i.session_player==self:
                 id_label += ' (You)'
-                
+
             if index==0:
                 group_list = f'{id_label}'
             elif group_memebers.count()-1 == index:
@@ -211,7 +224,7 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json(),
+            "parameter_set_player" : self.parameter_set_player_json,
             "chat_all" : chat_all,
             
             "new_chat_message" : False,           #true on client side when a new un read message comes in
@@ -239,8 +252,8 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json(),      
-            "session_player_parts" : [p.json_for_staff_session() for p in self.session_player_parts_b.all()],     
+            "parameter_set_player" : self.parameter_set_player_json,      
+            "session_player_parts" : [p.json_for_staff_session() for p in self.session_player_parts_b.all()],  
         }
     
     
@@ -263,8 +276,7 @@ class SessionPlayer(models.Model):
             "player_number" : self.player_number,
             "chat_individual" : chat_individual,
             "new_chat_message" : False,           #true on client side when a new un read message comes in
-            "parameter_set_player" : self.parameter_set_player.json_for_subject(),
-
+            "parameter_set_player" : self.parameter_set_player_json,
         }    
     
 
