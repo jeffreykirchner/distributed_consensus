@@ -446,6 +446,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
         pass
+
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''
@@ -697,12 +698,22 @@ def take_choice(session_id, session_player_id, data):
     result = {"current_index" : data["current_index"]}
 
     try:
+        session = Session.objects.get(id=session_id)
+        session_player = session.session_players_a.get(id=session_player_id)
+
         with transaction.atomic():
             session_player_part_period = SessionPlayerPartPeriod.objects.get(id=data["part_period_id"])
             session_player_part_period.choice = ParameterSetRandomOutcome.objects.get(id=data["random_outcome_id"])
             session_player_part_period.save()
 
-        result["session_player_part_period"] = session_player_part_period.json_for_subject()
+            #"session_player.session_player_parts.0.session_player_part_periods.0.choice"
+            indexes = session_player_part_period.get_part_period_indexes()
+            part_number = indexes["part_number"]
+            period_number = indexes["period_number"]
+            session_player.session_player_parts_json[part_number]["session_player_part_periods"][period_number]["choice"] = session_player_part_period.choice.json()
+            session_player.save()
+
+        result["session_player_parts"] = session_player.session_player_parts_json
 
     except ObjectDoesNotExist:      
         message = "Session Period Part not found"
@@ -766,6 +777,12 @@ def take_next_instruction(session_id, session_player_id, data):
 
         session_player_part.save()
 
+        #"session_player.session_player_parts.0.session_player_part_periods.0.choice"        
+        part_number = session_player_part.session_part.parameter_set_part.part_number-1
+        session_player.session_player_parts_json[part_number]["current_instruction"] = session_player_part.current_instruction
+        session_player.session_player_parts_json[part_number]["current_instruction_complete"] = session_player_part.current_instruction_complete
+        session_player.save()
+
     except ObjectDoesNotExist:
         logger.warning(f"take_next_instruction not found: {session_player_id}")
         return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."} 
@@ -797,6 +814,10 @@ def take_finish_instructions(session_id, session_player_id, data):
         session_player_part.instructions_finished = True
         session_player_part.save()
 
+        part_number = session_player_part.session_part.parameter_set_part.part_number-1
+        session_player.session_player_parts_json[part_number]["instructions_finished"] = session_player_part.instructions_finished
+        session_player.save()
+
     except ObjectDoesNotExist:
         logger.warning(f"take_next_instruction : {session_player_id}")
         return {"value" : "fail", "errors" : {}, "message" : "Error"}       
@@ -821,12 +842,20 @@ def take_ready_to_go_on(session_id, session_player_id, data):
     result = {"current_index" : data["current_index"]}
 
     try:       
+        
         with transaction.atomic():
+            session = Session.objects.get(id=session_id)
+            session_player = session.session_players_a.get(id=session_player_id)
             session_player_part = SessionPlayerPart.objects.get(id=data["player_part_id"])
+           
             session_player_part.results_complete = True
             session_player_part.save()
 
             result["session_player_part"] = session_player_part.json_for_subject()
+
+            part_number = session_player_part.session_part.parameter_set_part.part_number-1
+            session_player.session_player_parts_json[part_number]["results_complete"] = session_player_part.results_complete
+            session_player.save()
 
     except ObjectDoesNotExist:
         logger.warning(f"take_ready_to_go_on : {session_player_id}")

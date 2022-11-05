@@ -82,7 +82,7 @@ class SessionPart(models.Model):
 
         for i in self.session_player_parts_a.all():
             i.calc_majority_choice()
-
+            
     #return json object of class
     def json(self):
         '''

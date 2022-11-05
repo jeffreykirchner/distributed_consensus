@@ -25,8 +25,10 @@ takeChoice(messageData){
         result = messageData.status.result;
         current_index = result.current_index;
 
-        part_period = app.get_part_period(current_index.part_index, current_index.period_index);
-        part_period.choice = result.session_player_part_period.choice;
+        app.session_player.session_player_parts = result.session_player_parts;
+
+        // part_period = app.get_part_period(current_index.part_index, current_index.period_index);
+        // part_period.choice = result.session_player_part_period.choice;
     } 
     else
     {

@@ -41,7 +41,7 @@ class SessionPlayer(models.Model):
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
     name_submitted = models.BooleanField(default=False, verbose_name='Name submitted')                  #true if subject has submitted name and student id
 
-    status_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                    #json model of player object
+    session_player_parts_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)      #json model of player object
     parameter_set_player_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)      #json model of parameter_set_player
         
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -79,6 +79,7 @@ class SessionPlayer(models.Model):
 
         self.status_json = {}
         self.parameter_set_player_json = {}
+        self.session_player_parts_json = {}
 
         self.save()
     
@@ -92,10 +93,9 @@ class SessionPlayer(models.Model):
         #session player parts
         session_player_parts = []
 
-        self.parameter_set_player_json = self.parameter_set_player.parameter_set.json_for_subject()
-
         for p in self.parameter_set_player.parameter_set_player_parts_a.all():
             sp = self.session.session_parts_a.get(parameter_set_part=p.parameter_set_part)  
+
             session_player_parts.append(main.models.SessionPlayerPart(session_part=sp, \
                                                                       session_player=self, \
                                                                       parameter_set_player_part=p))
@@ -105,8 +105,9 @@ class SessionPlayer(models.Model):
         for p in self.session_player_parts_b.all():
             p.setup()
 
-        self.parameter_set_player_json = self.parameter_set_player.json_for_subject()
-        
+        self.session_player_parts_json = [p.json_for_subject() for p in self.session_player_parts_b.all()]
+        self.parameter_set_player_json = self.parameter_set_player.json()  
+
         self.save()
         
     def update_earnings(self):
@@ -153,7 +154,7 @@ class SessionPlayer(models.Model):
         group_memebers = current_session_player_part.get_group_members().all()
        
         for index, i in enumerate(group_memebers):
-            id_label = f'Player {i.session_player.parameter_set_player.id_label}'
+            id_label = f'Player {i.session_player.parameter_set_player_json["id_label"]}'
             if i.session_player==self:
                 id_label += ' (You)'
 
@@ -170,7 +171,7 @@ class SessionPlayer(models.Model):
  
             for i in instructions[p.part_number-1]:
                 
-                i["text_html"] = i["text_html"].replace("#player_id_label#", self.parameter_set_player.id_label)
+                i["text_html"] = i["text_html"].replace("#player_id_label#", self.parameter_set_player_json["id_label"])
                 i["text_html"] = i["text_html"].replace("#number_of_players#", str(parameter_set.parameter_set_players.count()-1))
                 
                 i["text_html"] = i["text_html"].replace("#current_part#", str(parameter_set_part.part_number))
@@ -190,8 +191,6 @@ class SessionPlayer(models.Model):
 
                 i["text_html"] = i["text_html"].replace("#minimum_for_majority-1#",  str(parameter_set_part.minimum_for_majority-1))
                 
-
-
         return instructions
     
     def get_current_session_player_part(self):
@@ -199,6 +198,29 @@ class SessionPlayer(models.Model):
         return the current session player part
         '''
         return self.session_player_parts_b.get(session_part=self.session.current_session_part) if self.session.started else None
+    
+    def update_session_player_parts_json(self):
+        '''
+            session_player_parts_json to current status
+        '''
+        logger = logging.getLogger(__name__) 
+        #"session_player.session_player_parts.0.session_player_part_periods.0.group_choices.0"
+
+        session_player_part = self.session_player_parts_b.get(session_part=self.session.current_session_part)
+        indexes = self.session.get_current_session_part_and_period_index()
+        part_index = indexes["part_index"]
+
+        logger.info(self)
+        logger.info(self.session_player_parts_json)
+
+        for index_1, i in enumerate(session_player_part.session_player_part_periods_a.all()):
+            group_members = i.get_group_members()
+
+            for index_2, g in enumerate(group_members.all()):
+                logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
+                self.session_player_parts_json[part_index]["session_player_part_periods"][index_1]["group_choices"][index_2] = g.choice.json()
+
+        self.save()
 
     def json(self, get_chat=True):
         '''
@@ -224,12 +246,12 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player_json,
+            "parameter_set_player" : self.parameter_set_player_json if self.session.started else self.parameter_set_player.json(), 
             "chat_all" : chat_all,
             
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
-            "session_player_parts" : [p.json_for_subject() for p in self.session_player_parts_b.all()],
+            "session_player_parts" : self.session_player_parts_json if self.session.started else [p.json_for_subject() for p in self.session_player_parts_b.all()],
         }
     
     def json_for_staff_session(self):
@@ -252,8 +274,8 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player_json,      
-            "session_player_parts" : [p.json_for_staff_session() for p in self.session_player_parts_b.all()],  
+            "parameter_set_player" : self.parameter_set_player_json if self.session.started else self.parameter_set_player.json(),      
+            "session_player_parts" : self.session_player_parts_json if self.session.started else [p.json_for_subject() for p in self.session_player_parts_b.all()],  
         }
     
     

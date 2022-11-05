@@ -20,6 +20,7 @@ from django.db import transaction
 from django.db.models.signals import post_delete
 from django.utils.timezone import now
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 import main
 
@@ -58,6 +59,9 @@ class Session(models.Model):
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
+
+    parameter_set_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                  #json model of parameter_set
+    parameter_set_json_for_subject = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)      #json model of parameter_set for subject
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -133,6 +137,10 @@ class Session(models.Model):
 
         #set current part
         self.current_session_part = self.session_parts_a.first()
+
+        self.parameter_set_json = self.parameter_set.json()
+        self.parameter_set_json_for_subject = self.parameter_set.json_for_subject()
+
         self.save()
  
     def reset_experiment(self):
@@ -145,6 +153,8 @@ class Session(models.Model):
         self.time_remaining = self.parameter_set.period_length
         self.timer_running = False
         self.current_experiment_phase = ExperimentPhase.RUN
+        self.parameter_set_json = {}
+        self.parameter_set_json_for_subject = {}
 
         self.save()
 
@@ -243,6 +253,10 @@ class Session(models.Model):
 
                 #calc and send Part A results
                 self.current_session_part.calc_results()
+
+                for i in self.session_players_a.all():
+                    i.update_session_player_parts_json()
+
                 self.send_message_to_group("update_current_session_part_result", {})
                 
                 return True
@@ -377,7 +391,7 @@ class Session(models.Model):
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
-            "parameter_set":self.parameter_set.json(),
+            "parameter_set": self.parameter_set_json if self.started else self.parameter_set.json(),
             "session_parts":[i.json() for i in self.session_parts_a.all()],
             "session_players":[i.json(False) for i in self.session_players_a.all()],
             "chat_all" : chat_all,
@@ -400,7 +414,7 @@ class Session(models.Model):
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
-            "parameter_set":self.parameter_set.json_min(),
+            "parameter_set": self. self.parameter_set_json if self.started else self.parameter_set.json(),
             "session_parts":[i.json() for i in self.session_parts_a.all()],
             "session_players":[i.json(False) for i in self.session_players_a.all()],
             "invitation_text" : self.invitation_text,
@@ -422,7 +436,7 @@ class Session(models.Model):
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
-            "parameter_set":self.parameter_set.json_min(),
+            "parameter_set": self.parameter_set_json if self.started else self.parameter_set.json(),
             "session_parts":[i.json() for i in self.session_parts_a.all()],
             "session_players":[i.json_for_staff_session() for i in self.session_players_a.all()],
             "invitation_text" : self.invitation_text,
@@ -442,7 +456,7 @@ class Session(models.Model):
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
-            "parameter_set":self.parameter_set.json_for_subject(),
+            "parameter_set":self.parameter_set_json_for_subject if self.started else self.parameter_set.json_for_subject(),
 
             "current_index" : self.get_current_session_part_and_period_index(),
 

@@ -132,6 +132,10 @@ class SessionPlayerPart(models.Model):
                     self.earnings += self.session_part.parameter_set_part.pay_choice_minority
 
         self.save()
+
+        part_number = self.session_part.parameter_set_part.part_number-1
+        self.session_player.session_player_parts_json[part_number]["earnings"] = self.earnings
+        self.session_player.save()
         
         self.session_player.update_earnings()
 

@@ -61,6 +61,13 @@ class SessionPlayerPartPeriod(models.Model):
         return main.models.SessionPlayerPartPeriod.objects.filter(session_part_period__parameter_set_part_period=parameter_set_part_period) \
                                                           .filter(session_player_part__parameter_set_player_part__group=self.get_group_number())
     
+    def get_part_period_indexes(self):
+        '''
+        return part and period indexes
+        '''
+        return {"part_number" : self.session_part_period.session_part.parameter_set_part.part_number-1,
+                "period_number" : self.session_part_period.parameter_set_part_period.period_number-1}
+
     def calc_majority_choice(self):
         '''
         calc majority choice for this period
@@ -84,6 +91,13 @@ class SessionPlayerPartPeriod(models.Model):
         if random_outcome_counts_sorted[0]['sum'] >= self.session_part_period.session_part.parameter_set_part.minimum_for_majority:
             self.majority_choice = random_outcome_counts_sorted[0]['random_outcome']
             self.save()
+
+            indexes = self.get_part_period_indexes()
+            part_number = indexes["part_number"]
+            period_number = indexes["period_number"]
+            self.session_player_part.session_player.session_player_parts_json[part_number]["session_player_part_periods"] \
+                                                                             [period_number]["majority_choice"] = self.majority_choice.json()
+            self.session_player_part.session_player.save()
 
     def write_summary_download_csv(self, writer):
         '''

@@ -336,7 +336,8 @@ class SessionAdmin(admin.ModelAdmin):
     
     readonly_fields=['parameter_set', 'current_session_part','session_key','channel_key']
     list_display = ['title', 'creator']
-    fields = ['parameter_set', 'creator', 'collaborators', 'current_session_part', 'title','current_experiment_phase','session_key','channel_key','finished','shared','locked',]
+    fields = ['parameter_set', 'creator', 'collaborators', 'current_session_part', 'title','current_experiment_phase', 'started',
+              'session_key','channel_key','finished','shared','locked',]
 
     inlines = [
       SessionPlayerInline,  

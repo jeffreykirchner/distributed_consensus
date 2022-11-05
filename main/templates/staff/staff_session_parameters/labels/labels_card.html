@@ -50,7 +50,7 @@
                         class="btn btn-outline-primary"
                         title="Randomize labels."
                         v-on:click = "sendRandomizeLabels()"
-                        v-bind:disabled="reconnecting || working">
+                        v-bind:disabled="reconnecting || working || session.started">
                         Randomize <i class="fas fa-random"></i>
                     </button>
                 </div>
