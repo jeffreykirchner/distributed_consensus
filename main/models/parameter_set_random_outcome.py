@@ -8,6 +8,8 @@ from django.db.utils import IntegrityError
 
 from main.models import ParameterSet
 
+from django.forms.models import model_to_dict
+
 import main
 
 class ParameterSetRandomOutcome(models.Model):
@@ -65,6 +67,8 @@ class ParameterSetRandomOutcome(models.Model):
         '''
         return json object of model
         '''
+        return model_to_dict(self)
+        
         return{
             "id" : self.id,
             "name" : self.name,
@@ -76,6 +80,8 @@ class ParameterSetRandomOutcome(models.Model):
         '''
         return json object for subject
         '''
+        return model_to_dict(self)
+
         return{
             "id" : self.id,
             "name" : self.name,

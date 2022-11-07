@@ -5,6 +5,7 @@ session player period results
 import logging
 
 from django.db import models
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import SessionPlayerPart
 from main.models import ParameterSetLabelsPeriod
@@ -115,7 +116,7 @@ class SessionPlayerPartPeriod(models.Model):
         json object of model
         '''
 
-        group_choices = [i.json_for_group() if i.choice else None for i in self.get_group_members()]
+        group_choices = [i.json_for_group() for i in self.get_group_members()]
 
         return{
             "id" : self.id,    
@@ -133,7 +134,7 @@ class SessionPlayerPartPeriod(models.Model):
             "paid" : self.session_part_period.paid,
         }
     
-    def json_for_group(self):
+    def json_for_group(self, session_started=False):
         '''
         json object of model
         '''

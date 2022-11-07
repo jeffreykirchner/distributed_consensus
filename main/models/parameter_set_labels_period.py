@@ -8,6 +8,7 @@ from decimal import Decimal
 
 from django.db import models
 from django.db.utils import IntegrityError
+from django.forms.models import model_to_dict
 
 from main.globals import PartModes
 
@@ -80,6 +81,7 @@ class ParameterSetLabelsPeriod(models.Model):
         '''
         return json object of model
         '''
+
         return{
             "id" : self.id,
             "period_number" : self.period_number,
@@ -90,6 +92,7 @@ class ParameterSetLabelsPeriod(models.Model):
         '''
         return json object for subject
         '''
+
         return{
             "id" : self.id,
             "period_number" : self.period_number,

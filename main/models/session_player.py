@@ -105,6 +105,13 @@ class SessionPlayer(models.Model):
         for p in self.session_player_parts_b.all():
             p.setup()
 
+        self.save() 
+    
+    def update_json(self):
+        '''
+        update json objects
+        '''
+
         self.session_player_parts_json = [p.json_for_subject() for p in self.session_player_parts_b.all()]
         self.parameter_set_player_json = self.parameter_set_player.json()  
 
@@ -210,15 +217,15 @@ class SessionPlayer(models.Model):
         indexes = self.session.get_current_session_part_and_period_index()
         part_index = indexes["part_index"]
 
-        logger.info(self)
-        logger.info(self.session_player_parts_json)
+        # logger.info(self)
+        # logger.info(self.session_player_parts_json)
 
         for index_1, i in enumerate(session_player_part.session_player_part_periods_a.all()):
             group_members = i.get_group_members()
 
             for index_2, g in enumerate(group_members.all()):
-                logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
-                self.session_player_parts_json[part_index]["session_player_part_periods"][index_1]["group_choices"][index_2] = g.choice.json()
+                # logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
+                self.session_player_parts_json[part_index]["session_player_part_periods"][index_1]["group_choices"][index_2]["choice"] = g.choice.json_for_subject()
 
         self.save()
 

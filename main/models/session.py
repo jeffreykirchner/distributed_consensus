@@ -119,6 +119,9 @@ class Session(models.Model):
         else:
             self.current_experiment_phase = ExperimentPhase.RUN
 
+        self.parameter_set_json = self.parameter_set.json()
+        self.parameter_set_json_for_subject = self.parameter_set.json_for_subject()
+
         #create parts
         session_parts = []
         for p in self.parameter_set.parameter_set_parts.all():
@@ -135,11 +138,11 @@ class Session(models.Model):
         for i in self.session_players_a.all():
             i.setup()
 
+        for i in self.session_players_a.all():
+            i.update_json()
+            
         #set current part
         self.current_session_part = self.session_parts_a.first()
-
-        self.parameter_set_json = self.parameter_set.json()
-        self.parameter_set_json_for_subject = self.parameter_set.json_for_subject()
 
         self.save()
  

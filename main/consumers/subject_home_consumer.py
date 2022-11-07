@@ -481,8 +481,9 @@ def take_get_update_current_session_part_result(session_id, session_player_id):
                  
 
     except ObjectDoesNotExist:
-        return {
+        return {"session" : None, 
                 "session_player" : None,
+                "current_choice" : None
                 }
 
 def take_get_update_final_result(session_id, session_player_id):
