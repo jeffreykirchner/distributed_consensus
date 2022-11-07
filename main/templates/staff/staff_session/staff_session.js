@@ -146,8 +146,8 @@ var app = Vue.createApp({
                 case "email_list":
                     app.takeUpdateEmailList(messageData);
                     break;
-                case "choice":
-                    app.takeChoice(messageData);
+                case "update_choice":
+                    app.take_choice(messageData);
                     break;
                 case "update_next_period":
                     app.takeNextPeriod(messageData);
@@ -160,6 +160,9 @@ var app = Vue.createApp({
                     break;
                 case "refresh_screens":
                     app.take_refresh_screens(messageData);
+                    break;
+                case "update_session_players":
+                    app.take_update_session_players(messageData);
                     break;
             }
 
@@ -308,6 +311,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
         {%include "staff/staff_session/status/status_card.js"%}
+        {%include "staff/staff_session/subject_choices/subject_choices_card.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

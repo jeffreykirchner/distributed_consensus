@@ -6,7 +6,7 @@ takeFinalResults(messageData){
     {
         result = messageData.status.result;        
         app.session.current_experiment_phase = result.current_experiment_phase;        
-        app.session_player.session_player_parts = result.session_player_parts;
+        app.session_player = result.session_player;
         app.session_player.earnings = result.earnings;
         //app.current_choice = result.current_choice;
     }

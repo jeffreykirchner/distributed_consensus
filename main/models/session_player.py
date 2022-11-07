@@ -205,29 +205,6 @@ class SessionPlayer(models.Model):
         return the current session player part
         '''
         return self.session_player_parts_b.get(session_part=self.session.current_session_part) if self.session.started else None
-    
-    def update_session_player_parts_json(self):
-        '''
-            session_player_parts_json to current status
-        '''
-        logger = logging.getLogger(__name__) 
-        #"session_player.session_player_parts.0.session_player_part_periods.0.group_choices.0"
-
-        session_player_part = self.session_player_parts_b.get(session_part=self.session.current_session_part)
-        indexes = self.session.get_current_session_part_and_period_index()
-        part_index = indexes["part_index"]
-
-        # logger.info(self)
-        # logger.info(self.session_player_parts_json)
-
-        for index_1, i in enumerate(session_player_part.session_player_part_periods_a.all()):
-            group_members = i.get_group_members()
-
-            for index_2, g in enumerate(group_members.all()):
-                # logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
-                self.session_player_parts_json[part_index]["session_player_part_periods"][index_1]["group_choices"][index_2]["choice"] = g.choice.json_for_subject()
-
-        self.save()
 
     def json(self, get_chat=True):
         '''

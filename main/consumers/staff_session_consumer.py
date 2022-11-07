@@ -543,7 +543,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        v = await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
         #check if all choices are in
         result = await sync_to_async(take_check_all_choices_in)(self.session_id, {})
@@ -565,6 +565,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = event["data"]
+        v =  await sync_to_async(take_update_next_period)(self.session_id)
+        message_data["status"]["result"]["session_players"] = v["session_players"]
 
         message = {}
         message["messageType"] = event["type"]
@@ -725,12 +727,35 @@ def take_update_final_results(session_id):
 
     try:        
         session = Session.objects.get(id=session_id)
+        session_players = [{"id" : i.id, "earnings" : f'{i.earnings:.2f}'} for i in session.session_players_a.all()]
+        
  
     except ObjectDoesNotExist:
          logger.warning(f"staff get_session session, not found: {session_id}")
          return {"status":"fail", "errors":{}}
 
-    return {"value" : "success", "current_experiment_phase" : session.current_experiment_phase}    
+    return {"value" : "success", 
+            "current_experiment_phase" : session.current_experiment_phase,
+            "session_players" : session_players}  
+
+def take_update_next_period(session_id):
+    '''
+    return session with specified id
+    param: session_key {uuid} session uuid
+    '''
+    session = None
+    logger = logging.getLogger(__name__)
+
+    try:        
+        session = Session.objects.get(id=session_id)
+        session_players = [{"id" : i.id, "earnings" : f'{i.earnings:.2f}'} for i in session.session_players_a.all()]
+        
+ 
+    except ObjectDoesNotExist:
+         logger.warning(f"staff get_session session, not found: {session_id}")
+         return {"status":"fail", "errors":{}}
+
+    return {"session_players" : session_players}    
 
 def take_update_session_form(session_id, data):
     '''

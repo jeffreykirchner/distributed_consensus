@@ -301,25 +301,6 @@ take_payment_periods(messageData){
     } 
 },
 
-/** take final result
- * @param messageData {json} result of update, either sucess or fail with errors
-*/
-takeFinalResults(messageData){
-    if(messageData.value == "success")
-    {     
-        app.session.current_experiment_phase = messageData.current_experiment_phase;
-
-        app.paymentPeriodsModal.hide();
-        this.payment_periods_result = "";
-
-        app.updatePhaseButtonText();
-    }
-    else
-    {
-
-    }
-},
-
 send_refresh_screens(messageData){
     if (!confirm('Refresh the cliet and server screens?')) {
         return;

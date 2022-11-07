@@ -233,13 +233,13 @@ class Session(models.Model):
                                                            .filter(session_part_period=self.current_session_part.current_session_part_period)\
                                                            .count()
 
-            if c > 0:
-                return None
-            else:
-                if self.current_session_part.advance_period():
-                    return self.get_current_session_part_and_period_index()
-                elif self.advance_part():
-                    return self.get_current_session_part_and_period_index()                     
+        if c > 0:
+            return None
+        else:
+            if self.current_session_part.advance_period():
+                return self.get_current_session_part_and_period_index()
+            elif self.advance_part():
+                return self.get_current_session_part_and_period_index()                     
 
     def advance_part(self):
         '''
@@ -249,16 +249,15 @@ class Session(models.Model):
         if self.current_session_part.parameter_set_part.mode == PartModes.A:
 
             if not self.current_session_part.show_results:
-                self.current_session_part.show_results = True
-                self.current_session_part.save()
+                
+                with transaction.atomic():
+                    self.current_session_part.show_results = True
+                    self.current_session_part.save()
 
-                self.current_session_part.session_player_parts_a.all().update(results_complete=False)
+                    self.current_session_part.session_player_parts_a.all().update(results_complete=False)
 
                 #calc and send Part A results
                 self.current_session_part.calc_results()
-
-                for i in self.session_players_a.all():
-                    i.update_session_player_parts_json()
 
                 self.send_message_to_group("update_current_session_part_result", {})
                 

@@ -1,0 +1,63 @@
+<div class="card" v-if="session.started" v-cloak>        
+
+    <div class="card-header fw-bold">                
+        <span class="align-middle">
+            Subject Choices
+        </span>       
+
+        <span class="float-end"> 
+           
+        </span>          
+    </div>
+    <div class="card-body" >        
+
+        <div v-for="i in session.parameter_set.part_count" class="mb-4">
+
+            <div class="row justify-content-center">           
+                <div class="col-md-auto text-center h4">
+                    <u>Part [[i]]</u>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">           
+                <div class="col-md-auto text-center">         
+                    
+                    <div class="table-responsive">
+                        <table class="table table-condensed"> 
+                            <thead>
+                                <tr>                                                       
+                                    <th scope="col">
+                                        Player #
+                                    </th>
+                                    <th scope="col" v-for="i in session.parameter_set.period_count" v-bind:key="'period_count_header_' + i">
+                                        P-[[i]]                                
+                                    </th>                           
+                                </tr>
+                            </thead>
+                            <tbody id="player_list">
+                                
+                                    <tr v-for="(p, index) in session.session_players" v-bind:key="'player_choice_row_'+i+'_'+p.id">
+                                        <td class="text-nowrap">
+                                            [[p.parameter_set_player.id_label]]
+                                        </td>
+                                        <td scope="col" 
+                                            v-for="period in p.session_player_parts[i-1].session_player_part_periods" 
+                                            v-bind:key="period.id">
+                                            [[period.choice ? period.choice.abbreviation : '-']]                                
+                                        </td>
+                                    </tr>
+                        
+                                
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div> 
+
+        </div>
+         
+        
+        
+    </div>                    
+</div> 

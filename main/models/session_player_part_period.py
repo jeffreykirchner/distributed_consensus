@@ -26,6 +26,8 @@ class SessionPlayerPartPeriod(models.Model):
 
     #earnings = models.IntegerField(verbose_name='Period Earnings', default=0)        #earnings in cents this period
 
+    json_for_group_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -134,16 +136,26 @@ class SessionPlayerPartPeriod(models.Model):
             "paid" : self.session_part_period.paid,
         }
     
-    def json_for_group(self, session_started=False):
+    def json_for_group(self, refresh_needed=False):
         '''
         json object of model
         '''
 
-        return {
-            "id" : self.id,  
-            "session_player_id" : self.session_player_part.session_player.id,
-            "id_label" : self.session_player_part.session_player.parameter_set_player.id_label,
-            "parameter_set_labels_period" : self.parameter_set_labels_period.json_for_subject(),
-            "choice" : self.choice.json_for_subject() if self.choice else None, 
-        }
+        if not self.json_for_group_json:
+            
+            self.json_for_group_json = {
+                "id" : self.id,  
+                "session_player_id" : self.session_player_part.session_player.id,
+                "id_label" : self.session_player_part.session_player.parameter_set_player.id_label,
+                "parameter_set_labels_period" : self.parameter_set_labels_period.json_for_subject(),
+                "choice" : self.choice.json_for_subject() if self.choice else None, 
+            }
+
+            self.save()
+        
+        if refresh_needed:
+            self.json_for_group_json["choice"] = self.choice.json_for_subject()
+            self.save()
+
+        return self.json_for_group_json
          

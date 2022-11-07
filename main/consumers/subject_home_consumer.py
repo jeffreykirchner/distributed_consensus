@@ -138,6 +138,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         result = await sync_to_async(take_choice)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
+        message_data["status"]["result"]["player_id"] = self.session_player_id
 
         message = {}
         message["messageType"] = event["type"]
@@ -499,14 +500,16 @@ def take_get_update_final_result(session_id, session_player_id):
         session = Session.objects.get(id=session_id)
 
         return {
-                "session_player_parts" : [p.json_for_subject() for p in session_player.session_player_parts_b.all()],
+                "session_player" : session_player.json(),
                 "earnings" : f'{session_player.earnings:.2f}',
                 "current_experiment_phase" : session.current_experiment_phase,
                  }
 
     except ObjectDoesNotExist:
         return {
+                "earnings" : None,
                 "session_player" : None,
+                "current_experiment_phase" : None,
                 }
 
 def take_get_instruction_set(session_player_id):
@@ -702,17 +705,18 @@ def take_choice(session_id, session_player_id, data):
         session = Session.objects.get(id=session_id)
         session_player = session.session_players_a.get(id=session_player_id)
 
-        with transaction.atomic():
-            session_player_part_period = SessionPlayerPartPeriod.objects.get(id=data["part_period_id"])
-            session_player_part_period.choice = ParameterSetRandomOutcome.objects.get(id=data["random_outcome_id"])
-            session_player_part_period.save()
+        #with transaction.atomic():
+        session_player_part_period = SessionPlayerPartPeriod.objects.get(id=data["part_period_id"])
+        session_player_part_period.choice = ParameterSetRandomOutcome.objects.get(id=data["random_outcome_id"])
+        session_player_part_period.json_for_group(True)
+        session_player_part_period.save()
 
-            #"session_player.session_player_parts.0.session_player_part_periods.0.choice"
-            indexes = session_player_part_period.get_part_period_indexes()
-            part_number = indexes["part_number"]
-            period_number = indexes["period_number"]
-            session_player.session_player_parts_json[part_number]["session_player_part_periods"][period_number]["choice"] = session_player_part_period.choice.json()
-            session_player.save()
+        #"session_player.session_player_parts.0.session_player_part_periods.0.choice"
+        indexes = session_player_part_period.get_part_period_indexes()
+        part_number = indexes["part_number"]
+        period_number = indexes["period_number"]
+        session_player.session_player_parts_json[part_number]["session_player_part_periods"][period_number]["choice"] = session_player_part_period.choice.json()
+        session_player.save()
 
         result["session_player_parts"] = session_player.session_player_parts_json
 

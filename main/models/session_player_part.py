@@ -88,11 +88,13 @@ class SessionPlayerPart(models.Model):
         '''
         logger = logging.getLogger(__name__)
 
+        part_number = self.session_part.parameter_set_part.part_number-1
+        session_player_part_json =  self.session_player.session_player_parts_json[part_number]
+
         #calc majority choice for group
         for i in self.session_player_part_periods_a.all():
             i.calc_majority_choice()
         
-
         #mode A payment
         if self.session_part.parameter_set_part.mode == main.globals.PartModes.A:
             fail = False
@@ -111,16 +113,24 @@ class SessionPlayerPart(models.Model):
 
             self.earnings = 0            
             for i in self.session_player_part_periods_a.filter(session_part_period__paid=True):
+                period_number = i.json_for_group_json["parameter_set_labels_period"]["period_number"]-1
+
                 if i.majority_choice == i.parameter_set_labels_period.label:
                     self.earnings += self.session_part.parameter_set_part.pay_label_majority
                 else:
                     self.earnings += self.session_part.parameter_set_part.pay_label_minority
+                
+                #update json
+                session_player_part_json["session_player_part_periods"][period_number]["paid"] = True
+                                    
 
         #mode C payment
         elif self.session_part.parameter_set_part.mode == main.globals.PartModes.C:
             
             self.earnings = 0
             for i in self.session_player_part_periods_a.filter(session_part_period__paid=True):
+                period_number = i.json_for_group_json["parameter_set_labels_period"]["period_number"]-1
+
                 if i.majority_choice == i.parameter_set_labels_period.label:
                     self.earnings += self.session_part.parameter_set_part.pay_label_majority
                 else:
@@ -130,11 +140,14 @@ class SessionPlayerPart(models.Model):
                     self.earnings += self.session_part.parameter_set_part.pay_choice_majority
                 else:
                     self.earnings += self.session_part.parameter_set_part.pay_choice_minority
+                
+                #update json
+                session_player_part_json["session_player_part_periods"][period_number]["paid"] = True
 
         self.save()
 
-        part_number = self.session_part.parameter_set_part.part_number-1
-        self.session_player.session_player_parts_json[part_number]["earnings"] = self.earnings
+        #update json
+        session_player_part_json["earnings"] = self.earnings
         self.session_player.save()
         
         self.session_player.update_earnings()
@@ -152,6 +165,29 @@ class SessionPlayerPart(models.Model):
 
         return main.models.SessionPlayerPart.objects.filter(session_part=self.session_part) \
                                                     .filter(parameter_set_player_part__group=self.get_group_number())
+
+    def update_session_player_parts_json(self):
+        '''
+        session_player_parts_json to current status
+        '''
+        logger = logging.getLogger(__name__) 
+        #"session_player.session_player_parts.0.session_player_part_periods.0.group_choices.0"
+
+        
+        part_index = self.parameter_set_player_part.parameter_set_part.part_number-1
+        session_player_part_periods_json = self.session_player.session_player_parts_json[part_index]["session_player_part_periods"]
+
+        #logger.info(self)
+        #logger.info(session_player_part_periods_json)
+
+        for index_1, i in enumerate(self.session_player_part_periods_a.all()):
+            group_members = i.get_group_members()
+
+            for index_2, g in enumerate(group_members.all()):
+                #logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
+                session_player_part_periods_json[index_1]["group_choices"][index_2]["choice"] = g.choice.json_for_subject()
+
+        self.session_player.save()
 
     def json_for_subject(self):
         '''
