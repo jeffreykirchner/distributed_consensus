@@ -856,11 +856,12 @@ def take_ready_to_go_on(session_id, session_player_id, data):
             session_player_part.results_complete = True
             session_player_part.save()
 
-            result["session_player_part"] = session_player_part.json_for_subject()
-
             part_number = session_player_part.session_part.parameter_set_part.part_number-1
             session_player.session_player_parts_json[part_number]["results_complete"] = session_player_part.results_complete
             session_player.save()
+
+        result["session_player_part"] = session_player.session_player_parts_json[part_number]
+        result["player_id"] = session_player_id
 
     except ObjectDoesNotExist:
         logger.warning(f"take_ready_to_go_on : {session_player_id}")

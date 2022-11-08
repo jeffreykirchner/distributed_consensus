@@ -567,6 +567,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"] = event["data"]
         v =  await sync_to_async(take_update_next_period)(self.session_id)
         message_data["status"]["result"]["session_players"] = v["session_players"]
+        message_data["status"]["result"]["session_part"] = v["session_part"]
 
         message = {}
         message["messageType"] = event["type"]
@@ -749,13 +750,14 @@ def take_update_next_period(session_id):
     try:        
         session = Session.objects.get(id=session_id)
         session_players = [{"id" : i.id, "earnings" : f'{i.earnings:.2f}'} for i in session.session_players_a.all()]
-        
+        session_part = session.current_session_part.json()
  
     except ObjectDoesNotExist:
          logger.warning(f"staff get_session session, not found: {session_id}")
          return {"status":"fail", "errors":{}}
 
-    return {"session_players" : session_players}    
+    return {"session_players" : session_players,
+            "session_part" : session_part}    
 
 def take_update_session_form(session_id, data):
     '''
@@ -1143,5 +1145,19 @@ def take_refresh_screens(session_id, data):
     '''
     refresh screen
     '''
+    logger = logging.getLogger(__name__)
+    logger.info(f'refresh screen: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+
+        for i in session.session_players_a.all():
+            i.update_json()
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_refresh_screens session not found: {session_id}")
+        return {"status":"fail", 
+                "message":"Session not found",
+                "result":{}}
 
     return take_check_all_choices_in(session_id, data)

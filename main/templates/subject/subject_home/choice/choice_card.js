@@ -60,6 +60,7 @@ get_current_part_period(){
     return app.get_part_period(app.session.current_index.part_index, app.session.current_index.period_index);                         
 },
 
+
 /**
  * return part period
  */

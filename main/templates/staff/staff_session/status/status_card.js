@@ -5,12 +5,13 @@ takeNextPeriod(messageData){
     result = messageData.status.result;
     
     if(messageData.status.value == "success")
-    {        
+    {   
+        session_part = result.session_part;     
         app.session.current_index = result.current_index;
         app.session.current_experiment_phase = result.current_experiment_phase;
+        app.session.session_parts[result.session_part.parameter_set_part.part_number-1] = result.session_part;
 
-        app.updatePhaseButtonText();
-        
+        app.updatePhaseButtonText();        
 
         for(let i=0;i<result.session_players.length;i++)
         {

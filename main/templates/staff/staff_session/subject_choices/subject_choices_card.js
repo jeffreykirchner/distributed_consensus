@@ -66,3 +66,42 @@ takeFinalResults(messageData){
 
     }
 },
+
+/**
+ * return current part
+ */
+get_current_part(){    
+    return app.session.session_parts[app.session.current_index.part_index];                         
+},
+
+/**
+ * return part period
+ */
+ get_part_player(part_index, player_index){
+
+    if(!app.session) return null;
+
+    if(part_index == -1) return null;
+
+    return app.session.session_players[player_index]
+                      .session_player_parts[part_index];
+},
+
+/** take final result
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+take_update_ready_to_go_on(){
+    if(messageData.status.value == "success")
+    {     
+        result = messageData.status.result;
+        current_index = result.current_index;
+
+        let session_player = app.findSessionPlayer(result.player_id);
+        session_player.session_player_parts[current_index.part_index] = result.session_player_part;
+        
+    }
+    else
+    {
+
+    }
+},

@@ -95,6 +95,7 @@ class SessionPart(models.Model):
 
         return{
             "id" : self.id,
+            "show_results" : self.show_results,
             "parameter_set_part" : self.parameter_set_part.json(),
         }
     

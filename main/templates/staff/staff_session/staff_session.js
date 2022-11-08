@@ -164,6 +164,9 @@ var app = Vue.createApp({
                 case "update_session_players":
                     app.take_update_session_players(messageData);
                     break;
+                case "update_ready_to_go_on":
+                    app.take_update_ready_to_go_on(messageData);
+                    break;
             }
 
             this.first_load_done = true;
