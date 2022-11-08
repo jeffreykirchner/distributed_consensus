@@ -295,13 +295,23 @@ class Session(models.Model):
 
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Session ID", "Period", "Client #", "Label", "Earnings ¢"])
+        writer.writerow(["Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "Label Set", "Label", "Report", "Majority Reported"])
 
-        session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players_a.all()) \
-                                                                        .order_by('session_period__period_number', 'session_player__player_number')
+        for index_i, i in enumerate(self.parameter_set_json["parameter_set_parts"]):
 
-        for p in session_player_periods.all():
-            p.write_summary_download_csv(writer)
+            for index_j, j in enumerate(i["parameter_set_part_periods"]):
+
+                session_data = [self.id, 
+                                index_i + 1,
+                                index_j + 1,
+                                i["mode"],
+                                j["parameter_set_random_outcome"]["abbreviation"]]
+
+                for index_k, k in enumerate(self.session_players_a.all()):
+                    k.write_summary_download_csv(writer, session_data, index_i, index_j) 
+
+        # for p in session_player_periods.all():
+        #     p.write_summary_download_csv(writer)
 
         return output.getvalue()
     

@@ -107,6 +107,33 @@ class SessionPlayer(models.Model):
 
         self.save() 
     
+    def write_summary_download_csv(self, writer, session_data, part_index, period_index):
+        '''
+        take csv writer and add row
+        '''
+        # "Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "Label Set", "Label", "Report", "Majority Reported"
+
+        session_player_part = self.session_player_parts_json[part_index]
+        session_player_part_period = session_player_part["session_player_part_periods"][period_index]
+
+        parameter_set_player_part = self.parameter_set_player_json["parameter_set_player_parts"][part_index]
+
+        out_data = session_data.copy()
+
+        out_data.append(session_player_part_period["paid"])
+        out_data.append(session_player_part_period["group_number"])
+        out_data.append(self.parameter_set_player_json["id_label"])
+        out_data.append(parameter_set_player_part["parameter_set_labels"]["name"])
+        out_data.append(parameter_set_player_part["parameter_set_labels"]["parameter_set_labels_period"][period_index]["label"]["abbreviation"])
+        out_data.append(session_player_part_period["choice"]["abbreviation"])
+
+        if session_player_part_period["majority_choice"]:
+            out_data.append(session_player_part_period["majority_choice"]["abbreviation"])
+        else:
+            out_data.append("None")
+
+        writer.writerow(out_data)
+    
     def update_json(self):
         '''
         update json objects

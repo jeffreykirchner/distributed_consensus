@@ -133,6 +133,8 @@ class SessionPlayerPartPeriod(models.Model):
             "majority_choice" : self.majority_choice.json_for_subject() if self.majority_choice else None,
             "group_choices" : group_choices,
 
+            "group_number" : self.get_group_number(),
+
             "paid" : self.session_part_period.paid,
         }
     
