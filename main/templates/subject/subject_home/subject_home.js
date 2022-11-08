@@ -32,6 +32,7 @@ var app = Vue.createApp({
                     end_game_modal_visible : false,
 
                     instruction_pages : {{instruction_pages|safe}},
+                    instruction_pages_show_scroll : false,
 
                     // modals
                     endGameModal : null,
@@ -144,6 +145,14 @@ var app = Vue.createApp({
             {
                 this.showEndGameModal();
             }
+
+            document.getElementById('instructions_frame_a').addEventListener('scroll',
+                function()
+                {
+                    app.scroll_update();
+                },
+                false
+            )
 
             app.do_timer();
             app.do_timer_2();
