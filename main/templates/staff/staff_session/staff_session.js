@@ -24,7 +24,6 @@ var app = Vue.createApp({
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
                     chat_list_to_display : [],                  //list of chats to display on screen
-                    notice_list_to_display : [],                //list of chats to display on screen
 
                     data_downloading : false,                   //show spinner when data downloading
                     earnings_copied : false,                    //if true show earnings copied   
@@ -216,6 +215,8 @@ var app = Vue.createApp({
                 e.stopImmediatePropagation();
             }
             });
+
+            app.do_timer();
          },
 
         /** send winsock request to get session info

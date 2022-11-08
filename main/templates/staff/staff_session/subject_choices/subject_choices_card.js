@@ -71,7 +71,14 @@ takeFinalResults(messageData){
  * return current part
  */
 get_current_part(){    
-    return app.session.session_parts[app.session.current_index.part_index];                         
+    return app.get_session_part(app.session.current_index.part_index);                         
+},
+
+/**
+ * 
+ */
+get_session_part(index){
+    return app.session.session_parts[index];
 },
 
 /**

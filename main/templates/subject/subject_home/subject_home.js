@@ -149,9 +149,9 @@ var app = Vue.createApp({
             app.do_timer_2();
          },
 
-         /**
+        /**
           * run timer
-          */
+         */
         do_timer(){
             if(app.session.started)
             {

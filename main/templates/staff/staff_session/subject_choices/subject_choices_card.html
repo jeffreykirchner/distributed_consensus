@@ -1,4 +1,4 @@
-<div class="card" v-if="session.started" v-cloak>        
+<div class="card" v-if="session && first_load_done &&  session.started" v-cloak>        
 
     <div class="card-header fw-bold">                
         <span class="align-middle">
@@ -20,6 +20,18 @@
             </div>
 
             <div class="row justify-content-center">           
+                <div class="col-md-auto text-center">
+                    Mode [[get_session_part(i-1).parameter_set_part.mode]]
+                </div>
+            </div>
+
+            <div class="row justify-content-center">           
+                <div class="col-md-auto text-center">
+                    [[get_session_part(i-1).parameter_set_part.mode=='A' ? 'Report' : 'Report / Label']]                    
+                </div>
+            </div>
+
+            <div class="row justify-content-center">           
                 <div class="col-md-auto text-center">         
                     
                     <div class="table-responsive">
@@ -27,10 +39,9 @@
                             <thead>
                                 <tr>                                                       
                                     <th scope="col">
-                                        Player #
-                                    </th>
-                                    <th scope="col" v-for="i in session.parameter_set.period_count" v-bind:key="'period_count_header_' + i">
-                                        P-[[i]]                                
+                                        Player
+                                    <th scope="col" v-for="j in get_session_part(i-1).parameter_set_part.parameter_set_part_periods" v-bind:key="'period_count_header_' + j">
+                                        P[[j.period_number]]<br>([[j.parameter_set_random_outcome.abbreviation]])                              
                                     </th>                           
                                 </tr>
                             </thead>
@@ -38,12 +49,13 @@
                                 
                                     <tr v-for="(p, index) in session.session_players" v-bind:key="'player_choice_row_'+i+'_'+p.id">
                                         <td class="text-nowrap">
-                                            [[p.parameter_set_player.id_label]]
+                                            [[p.parameter_set_player.id_label]] [[get_session_part(i-1).parameter_set_part.mode !='A' ? "(G"+p.parameter_set_player.parameter_set_player_parts[i-1].group+")" : ""]]
                                         </td>
                                         <td scope="col" 
                                             v-for="period in p.session_player_parts[i-1].session_player_part_periods" 
-                                            v-bind:key="period.id">
-                                            [[period.choice ? period.choice.abbreviation : '-']]                                
+                                            v-bind:key="period.id">                                              
+                                            [[period.choice ? period.choice.abbreviation : '-']]
+                                            [[get_session_part(i-1).parameter_set_part.mode !='A' ? '/ ' + period.parameter_set_labels_period.label.abbreviation : '']]                          
                                         </td>
                                     </tr>
                         
