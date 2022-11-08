@@ -76,20 +76,25 @@ class ParameterSet(models.Model):
             new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
             if len(new_parameter_set_random_outcomes) > self.parameter_set_random_outcomes.count():
                 #add more players
-                new_player_count = len(new_parameter_set_random_outcomes) - self.parameter_set_random_outcomes.count()
+                new_count = len(new_parameter_set_random_outcomes) - self.parameter_set_random_outcomes.count()
 
-                for i in range(new_player_count):
+                for i in range(new_count):
                     main.models.ParameterSetRandomOutcome.objects.create(parameter_set=self)
 
             elif len(new_parameter_set_random_outcomes) < self.parameter_set_random_outcomes.count():
                 #remove excess players
 
-                extra_player_count = self.parameter_set_random_outcomes.count() - len(new_parameter_set_random_outcomes)
+                extra_count = self.parameter_set_random_outcomes.count() - len(new_parameter_set_random_outcomes)
 
-                for i in range(extra_player_count):
+                for i in range(extra_count):
                     self.parameter_set_random_outcomes.last().delete()
             
             self.update_parts_and_periods()
+
+            #load random outcomes
+            new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
+            for index, p in enumerate(self.parameter_set_random_outcomes.all()):                
+                p.from_dict(new_parameter_set_random_outcomes[index])
 
             #load labels
             new_parameter_set_labels = new_ps.get("parameter_set_labels")
@@ -100,11 +105,6 @@ class ParameterSet(models.Model):
             new_parameter_set_parts = new_ps.get("parameter_set_parts")
             for index, p in enumerate(self.parameter_set_parts.all()):                
                 p.from_dict(new_parameter_set_parts[index])
-
-            #load random outcomes
-            new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
-            for index, p in enumerate(self.parameter_set_random_outcomes.all()):                
-                p.from_dict(new_parameter_set_random_outcomes[index])
 
             #load players
             new_parameter_set_players = new_ps.get("parameter_set_players")
