@@ -16,6 +16,8 @@ from main.consumers import take_next_phase
 from main.consumers import take_choice
 from main.consumers import take_ready_to_go_on
 from main.consumers import take_payment_periods
+from main.consumers import take_next_phase
+from main.consumers import take_check_all_choices_in
 
 from main.globals import ExperimentPhase
 
@@ -344,7 +346,140 @@ class TestStaffConsumer(TestCase):
         self.assertEqual(self.session_large.parameter_set.parameter_set_random_outcomes.all()[0], v.majority_choice)
         self.assertEqual("Part 3",v.session_player_part.parameter_set_player_part.__str__())
         self.assertEqual(Decimal('1'), v.session_player_part.earnings)
+    
+    def test_session_phases(self):
+        '''
+        test session phases
+        '''
+
+        #instructions at start
+        self.session_small.start_experiment()
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.INSTRUCTIONS)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 1)
+
+        #instructions for part 1 done
+        r = take_next_phase(self.session_small.id, {})
+        self.assertEqual(r["value"], "success")
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.RUN)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 1)
+
+        #part 1 choices
+        for j in range(self.session_small.parameter_set.period_count):
+
+            for index, i in enumerate(self.session_small.session_players_a.all()):
+                session_player_part_period = i.get_current_session_player_part().get_current_session_player_part_period()      
+
+                data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
+                        'part_period_id': session_player_part_period.id, 
+                        'current_index': {'part_index': 0, 'period_index': j}}}
+
+                r = take_choice(self.session_small.id, i.id, data)   
+                self.assertEqual(r["value"], "success")  
+                          
+            self.assertNotEqual(self.session_small.check_advance_period(), None)
         
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.RUN)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 1)
+
+        #part 1 results
+        for index, i in enumerate(self.session_small.session_players_a.all()):
+            session_player_part = i.get_current_session_player_part()
+            session_player_part_period = session_player_part.get_current_session_player_part_period()
+            data = {'data': {'player_part_id': session_player_part.id, 
+                             'current_index': {'part_index': 0, 
+                                               'period_index': session_player_part_period.parameter_set_labels_period.period_number-1}}}
+
+            r = take_ready_to_go_on(self.session_small.id, i.id, data)   
+            self.assertEqual(r["value"], "success")
+
+        #part 2 instructions
+        v = take_check_all_choices_in(self.session_small.id, {})
+        self.assertEqual(r["value"], "success")
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.INSTRUCTIONS)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 2)
+
+        #part 2 choices
+        r = take_next_phase(self.session_small.id, {})
+        self.assertEqual(r["value"], "success")
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.RUN)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 2)
+
+        #part 2 choices
+        for j in range(self.session_small.parameter_set.period_count):
+
+            for index, i in enumerate(self.session_small.session_players_a.all()):
+                session_player_part_period = i.get_current_session_player_part().get_current_session_player_part_period()      
+
+                data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
+                        'part_period_id': session_player_part_period.id, 
+                        'current_index': {'part_index': 0, 'period_index': j}}}
+
+                r = take_choice(self.session_small.id, i.id, data)   
+                self.assertEqual(r["value"], "success")  
+                          
+            self.assertNotEqual(self.session_small.check_advance_period(), None)
+        
+        #part 3 instructions
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.INSTRUCTIONS)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 3)
+
+        #part 3 run
+        r = take_next_phase(self.session_small.id, {})
+        self.assertEqual(r["value"], "success")
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.RUN)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 3)
+
+        #part 3 choices
+        for j in range(self.session_small.parameter_set.period_count):
+
+            for index, i in enumerate(self.session_small.session_players_a.all()):
+                session_player_part_period = i.get_current_session_player_part().get_current_session_player_part_period()      
+
+                data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
+                        'part_period_id': session_player_part_period.id, 
+                        'current_index': {'part_index': 0, 'period_index': j}}}
+
+                r = take_choice(self.session_small.id, i.id, data)   
+                self.assertEqual(r["value"], "success")  
+                          
+            self.assertNotEqual(self.session_small.check_advance_period(), None)
+        
+        #payment
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.PAY)
+        self.assertEqual(self.session_small.current_session_part.parameter_set_part.part_number, 3)
+
+        session_parts = self.session_small.session_parts_a.all()
+
+        data = {'payment_periods': [{'id': session_parts[1].id, 'periods': '1'}, 
+                                    {'id': session_parts[2].id, 'periods': '2'}]}
+        r = take_payment_periods(self.session_small.id, data)
+        self.assertEqual(r["value"], "success")
+
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.RESULTS)
+
+        r = take_next_phase(self.session_small.id, {})
+        self.assertEqual(r["value"], "success")
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.NAMES)
+
+        r = take_next_phase(self.session_small.id, {})
+        self.assertEqual(r["value"], "success")
+        self.session_small = Session.objects.get(title='Test Small')
+        self.assertEqual(self.session_small.current_experiment_phase, ExperimentPhase.DONE)
+        self.assertTrue(self.session_small.finished)
+
+
+
+
+
 
 
 
