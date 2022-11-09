@@ -28,7 +28,9 @@
                 </div>
                 
             </div>
-            <div class="modal-footer">                                          
+            <div class="modal-footer">
+                <span v-if="working" class="mr-4 align-middle"><i class="fas fa-spinner fa-spin"></i></span>        
+
                 <button type="button" 
                         title="Send payment periods."
                         class="btn btn-outline-success" 
