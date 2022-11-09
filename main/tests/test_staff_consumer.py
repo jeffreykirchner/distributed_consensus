@@ -14,6 +14,8 @@ from main.models import Session
 
 from main.consumers import take_chat
 from main.consumers import take_next_phase
+from main.consumers import take_choice
+from main.consumers import take_ready_to_go_on
 
 import main
 
@@ -64,6 +66,8 @@ class TestStaffConsumer(TestCase):
         test majority calculation
         '''
         logger = logging.getLogger(__name__)
+        
+        self.session_large.start_experiment()
 
         #check minimum majority        
         for j in range(self.session_large.parameter_set.period_count):
@@ -73,18 +77,31 @@ class TestStaffConsumer(TestCase):
 
                 minimum_for_majority = session_player_part_period.session_player_part.session_part.parameter_set_part.minimum_for_majority
 
-                #logger.info(minimum_for_majority)
+                #logger.info(f'Session player part period: Player:{i.parameter_set_player.id_label} Period:{session_player_part_period.parameter_set_labels_period.period_number}')
 
-                if index < minimum_for_majority:       
-                    session_player_part_period.choice = self.session_large.parameter_set.parameter_set_random_outcomes.all()[0]
+                if index < minimum_for_majority:    
+                    data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
+                           'part_period_id': session_player_part_period.id, 
+                           'current_index': {'part_index': 0, 'period_index': j}}}
+
+                    r = take_choice(self.session_large.id, i.id, data)   
+                    self.assertEqual(r["value"], "success")
+                    
                 else:
-                    session_player_part_period.choice = self.session_large.parameter_set.parameter_set_random_outcomes.all()[1]
+                    data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[1].id, 
+                            'part_period_id': session_player_part_period.id, 
+                            'current_index': {'part_index': 0, 'period_index': j}}}
 
-                session_player_part_period.save()   
+                    r = take_choice(self.session_large.id, i.id, data)   
+                    self.assertEqual(r["value"], "success")
+
+                #session_player_part_period.save()   
                 #logger.info(f'Period: {j}, Player:{index}, Choice:{session_player_part_period.choice}')         
-            
-            self.session_large.current_session_part.advance_period()
+                          
+            self.assertNotEqual(self.session_large.check_advance_period(), None)
         
+        logger.info(f"Current Session Part: {self.session_large.current_session_part.parameter_set_part.part_number}")
+
         self.session_large.current_session_part.calc_results()
 
         v = self.session_large.session_players_a.all()[0].session_player_parts_b.all()[0].session_player_part_periods_a.all()[0]
@@ -107,7 +124,7 @@ class TestStaffConsumer(TestCase):
             
             minimum_for_majority = i.session_player_part.session_part.parameter_set_part.minimum_for_majority
 
-            if index < minimum_for_majority:       
+            if index < minimum_for_majority:      
                 i.choice = self.session_large.parameter_set.parameter_set_random_outcomes.all()[0]
             else:
                 i.choice = self.session_large.parameter_set.parameter_set_random_outcomes.all()[1]

@@ -705,7 +705,7 @@ def take_choice(session_id, session_player_id, data):
         session = Session.objects.get(id=session_id)
         session_player = session.session_players_a.get(id=session_player_id)
 
-        #with transaction.atomic():
+        # with transaction.atomic():
         session_player_part_period = SessionPlayerPartPeriod.objects.get(id=data["part_period_id"])
         session_player_part_period.choice = ParameterSetRandomOutcome.objects.get(id=data["random_outcome_id"])
         session_player_part_period.json_for_group(True)

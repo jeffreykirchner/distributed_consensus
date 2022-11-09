@@ -227,13 +227,15 @@ class Session(models.Model):
         '''
         check if all subjects have submitted their choices.
         '''
-
+        logger = logging.getLogger(__name__)
+        
         with transaction.atomic():
-            c = main.models.SessionPlayerPartPeriod.objects.filter(choice=None)\
+            v = main.models.SessionPlayerPartPeriod.objects.filter(choice=None)\
                                                            .filter(session_part_period=self.current_session_part.current_session_part_period)\
-                                                           .count()
 
-        if c > 0:
+            #logger.info(v)                                                
+
+        if v.count() > 0:
             return None
         else:
             if self.current_session_part.advance_period():

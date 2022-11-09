@@ -32,7 +32,7 @@ class SessionPlayerPartPeriod(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"ID:{self.session_player_part.session_player}, Part:{self.session_player_part}, Period:{self.parameter_set_labels_period.period_number}"
+        return f"ID: {self.id}, ID_label:{self.session_player_part.session_player}, Part:{self.session_player_part}, Period:{self.parameter_set_labels_period.period_number}"
 
     class Meta:
         
