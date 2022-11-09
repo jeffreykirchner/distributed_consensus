@@ -172,7 +172,7 @@ class SessionPlayerPart(models.Model):
             group_members = i.get_group_members()
 
             for index_2, g in enumerate(group_members.all()):
-                logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
+                #logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
                 session_player_part_periods_json[index_1]["group_choices"][index_2]["choice"] = g.choice.json_for_subject()
 
         self.session_player.save()
