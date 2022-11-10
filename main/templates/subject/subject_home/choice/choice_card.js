@@ -86,11 +86,41 @@ takeNextPeriod(messageData){
         app.session.current_experiment_phase = result.current_experiment_phase;
         app.current_choice = result.current_choice;
         app.session.time_remaining = app.session.parameter_set.period_length;
+        app.scroll_choice_into_view();
     }
     else
     {
         
     }
+},
+
+scroll_choice_into_view()
+{
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
+
+    // if(app.session.current_experiment_phase == "Pay") return;
+    
+    // let mode = app.current_choice.session_part.parameter_set_part.mode;
+
+    // if(mode == "A")
+    // {
+    //     if(app.current_choice.session_part.show_results)
+    //     {
+    //         document.getElementById("id_choice_a_results_card").scrollIntoView();
+    //     }
+    //     else
+    //     {
+    //         document.getElementById("id_choice_a_card").scrollIntoView();
+    //     }
+    // }
+    // else if(mode == "B")
+    // {
+    //     document.getElementById("id_choice_b_card").scrollIntoView();
+    // }
+    // else if(mode == "C")
+    // {
+    //     document.getElementById("id_choice_c_card").scrollIntoView();
+    // }
 },
 
 sendReadyToGoOn(){

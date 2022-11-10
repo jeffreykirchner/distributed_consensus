@@ -995,10 +995,11 @@ def take_end_early(session_id):
 
     session = Session.objects.get(id=session_id)
 
-    session.parameter_set.period_count = session.current_period
+    session.parameter_set.part_count = session.current_session_part.parameter_set_part.part_number
     session.parameter_set.save()
 
-    return {"value" : "success", "result" : session.parameter_set.period_count}
+    return {"value" : "success", 
+            "result" : session.parameter_set.part_count}
 
 def take_update_subject(session_id, data):
     '''

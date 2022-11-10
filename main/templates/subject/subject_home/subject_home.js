@@ -301,6 +301,8 @@ var app = Vue.createApp({
             {
                 this.hideEndGameModal();
             }
+
+            app.scroll_choice_into_view();
         },
 
         /** hide choice grid modal modal

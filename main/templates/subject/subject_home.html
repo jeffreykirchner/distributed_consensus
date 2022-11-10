@@ -67,7 +67,8 @@
 
      <!-- results part a -->
      <div class="row justify-content-lg-center mt-4" v-cloak v-if="current_choice.session_part.parameter_set_part.mode=='A' && 
-                                                                   current_choice.session_part.show_results">
+                                                                   current_choice.session_part.show_results &&
+                                                                   session.current_experiment_phase == 'Run'">
         <div class="col-md">
             {%include "subject/subject_home/choice_a_results_card.html"%}
         </div>

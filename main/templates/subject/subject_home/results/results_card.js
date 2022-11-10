@@ -9,6 +9,8 @@ takeFinalResults(messageData){
         app.session_player = result.session_player;
         app.session_player.earnings = result.earnings;
         //app.current_choice = result.current_choice;
+
+        app.scroll_choice_into_view();
     }
     else
     {
@@ -26,6 +28,8 @@ takeCurrentPartResult(messageData){
         app.session = result.session;        
         app.session_player = result.session_player;
         app.current_choice = result.current_choice;
+
+        app.scroll_choice_into_view();
     }
     else
     {
