@@ -79,7 +79,7 @@
          v-if="current_choice.hasOwnProperty('session_part') && 
               (session.current_experiment_phase == 'Run' || session.current_experiment_phase == 'Instructions')">
 
-        <div class="col-md-9">
+        <div class="col-md">
             <div v-if="current_choice.session_part.parameter_set_part.mode=='A' && !current_choice.session_part.show_results">
                 {%include "subject/subject_home/choice_a_card.html"%}
             </div>            
@@ -89,10 +89,6 @@
             <div v-if="current_choice.session_part.parameter_set_part.mode=='C' ">
                 {%include "subject/subject_home/choice_c_card.html"%}
             </div>
-        </div>
-        
-        <div class="col-md-3">
-            {%include "subject/subject_home/summary_card.html"%}     
         </div>
     </div>
 

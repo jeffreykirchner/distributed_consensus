@@ -1,8 +1,11 @@
 
 <div class="card" v-if="first_load_done && session.started" id="id_choice_c_card">                  
     <div class="card-header fw-bold">                
-        <span class="align-middle">Your Choice</span>            
+        <span class="align-middle">Submit Your Report</span>            
 
+        <span class="float-end">
+            {%include "subject/subject_home/snippets/choice_card_header.html"%}
+        </span>
     </div>
     <div class="card-body">      
         <div class="row mb-4">

@@ -318,7 +318,6 @@ var app = Vue.createApp({
         },
         
         {%include "subject/subject_home/chat/chat_card.js"%}
-        {%include "subject/subject_home/summary/summary_card.js"%}
         {%include "subject/subject_home/test_mode/test_mode.js"%}
         {%include "subject/subject_home/instructions/instructions_card.js"%}
         {%include "subject/subject_home/choice/choice_card.js"%}

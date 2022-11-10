@@ -19,37 +19,6 @@
         {%endif%}
     </div>
     <div class="card-body" v-if="current_choice.hasOwnProperty('session_part')">  
-        <div class="row">
-            <div class="col text-end pe-1">
-                Current Part:
-            </div>
-            <div class="col text-start ps-1">
-                [[current_choice.session_part.parameter_set_part.part_number]]
-            </div>
-        </div>    
-        <div class="row">
-            <div class="col text-end pe-1">
-                Current Period:
-            </div>
-            <div class="col text-start ps-1">
-                [[current_choice.session_player_part_period.parameter_set_labels_period.period_number]]
-            </div>
-        </div>  
-        <div class="row">
-            <div class="col text-end pe-1">
-                Time Remaining:
-            </div>
-            <div class="col text-start ps-1">
-                [[session.time_remaining]]
-            </div>
-        </div>
-        <div class="row">
-            <div class="col text-end pe-1">
-                Total Earnings:
-            </div>
-            <div class="col text-start ps-1">
-                $[[session_player.earnings]]
-            </div>
-        </div>
+                
     </div>                    
 </div> 

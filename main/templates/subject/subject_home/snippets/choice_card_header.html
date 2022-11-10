@@ -1,0 +1,25 @@
+<span class="me-4">
+    Current Part: [[current_choice.session_part.parameter_set_part.part_number]]
+</span>
+<span class="me-4">
+    Current Period: [[current_choice.session_player_part_period.parameter_set_labels_period.period_number]]
+</span> 
+<span>
+    Time Remaining: [[session.time_remaining]]
+</span>
+{%if session.parameter_set.test_mode%}
+<span>
+
+    
+    <label class="form-check-label ms-4">
+    Test Mode On:
+    </label>
+    <input class="form-check-input  ms-1"
+        type="checkbox" 
+        value="" 
+        id="testModeCheckBox" 
+        v-model="session.parameter_set.test_mode"
+        >
+    
+</span>
+{%endif%}
