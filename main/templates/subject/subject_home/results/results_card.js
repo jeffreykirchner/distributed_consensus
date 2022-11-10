@@ -53,3 +53,22 @@ take_refresh_screens(messageData){
        
     }
 },
+
+/** return a list of pay session_player_part_periods for a given session_part
+ * @param part_index session_part
+*/
+get_paid_list(part_index){
+    let session_player_part_periods = app.session_player.session_player_parts[part_index].session_player_part_periods;
+
+    v = [];
+
+    for(let i=0; i<session_player_part_periods.length; i++)
+    {
+        if(session_player_part_periods[i].paid)
+        {
+            v.push(session_player_part_periods[i]);
+        }
+    }
+   
+    return v;
+},

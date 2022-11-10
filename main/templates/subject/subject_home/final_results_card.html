@@ -18,9 +18,11 @@
                                 <tr>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
-                                    <th scope="col"></th>
                                     <th scope="col" class ="text-center" v-bind:colspan="p.group_members.length">
-                                        Period Reports
+                                        Labels
+                                    </th>
+                                    <th scope="col" class ="text-center" v-bind:colspan="p.group_members.length">
+                                        Reports
                                     </th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
@@ -34,10 +36,10 @@
                                     <th scope="col" class = "text-center">
                                         Image Shown to Everyone
                                     </th>
-                                    <th scope="col" class = "text-center">
-                                        Your Label
+                                    <th class = "text-center" v-for="(p, index_2) in p.group_members" v-bind:key="'part_a_table_head_'+p.id">
+                                        Person [[p.id_label]] <span v-if="p.id==session_player.id">(You)</span>
                                     </th>
-                                    <th class = "text-center" v-for="(p, index) in p.group_members" v-bind:key="'part_a_table_head_'+p.id">
+                                    <th class = "text-center" v-for="(p, index_2) in p.group_members" v-bind:key="'part_a_table_head_'+p.id">
                                         Person [[p.id_label]] <span v-if="p.id==session_player.id">(You)</span>
                                     </th>
                                     <th scope="col" class = "text-center">
@@ -55,34 +57,50 @@
                                 </tr>                           
                             </thead>
                             <tbody id="player_list">
-                                <tr v-for="(p, index) in p.session_player_part_periods" v-bind:key="p.id">
+                                <tr v-for="(p, index_2) in get_paid_list(index)" v-bind:key="p.id">                                    
                                     <td class="text-nowrap text-center align-middle">
-                                        [[index+1]]
+                                        [[index_2+1]]
                                     </td>
-                                    <td class="text-nowrap text-center">
+                                    <td class="text-nowrap text-center"
+                                        style="background-color:ghostwhite;">
                                         <div>
                                             <img v-bind:src="'/static/' + p.parameter_set_part_period.parameter_set_random_outcome.image" 
-                                             class="result_image" />  
+                                                    class="result_image" />  
                                         </div>
                                         <div>
                                             [[p.parameter_set_part_period.parameter_set_random_outcome.name]]
                                         </div>                                                                          
                                     </td>
-                                    <td class="text-nowrap text-center">
+                                    <!-- <td class="text-nowrap text-center">
                                         <div>
                                             <img v-bind:src="'/static/' + p.parameter_set_labels_period.label.image" 
-                                             class="result_image" />  
+                                                    class="result_image" />  
                                         </div>
                                         <div>
                                             [[p.parameter_set_labels_period.label.name]]
                                         </div>                                                                          
-                                    </td>
-                                    <td class="text-nowrap text-center align-middle" style="background-color:ghostwhite;"
-                                        v-for="(g, index) in p.group_choices" v-bind:key="'part_a_table_body_'+p.id+'_'+g.id">
+                                    </td> -->
+                                    <td class="text-nowrap text-center align-middle"                                         
+                                        v-for="(g, index_2) in p.group_choices"
+                                        v-bind:key="'part_a_table_body_'+p.id+'_'+g.id"
+                                        v-bind:class="{'border rounded border-warning border-2' : g.session_player_id==session_player.id}">
+                                        <!-- <div>
+                                            <img v-bind:src="'/static/' + g.parameter_set_labels_period.label.image" 
+                                                class="result_image" />  
+                                        </div> -->
                                         <div>
-                                            <img v-bind:src="'/static/' + g.choice.image" 
-                                                 class="result_image" />  
+                                            [[g.parameter_set_labels_period.label.name]]
                                         </div>
+                                    </td>
+                                    <td class="text-nowrap text-center align-middle" 
+                                        style="background-color:ghostwhite;"
+                                        v-for="(g, index_2) in p.group_choices"
+                                        v-bind:key="'part_a_table_body_'+p.id+'_'+g.id"
+                                        v-bind:class="{'border rounded border-warning border-2' : g.session_player_id==session_player.id}">
+                                        <!-- <div>
+                                            <img v-bind:src="'/static/' + g.choice.image" 
+                                                class="result_image" />  
+                                        </div> -->
                                         <div>
                                             [[g.choice.name]]
                                         </div>
@@ -94,14 +112,15 @@
                                         <div v-else>
                                             <div>
                                                 <img v-bind:src="'/static/' + p.majority_choice.image" 
-                                                     class="result_image" />  
+                                                        class="result_image" />  
                                             </div>
                                             <div>
                                                 [[p.majority_choice.name]]
                                             </div> 
                                         </div>                                                                         
                                     </td>
-                                    <td class="text-nowrap text-center align-middle">
+                                    <td class="text-nowrap text-center align-middle"
+                                        style="background-color:ghostwhite;">
                                         <div v-if="!p.majority_choice">
                                             No
                                         </div>
@@ -112,7 +131,8 @@
                                             No
                                         </div>
                                     </td>
-                                    <td class="text-nowrap text-center align-middle">
+                                    <td class="text-nowrap text-center align-middle"
+                                        style="background-color:ghostwhite;">
                                         <div v-if="!p.majority_choice">
                                             No
                                         </div>
@@ -123,15 +143,17 @@
                                             No
                                         </div>
                                     </td>
-                                    <td class="text-nowrap text-center align-middle">
+                                    <td class="text-nowrap text-center align-middle"
+                                        style="background-color:ghostwhite;" >
                                         <div v-if="!p.paid">
                                             No
                                         </div>
                                         <div v-else class="text-success fw-bold">
                                             Yes
                                         </div>                                        
-                                    </td>                           
+                                    </td>                        
                                 </tr>
+                                
                             </tbody>
                             
                         </table>

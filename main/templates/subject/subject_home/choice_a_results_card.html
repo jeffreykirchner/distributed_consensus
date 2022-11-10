@@ -55,7 +55,7 @@
                         </thead>
                         <tbody id="player_list">
                             <tr v-for="(p, index) in get_current_session_player_part().session_player_part_periods" v-bind:key="p.id">
-                                <td class="text-nowrap text-center">
+                                <td class="text-nowrap text-center align-middle">
                                     [[index+1]]
                                 </td>
                                 <td class="text-nowrap text-center">
@@ -67,17 +67,20 @@
                                         [[p.parameter_set_part_period.parameter_set_random_outcome.name]]
                                     </div>                                                                          
                                 </td>
-                                <td class="text-nowrap text-center" style="background-color:ghostwhite;"
-                                    v-for="(g, index) in p.group_choices" v-bind:key="'part_a_table_body_'+p.id+'_'+g.id">
-                                    <div>
+                                <td class="text-nowrap text-center align-middle" 
+                                    style="background-color:ghostwhite;"
+                                    v-for="(g, index) in p.group_choices" 
+                                    v-bind:key="'part_a_table_body_'+p.id+'_'+g.id"
+                                    v-bind:class="{'border rounded border-warning border-2' : g.session_player_id==session_player.id}">
+                                    <!-- <div>
                                         <img v-bind:src="'/static/' + g.choice.image" 
                                              class="result_image" />  
-                                    </div>
+                                    </div> -->
                                     <div>
                                         [[g.choice.name]]
                                     </div>
                                 </td>
-                                <td class="text-nowrap text-center">
+                                <td class="text-nowrap text-center align-middle">
                                     <div v-if="!p.majority_choice">
                                         No Majority
                                     </div>
@@ -91,7 +94,7 @@
                                         </div> 
                                     </div>                                                                         
                                 </td>
-                                <td class="text-nowrap text-center">
+                                <td class="text-nowrap text-center align-middle">
                                     <div v-if="!p.majority_choice" class="text-danger fw-bold">
                                         No
                                     </div>
