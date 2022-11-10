@@ -303,6 +303,7 @@ var app = Vue.createApp({
             }
 
             app.scroll_choice_into_view();
+            app.do_flip_animations();
         },
 
         /** hide choice grid modal modal

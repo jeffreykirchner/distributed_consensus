@@ -87,11 +87,73 @@ takeNextPeriod(messageData){
         app.current_choice = result.current_choice;
         app.session.time_remaining = app.session.parameter_set.period_length;
         app.scroll_choice_into_view();
+        app.do_flip_animations();
     }
     else
     {
         
     }
+},
+
+async do_flip_animations(){
+
+    if(app.session.current_experiment_phase != "Run") return;
+    
+    let mode = app.current_choice.session_part.parameter_set_part.mode;
+
+    if(mode == "A")
+    {
+
+        if(app.current_choice.session_part.show_results)
+        {
+           
+        }
+        else
+        {
+            Vue.nextTick(() => {
+                app.do_flip_animations_b("id_choice_a_image", "signal_image_animation");           
+            })
+        }
+    }
+    else if(mode == "B")
+    {
+        Vue.nextTick(() => {
+            app.do_flip_animations_b("id_choice_b_image", "signal_image_animation");
+
+
+            for(let i=0;i<app.current_choice.session_player_part_period_group.length;i++)
+            {
+                let element_id = 'group_labels_' + app.current_choice.session_player_part_period_group[i].id;
+                app.do_flip_animations_b(element_id, "signal_image_animation");
+            }
+        })
+        
+    }
+    else if(mode == "C")
+    {
+        Vue.nextTick(() => {
+
+            app.do_flip_animations_b("id_choice_c_image", "signal_image_animation");
+
+            for(let i=0;i<app.current_choice.session_player_part_period_group.length;i++)
+            {
+                let element_id = 'group_labels_' + app.current_choice.session_player_part_period_group[i].id;
+                app.do_flip_animations_b(element_id, "signal_image_animation");
+            }
+        })
+    }
+},
+
+do_flip_animations_b(element_id, animation_name){
+    // retrieve the element
+    element = document.getElementById(element_id);
+        
+    // -> removing the class
+    element.classList.remove(animation_name);
+    void element.offsetWidth;
+    
+    // -> and re-adding the class
+    element.classList.add(animation_name);
 },
 
 scroll_choice_into_view()

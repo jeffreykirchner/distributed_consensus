@@ -30,7 +30,8 @@
                 <div class="row">
                     <div class="col">
                         <img v-bind:src="'/static/' + current_choice.session_part_period.parameter_set_part_period.parameter_set_random_outcome.image" 
-                            class="signal_image"/>
+                            class="signal_image"
+                            id="id_choice_c_image"/>
                     </div>
                 </div>                
             </div> 
@@ -62,6 +63,7 @@
                                  
                                 <img v-bind:src="'/static/' + o.parameter_set_labels_period.label.image" 
                                      class="signal_image rounded border-warning border-2"
+                                     v-bind:id="'group_labels_' + o.id"
                                      v-bind:class="{'border':o.session_player_id==session_player.id}"/>
                                     
                             </div>

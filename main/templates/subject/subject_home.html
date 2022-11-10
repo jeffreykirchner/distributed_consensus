@@ -29,7 +29,16 @@
 
     .signal_image{
         width: 150px;
-        height: auto;       
+        height: auto;              
+    }
+
+    .signal_image_animation {
+        animation: signal_image_keyframs 2s ease; 
+    }
+
+    @keyframes signal_image_keyframs {
+        0% { transform: scaleX(.01) }
+        100% { transform: scaleX(1) }
     }
 
     .result_image{
