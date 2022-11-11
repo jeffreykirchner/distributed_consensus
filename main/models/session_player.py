@@ -43,7 +43,9 @@ class SessionPlayer(models.Model):
 
     session_player_parts_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)      #json model of player object
     parameter_set_player_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)      #json model of parameter_set_player
-        
+
+    survey_complete = models.BooleanField(default=False, verbose_name="Survey Complete")                 #subject has completed the survey  
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -69,6 +71,7 @@ class SessionPlayer(models.Model):
         self.student_id = ""
         self.email = None
         self.name_submitted = False
+        self.survey_complete = False
 
         self.current_instruction = 1
         self.current_instruction_complete = 0
@@ -104,7 +107,7 @@ class SessionPlayer(models.Model):
 
         for p in self.session_player_parts_b.all():
             p.setup()
-
+        
         self.save() 
     
     def write_summary_download_csv(self, writer, session_data, part_index, period_index):
@@ -262,6 +265,8 @@ class SessionPlayer(models.Model):
             
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
+            "survey_complete" : self.survey_complete,
+
             "session_player_parts" : self.session_player_parts_json if self.session.started else [p.json_for_subject() for p in self.session_player_parts_b.all()],
         }
     
@@ -284,6 +289,8 @@ class SessionPlayer(models.Model):
 
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
+
+            "survey_complete" : self.survey_complete,
 
             "parameter_set_player" : self.parameter_set_player_json if self.session.started else self.parameter_set_player.json(),      
             "session_player_parts" : self.session_player_parts_json if self.session.started else [p.json_for_subject() for p in self.session_player_parts_b.all()],  

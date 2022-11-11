@@ -276,7 +276,7 @@ class SessionPlayerAdmin(admin.ModelAdmin):
 
     readonly_fields=['session','player_number','player_key']
     list_display = ['parameter_set_player', 'name', 'student_id', 'email',]
-    fields = ['session','name', 'student_id', 'email', 'parameter_set_player','player_number','player_key', 'name_submitted']
+    fields = ['session','name', 'student_id', 'email', 'parameter_set_player','player_number','player_key', 'name_submitted', 'survey_complete']
     inlines = [
         SessionPlayerPartInline,
       ]
@@ -294,7 +294,7 @@ class SessionPlayerInline(admin.TabularInline):
     model = SessionPlayer
     can_delete = False   
     show_change_link = True
-    fields = ['name', 'student_id', 'email', 'name_submitted']
+    fields = ['name', 'student_id', 'email', 'name_submitted', 'survey_complete']
     readonly_fields = ('get_parameter_set_player_id_label',)
 
 class SessionPartPeriodInline(admin.TabularInline):

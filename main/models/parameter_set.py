@@ -19,8 +19,11 @@ class ParameterSet(models.Model):
     period_length = models.IntegerField(verbose_name='Period Length, Production', default=10)                 #period length in seconds
     label_set_count = models.IntegerField(verbose_name='Number or label sets.', default=3)  
 
-    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                           #if true subjects can privately chat one on one
-    show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                 #if true show instructions
+    private_chat = models.BooleanField(default=True, verbose_name='Private Chat')                             #if true subjects can privately chat one on one
+    show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
+
+    survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
+    survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
 
@@ -51,6 +54,9 @@ class ParameterSet(models.Model):
 
             self.private_chat = new_ps.get("private_chat")
             self.show_instructions = new_ps.get("show_instructions")
+
+            self.survey_required = new_ps.get("survey_required")
+            self.survey_link = new_ps.get("survey_link")
 
             self.save()
             
@@ -202,6 +208,9 @@ class ParameterSet(models.Model):
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
 
+            "survey_required" : "True" if self.survey_required else "False",
+            "survey_link" : self.survey_link,
+
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
             "parameter_set_parts" : [p.json() for p in self.parameter_set_parts.all()],
             "parameter_set_labels" : [p.json() for p in self.parameter_set_labels.all()],
@@ -223,7 +232,10 @@ class ParameterSet(models.Model):
             "label_set_count" : self.label_set_count,
 
             "private_chat" : "True" if self.private_chat else "False",
-            "show_instructions" : "True" if self.show_instructions else "False",          
+            "show_instructions" : "True" if self.show_instructions else "False",       
+
+            "survey_required" : "True" if self.survey_required else "False",
+            "survey_link" : self.survey_link,   
         }
 
     
@@ -241,6 +253,9 @@ class ParameterSet(models.Model):
 
             "show_instructions" : "True" if self.show_instructions else "False",
             "private_chat" : self.private_chat,
+
+            "survey_required" : "True" if self.survey_required else "False",
+            "survey_link" : self.survey_link,
 
             "test_mode" : self.test_mode,
 
