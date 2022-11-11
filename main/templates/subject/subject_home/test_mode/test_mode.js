@@ -36,7 +36,7 @@ doTestMode(){
             document.getElementById("id_name").value =  this.randomString(5, 20);
             document.getElementById("id_student_id").value =  this.randomNumber(1000, 10000);
 
-            this.sendName();
+            app.sendName();
         }
 
         return;

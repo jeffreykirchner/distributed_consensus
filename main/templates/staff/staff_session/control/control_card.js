@@ -15,7 +15,7 @@
     }    
     else if(this.session.current_experiment_phase == "Instructions")
     {
-        this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
+        this.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
     }
     else if(this.session.current_experiment_phase == "Run")
     {
