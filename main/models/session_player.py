@@ -160,10 +160,10 @@ class SessionPlayer(models.Model):
         '''
         return a proccessed list of instructions to the subject
         '''
-        current_session_player_part = self.get_current_session_player_part()
+        # current_session_player_part = self.get_current_session_player_part()
 
-        if not current_session_player_part:
-            return []
+        # if not current_session_player_part:
+        #     return []
 
         parameter_set = self.parameter_set_player.parameter_set
         
@@ -187,31 +187,35 @@ class SessionPlayer(models.Model):
         outcome_image_html += "</div>"
 
         #group list
-        group_list = ""
-        group_memebers = current_session_player_part.get_group_members().all()
        
-        for index, i in enumerate(group_memebers):
-            id_label = f'Player {i.session_player.parameter_set_player_json["id_label"]}'
-            if i.session_player==self:
-                id_label += ' (You)'
-
-            if index==0:
-                group_list = f'{id_label}'
-            elif group_memebers.count()-1 == index:
-                group_list += f' and {id_label}'
-            else:
-                group_list += f', {id_label}'
-
         instructions = []
         for p in parameter_set.parameter_set_parts.all():
+
+            part_number = p.part_number
+
+            group_list = ""
+            group_members = self.session_player_parts_b.get(session_part__parameter_set_part__part_number=part_number).get_group_members().all()
+        
+            for index, i in enumerate(group_members):
+                id_label = f'Player {i.session_player.parameter_set_player_json["id_label"]}'
+                if i.session_player==self:
+                    id_label += ' (You)'
+
+                if index==0:
+                    group_list = f'{id_label}'
+                elif group_members.count()-1 == index:
+                    group_list += f' and {id_label}'
+                else:
+                    group_list += f', {id_label}'
+
             instructions.append([i.json() for i in p.instruction_set.instructions.all()])
  
-            for i in instructions[p.part_number-1]:
+            for i in instructions[part_number-1]:
                 
                 i["text_html"] = i["text_html"].replace("#player_id_label#", self.parameter_set_player_json["id_label"])
                 i["text_html"] = i["text_html"].replace("#number_of_players#", str(parameter_set.parameter_set_players.count()-1))
                 
-                i["text_html"] = i["text_html"].replace("#current_part#", str(p.part_number))
+                i["text_html"] = i["text_html"].replace("#current_part#", str(part_number))
                 i["text_html"] = i["text_html"].replace("#part_count#", str(parameter_set.part_count))
                 i["text_html"] = i["text_html"].replace("#part_count-1#", str(parameter_set.part_count-1))
                 i["text_html"] = i["text_html"].replace("#period_count#", str(parameter_set.period_count))

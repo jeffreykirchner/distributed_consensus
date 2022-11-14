@@ -680,6 +680,13 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "data": result,
                      "sender_channel_name": self.channel_name},
                 )
+        else:
+            await self.channel_layer.send(
+                    self.channel_name,
+                    {"type": "update_next_period",
+                     "data": result,
+                     "sender_channel_name": self.channel_name},
+                )
 
     async def update_final_results(self, event):
         '''
@@ -1136,8 +1143,11 @@ def take_check_all_choices_in(session_id, data):
                 "result" : {"current_index" : v,
                             "current_experiment_phase":session.current_experiment_phase,
                             }}
-
-    return {"value" : "fail", "result" : {}}
+    else:
+        return {"value" : "fail", 
+                "result" : {"current_index" : v,
+                            "current_experiment_phase":session.current_experiment_phase,
+                            }}                             
 
 def take_payment_periods(session_id, data):
     '''

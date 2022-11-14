@@ -269,7 +269,7 @@ class Session(models.Model):
                 c = self.current_session_part.session_player_parts_a.filter(results_complete=False).count()
 
                 if c > 0:
-                    return True
+                    return False
 
         #check end game
         if self.current_session_part.parameter_set_part.part_number==self.parameter_set.part_count:
