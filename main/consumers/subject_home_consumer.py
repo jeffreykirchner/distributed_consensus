@@ -402,6 +402,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         pass
 
+    async def update_survey_complete(self, event):
+        '''
+        no group broadcast of survey complete
+        '''
+        pass
+
     async def update_final_results(self, event):
         '''
         send final results

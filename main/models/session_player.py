@@ -18,6 +18,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
 from main.models import ParameterSetPlayer
+from main.models import Parameters
 
 from main.globals import round_half_away_from_zero
 
@@ -236,6 +237,25 @@ class SessionPlayer(models.Model):
         '''
         return self.session_player_parts_b.get(session_part=self.session.current_session_part) if self.session.started else None
 
+    def get_survey_link(self):
+        '''
+        get survey link
+        '''
+
+        if self.survey_complete:
+            return ""
+        
+        p = Parameters.objects.first()
+
+        link_string = f'{self.session.parameter_set.survey_link}?'
+        link_string += f'session_id={self.session.id}&'
+        link_string += f'player_label={self.parameter_set_player.id_label}&'
+        link_string += f'player_number={self.player_number}&'        
+        link_string += f'player_key={self.player_key}&'
+        link_string += f'server_url={p.site_url}&'
+
+        return link_string
+
     def json(self, get_chat=True):
         '''
         json object of model
@@ -266,6 +286,7 @@ class SessionPlayer(models.Model):
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "survey_complete" : self.survey_complete,
+            "survey_link" : self.get_survey_link(),
 
             "session_player_parts" : self.session_player_parts_json if self.session.started else [p.json_for_subject() for p in self.session_player_parts_b.all()],
         }

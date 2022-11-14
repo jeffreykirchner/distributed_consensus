@@ -169,6 +169,9 @@ var app = Vue.createApp({
                 case "update_anonymize_data":
                     app.takeAnonymizeData(messageData);
                     break;
+                case "update_survey_complete":
+                    app.take_update_survey_complete(messageData);
+                    break;
             }
 
             this.first_load_done = true;

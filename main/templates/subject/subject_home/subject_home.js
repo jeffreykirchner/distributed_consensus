@@ -145,6 +145,12 @@ var app = Vue.createApp({
             {
                 this.showEndGameModal();
             }
+            else if(app.session.current_experiment_phase == 'Done' && 
+                    app.session.parameter_set.survey_required=='True' && 
+                    !app.session_player.survey_complete)
+            {
+                window.location.replace(app.session_player.survey_link);
+            }
 
             document.getElementById('instructions_frame_a').addEventListener('scroll',
                 function()
@@ -212,20 +218,20 @@ var app = Vue.createApp({
                 
             }            
             
-            if(this.session.current_experiment_phase != 'Done')
-            {
+            // if(this.session.current_experiment_phase != 'Done')
+            // {
                                 
-                if(this.session.current_experiment_phase != 'Instructions')
-                {
-                    //app.updateChatDisplay();               
-                }
-            }
+            //     if(this.session.current_experiment_phase != 'Instructions')
+            //     {
+            //         //app.updateChatDisplay();               
+            //     }
+            // }
 
-            if(this.session.current_experiment_phase == 'Instructions')
-            {
-                setTimeout(this.processInstructionPage, 1000);
-                //this.instructionDisplayScroll();
-            }
+            // if(this.session.current_experiment_phase == 'Instructions')
+            // {
+            //     setTimeout(this.processInstructionPage, 1000);
+            //     //this.instructionDisplayScroll();
+            // }
 
             if(!app.first_load_done)
             {
@@ -300,6 +306,13 @@ var app = Vue.createApp({
             else
             {
                 this.hideEndGameModal();
+            }
+
+            if(app.session.current_experiment_phase == 'Done' && 
+                    app.session.parameter_set.survey_required=='True' && 
+                    !app.session_player.survey_complete)
+            {
+                window.location.replace(app.session_player.survey_link);
             }
 
             app.scroll_choice_into_view();

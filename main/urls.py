@@ -25,6 +25,7 @@ urlpatterns = [
     path('staff-session-subject-earnings/<int:pk>/', views.StaffSessionSubjectEarnings.as_view(), name='staff_session_subject_earnings'),
 
     path('subject-home/<uuid:player_key>', views.SubjectHomeView.as_view(), name='subject_home'),
+    path('survey-complete/<uuid:player_key>', views.SubjectSurveyCompleteView.as_view(), name='subject_survey_complete'),
 
     path('auto-login/<uuid:session_key>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect'),
     path('auto-login/<uuid:session_key>/<int:player_number>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect_player_number'),
