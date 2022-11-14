@@ -38,6 +38,7 @@ var app = Vue.createApp({
                     endGameModal : null,
 
                     tick_tock : 'tick',
+                    test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
                 }},
     methods: {
 
@@ -152,13 +153,18 @@ var app = Vue.createApp({
                 window.location.replace(app.session_player.survey_link);
             }
 
-            document.getElementById('instructions_frame_a').addEventListener('scroll',
-                function()
-                {
-                    app.scroll_update();
-                },
-                false
-            )
+            if(document.getElementById('instructions_frame_a'))
+            {
+                document.getElementById('instructions_frame_a').addEventListener('scroll',
+                    function()
+                    {
+                        app.scroll_update();
+                    },
+                    false
+                )
+
+                app.scroll_update();
+            }
 
             app.do_timer();
             app.do_timer_2();
@@ -247,7 +253,20 @@ var app = Vue.createApp({
 
             result = messageData.status;
             app.instruction_pages = result.instruction_pages;
-        },
+
+            Vue.nextTick(() => {
+                document.getElementById('instructions_frame_a').addEventListener('scroll',
+                    function()
+                    {
+                        app.scroll_update();
+                    },
+                    false
+                )    
+                
+                app.scroll_update();
+            })
+        
+        },  
 
         /** update reset status
         *    @param messageData {json} session day in json format

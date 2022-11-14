@@ -29,12 +29,12 @@ doTestMode(){
     console.log("Do Test Mode");
     {%endif%}
 
-    if(this.end_game_modal_visible)
+    if(app.end_game_modal_visible)
     {
-        if(this.session_player.name == "")
+        if(app.session_player.name == "")
         {
-            document.getElementById("id_name").value =  this.randomString(5, 20);
-            document.getElementById("id_student_id").value =  this.randomNumber(1000, 10000);
+            document.getElementById("id_name").value =  app.randomString(5, 20);
+            document.getElementById("id_student_id").value =  app.randomNumber(1000, 10000);
 
             app.sendName();
         }
@@ -42,25 +42,25 @@ doTestMode(){
         return;
     }
 
-    if(this.session.started &&
-       this.session.parameter_set.test_mode
+    if(app.session.started &&
+        app.test_mode
        )
     {
         
         switch (this.session.current_experiment_phase)
         {
             case "Instructions":
-                this.doTestModeInstructions();
+                app.doTestModeInstructions();
                 break;
             case "Run":
-                this.doTestModeRun();
+                app.doTestModeRun();
                 break;
             
         }        
        
     }
 
-    setTimeout(this.doTestMode, this.randomNumber(1000 , 1500));
+    setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
 },
 
 /**
