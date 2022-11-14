@@ -1,5 +1,5 @@
 # distributed_consensus
-Template for multi user Django Channels experiment.<br>
+Distributed Consensus Experiment.<br>
 <br>
 Setup Guide:<br>
 https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04<br>
