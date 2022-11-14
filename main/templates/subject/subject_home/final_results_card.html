@@ -51,15 +51,15 @@
                                     <th scope="col" class = "text-center">
                                         Your label is in the majority.
                                     </th> 
-                                    <th scope="col" class = "text-center">
+                                    <!-- <th scope="col" class = "text-center">
                                         Paid Period
-                                    </th>                          
+                                    </th>                           -->
                                 </tr>                           
                             </thead>
                             <tbody id="player_list">
                                 <tr v-for="(p, index_2) in get_paid_list(index)" v-bind:key="p.id">                                    
                                     <td class="text-nowrap text-center align-middle">
-                                        [[index_2+1]]
+                                        [[p.parameter_set_part_period.period_number]]
                                     </td>
                                     <td class="text-nowrap text-center"
                                         style="background-color:ghostwhite;">
@@ -143,7 +143,7 @@
                                             No
                                         </div>
                                     </td>
-                                    <td class="text-nowrap text-center align-middle"
+                                    <!-- <td class="text-nowrap text-center align-middle"
                                         style="background-color:ghostwhite;" >
                                         <div v-if="!p.paid">
                                             No
@@ -151,7 +151,7 @@
                                         <div v-else class="text-success fw-bold">
                                             Yes
                                         </div>                                        
-                                    </td>                        
+                                    </td>                         -->
                                 </tr>
                                 
                             </tbody>
@@ -165,9 +165,9 @@
             <!-- B text -->
             <div class="row mb-4" v-if="p.session_part.parameter_set_part.mode == 'B'">
                 <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">                        
-                    If your assigned label from step 2 matches the majority ([[p.session_part.parameter_set_part.minimum_for_majority]]+ people) choice from step 3 you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
-                    If your assigned label from step 2 does <u>not</u> match the majority choice from step 3 you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
-                    We will randomly pay you for 1 of the [[session.parameter_set.period_count]] periods in this part.<br><br>
+                    If your assigned label matches the majority ([[p.session_part.parameter_set_part.minimum_for_majority]]+ people) report you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
+                    If your assigned label does <u>not</u> match the majority report from you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
+                    
                     Your earnings for this part: $[[p.earnings]]
                 </div>
             </div>
@@ -175,10 +175,10 @@
              <!-- C text -->
              <div class="row mb-4" v-if="p.session_part.parameter_set_part.mode == 'C'">
                 <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">                        
-                    If your assigned label from step 2 matches the majority ([[p.session_part.parameter_set_part.minimum_for_majority]]+ people) choice from step 3 you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
-                    If your assigned label from step 2 does <u>not</u> match the majority choice from step 3 you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
-                    You will <b>also</b> earn $[[p.session_part.parameter_set_part.pay_choice_majority]] if your choice from step 3 matches the majority choice.<br><br>
-                    We will randomly pay you for 1 of the [[session.parameter_set.period_count]] periods in this part.<br><br>
+                    If your assigned label from matches the majority ([[p.session_part.parameter_set_part.minimum_for_majority]]+ people) report from you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
+                    If your assigned label from does <u>not</u> match the majority report from you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
+                    You will <b>also</b> earn $[[p.session_part.parameter_set_part.pay_choice_majority]] if your report matches the majority report.<br><br>
+                    
                     Your earnings for this part: $[[p.earnings]]
                 </div>
             </div>
