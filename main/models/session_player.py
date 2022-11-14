@@ -165,6 +165,9 @@ class SessionPlayer(models.Model):
         # if not current_session_player_part:
         #     return []
 
+        if not self.session.started:
+            return []
+
         parameter_set = self.parameter_set_player.parameter_set
         
         #outcome images
