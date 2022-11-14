@@ -166,8 +166,7 @@ class SessionPlayer(models.Model):
             return []
 
         parameter_set = self.parameter_set_player.parameter_set
-        parameter_set_part = current_session_player_part.session_part.parameter_set_part
-
+        
         #outcome images
         outcome_image_html = "<div class='row'>"
         outcome_name_list = ""
@@ -212,7 +211,7 @@ class SessionPlayer(models.Model):
                 i["text_html"] = i["text_html"].replace("#player_id_label#", self.parameter_set_player_json["id_label"])
                 i["text_html"] = i["text_html"].replace("#number_of_players#", str(parameter_set.parameter_set_players.count()-1))
                 
-                i["text_html"] = i["text_html"].replace("#current_part#", str(parameter_set_part.part_number))
+                i["text_html"] = i["text_html"].replace("#current_part#", str(p.part_number))
                 i["text_html"] = i["text_html"].replace("#part_count#", str(parameter_set.part_count))
                 i["text_html"] = i["text_html"].replace("#part_count-1#", str(parameter_set.part_count-1))
                 i["text_html"] = i["text_html"].replace("#period_count#", str(parameter_set.period_count))
@@ -222,12 +221,12 @@ class SessionPlayer(models.Model):
 
                 i["text_html"] = i["text_html"].replace("#group_list#", group_list)
 
-                i["text_html"] = i["text_html"].replace("#pay_choice_majority#", str(parameter_set_part.pay_choice_majority))
-                i["text_html"] = i["text_html"].replace("#pay_choice_minority#", str(parameter_set_part.pay_choice_minority))
-                i["text_html"] = i["text_html"].replace("#pay_label_majority#",  str(parameter_set_part.pay_label_majority))
-                i["text_html"] = i["text_html"].replace("#pay_label_minority#",  str(parameter_set_part.pay_label_minority))
+                i["text_html"] = i["text_html"].replace("#pay_choice_majority#", str(p.pay_choice_majority))
+                i["text_html"] = i["text_html"].replace("#pay_choice_minority#", str(p.pay_choice_minority))
+                i["text_html"] = i["text_html"].replace("#pay_label_majority#",  str(p.pay_label_majority))
+                i["text_html"] = i["text_html"].replace("#pay_label_minority#",  str(p.pay_label_minority))
 
-                i["text_html"] = i["text_html"].replace("#minimum_for_majority-1#",  str(parameter_set_part.minimum_for_majority-1))
+                i["text_html"] = i["text_html"].replace("#minimum_for_majority-1#",  str(p.minimum_for_majority-1))
                 
         return instructions
     
