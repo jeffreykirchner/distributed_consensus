@@ -119,12 +119,14 @@ processInstructionPage(){
 /**
  * scroll instruction into view
  */
-instructionDisplayScroll(){
-    
-    document.getElementById("instructions_frame").scrollIntoView();
-
+instructionDisplayScroll(){    
+   
     Vue.nextTick(() => {
-       app.scroll_update();
+       if(document.getElementById("instructions_frame"))
+       {  
+          document.getElementById("instructions_frame").scrollIntoView();
+          app.scroll_update();
+       }
     })
 },
 

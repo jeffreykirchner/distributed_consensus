@@ -334,6 +334,11 @@ var app = Vue.createApp({
                 window.location.replace(app.session_player.survey_link);
             }
 
+            if(app.session.current_experiment_phase == 'Instructions')
+            {
+                app.processInstructionPage();
+            }
+
             app.scroll_choice_into_view();
             app.do_flip_animations();
         },
