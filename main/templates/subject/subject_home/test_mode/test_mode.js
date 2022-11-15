@@ -29,7 +29,7 @@ doTestMode(){
     console.log("Do Test Mode");
     {%endif%}
 
-    if(app.end_game_modal_visible)
+    if(app.end_game_modal_visible && app.test_mode)
     {
         if(app.session_player.name == "")
         {
