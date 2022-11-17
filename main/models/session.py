@@ -293,11 +293,13 @@ class Session(models.Model):
         '''
         return data summary in csv format
         '''
+        v = ["Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "Label Set", "Label", "Report", "Report Length (ms)", "Majority Reported"]
+        for i in self.parameter_set.parameter_set_random_outcomes.all():
+            v.append(f'{i.name} Report Count')
+
         output = io.StringIO()
-
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
-
-        writer.writerow(["Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "Label Set", "Label", "Report", "Majority Reported"])
+        writer.writerow(v)
 
         for index_i, i in enumerate(self.parameter_set_json["parameter_set_parts"]):
 

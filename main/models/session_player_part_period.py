@@ -25,7 +25,7 @@ class SessionPlayerPartPeriod(models.Model):
     majority_choice = models.ForeignKey(ParameterSetRandomOutcome, on_delete=models.CASCADE, related_name="session_player_part_periods_e", null=True, blank=True)
 
     #earnings = models.IntegerField(verbose_name='Period Earnings', default=0)        #earnings in cents this period
-
+    choice_length = models.IntegerField(verbose_name='Choice Length', default=0)      #time in ms it took subjects to make choice 
     json_for_group_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
 
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -135,7 +135,9 @@ class SessionPlayerPartPeriod(models.Model):
             #"earnings" : self.earnings,
             "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
             "parameter_set_part_period" : self.session_part_period.parameter_set_part_period.json(),
+            
             "choice" : self.choice.json() if self.choice else None,      
+            "choice_length" : self.choice_length,
 
             "current_outcome_index" : -1,
             "current_outcome_id" : -1,   

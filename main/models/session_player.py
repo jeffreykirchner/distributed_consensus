@@ -130,11 +130,15 @@ class SessionPlayer(models.Model):
         out_data.append(parameter_set_player_part["parameter_set_labels"]["name"])
         out_data.append(parameter_set_player_part["parameter_set_labels"]["parameter_set_labels_period"][period_index]["label"]["abbreviation"])
         out_data.append(session_player_part_period["choice"]["abbreviation"])
+        out_data.append(session_player_part_period["choice_length"])
 
         if session_player_part_period["majority_choice"]:
             out_data.append(session_player_part_period["majority_choice"]["abbreviation"])
         else:
             out_data.append("None")
+
+        for i in session_player_part_period["random_outcomes"]:
+            out_data.append(i["sum"])
 
         writer.writerow(out_data)
     

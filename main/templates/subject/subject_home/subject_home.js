@@ -39,6 +39,9 @@ var app = Vue.createApp({
 
                     tick_tock : 'tick',
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
+
+                    //time when subject was shown choice.
+                    choice_start_time : null,
                 }},
     methods: {
 
@@ -168,6 +171,8 @@ var app = Vue.createApp({
 
             app.do_timer();
             app.do_timer_2();
+
+            app.choice_start_time = new Date().getTime();
          },
 
         /**
@@ -341,6 +346,7 @@ var app = Vue.createApp({
 
             app.scroll_choice_into_view();
             app.do_flip_animations();
+            app.choice_start_time = new Date().getTime();
         },
 
         /** hide choice grid modal modal

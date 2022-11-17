@@ -714,6 +714,7 @@ def take_choice(session_id, session_player_id, data):
         # with transaction.atomic():
         session_player_part_period = SessionPlayerPartPeriod.objects.get(id=data["part_period_id"])
         session_player_part_period.choice = ParameterSetRandomOutcome.objects.get(id=data["random_outcome_id"])
+        session_player_part_period.choice_length = data["time_span"]
         session_player_part_period.json_for_group(True)
         session_player_part_period.save()
 
@@ -722,6 +723,7 @@ def take_choice(session_id, session_player_id, data):
         part_number = indexes["part_number"]
         period_number = indexes["period_number"]
         session_player.session_player_parts_json[part_number]["session_player_part_periods"][period_number]["choice"] = session_player_part_period.choice.json()
+        session_player.session_player_parts_json[part_number]["session_player_part_periods"][period_number]["choice_length"] = data["time_span"]
         session_player.save()
 
         result["session_player_parts"] = session_player.session_player_parts_json

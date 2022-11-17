@@ -8,10 +8,14 @@ sendchoice(){
     if(!current_part_period) return;
     if(app.session.current_experiment_phase == 'Instructions') return;
 
+    let t = new Date().getTime();
+    let time_span = t - app.choice_start_time;
+
     app.working = true;
     app.sendMessage("choice",
                    {"data" : {random_outcome_id : current_part_period.current_outcome_id,
                               part_period_id :  current_part_period.id,
+                              time_span : time_span,
                               current_index : app.session.current_index}});
                      
 },
@@ -89,6 +93,8 @@ takeNextPeriod(messageData){
         app.scroll_choice_into_view();
         app.do_flip_animations();
         app.instructionDisplayScroll();
+
+        app.choice_start_time = new Date().getTime();
     }
     else
     {
