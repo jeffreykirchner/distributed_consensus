@@ -42,7 +42,7 @@
                         </thead>
                         <tbody id="player_list">
                             <tr v-for="(p, index) in get_current_session_player_part().session_player_part_periods" v-bind:key="p.id">
-                                <td class="text-nowrap text-center align-middle">
+                                <td class="text-nowrap text-center align-middle h4">
                                     [[p.parameter_set_part_period.period_number]]
                                 </td>
                                 <td class="text-nowrap text-center">
@@ -86,8 +86,8 @@
                                             [[p.majority_choice.name]]
                                         </div>  -->
                                     </div>                                                                         
-                                </td>
-                                <td class="text-nowrap text-center align-middle">
+                                </td> 
+                                <td class="text-nowrap text-center align-middle h4">
                                     <div v-if="!p.majority_choice" class="text-danger fw-bold">
                                         No
                                     </div>
