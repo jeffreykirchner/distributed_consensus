@@ -85,8 +85,7 @@
 
     <!-- experiment -->
     <div class="row justify-content-lg-center mt-4" v-cloak 
-         v-if="current_choice.hasOwnProperty('session_part') && 
-              (session.current_experiment_phase == 'Run' || session.current_experiment_phase == 'Instructions')">
+         v-if="choice_card_visible()">
 
         <div class="col-md">
             <div v-if="current_choice.session_part.parameter_set_part.mode=='A' && !current_choice.session_part.show_results">

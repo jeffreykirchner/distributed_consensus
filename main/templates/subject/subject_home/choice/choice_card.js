@@ -88,6 +88,7 @@ takeNextPeriod(messageData){
         app.session.time_remaining = app.session.parameter_set.period_length;
         app.scroll_choice_into_view();
         app.do_flip_animations();
+        app.instructionDisplayScroll();
     }
     else
     {
@@ -214,4 +215,24 @@ takeReadyToGoOn(messageData){
 
     }
 },
+
+/**
+ * return visibility status of choice card.
+ */
+choice_card_visible(){
+
+    if(!app.current_choice.hasOwnProperty('session_part')) return false;
+
+    if(!app.session.current_experiment_phase == 'Run' || 
+       !app.session.current_experiment_phase == 'Instructions') return false;
+
+    session_player_part = app.session_player.session_player_parts[app.current_choice.session_part.parameter_set_part.part_number-1];
+    
+    if(app.session.current_experiment_phase == 'Instructions' && 
+       app.current_choice.session_part.parameter_set_part.part_number == 1 &&
+       session_player_part.current_instruction_complete == 0) return false;
+
+    return true;
+},
+
 
