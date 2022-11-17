@@ -1,5 +1,5 @@
 
-<div class="card" v-if="first_load_done && session.started" id="id_choice_c_card">                  
+<div class="card" v-if="first_load_done && session.started" id="id_choice_b_card">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Submit Your Report</span>            
 
@@ -43,7 +43,7 @@
            <div class="col">
 
                 <div class="row">
-                    <div class="col h5 text-center">
+                    <div class="col h5 text-center mt-4">
                         The labels in your group are:
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="col text-center">
 
-                        <div class="row justify-content-center mt-4">
+                        <div class="row justify-content-center">
                             <div v-for="(o, index) in current_choice.session_player_part_period_group"
                                  class="col-auto text-center"
                                  v-bind:id="'label_grid_' + o.parameter_set_labels_period.id">                                     
@@ -61,9 +61,9 @@
                                     Player [[o.id_label]] <span v-if="o.session_player_id==session_player.id">(You)</span>
                                 </div>
                                  
-                                <img v-bind:src="'/static/' + o.parameter_set_labels_period.label.image" 
-                                     class="signal_image rounded border-warning border-2"
+                                <img v-bind:src="'/static/' + o.parameter_set_labels_period.label.label" 
                                      v-bind:id="'group_labels_' + o.id"
+                                     class="signal_image rounded border-warning border-2"
                                      v-bind:class="{'border':o.session_player_id==session_player.id}"/>
                                     
                             </div>
@@ -81,7 +81,7 @@
              <div class="col">
                 <!-- text -->
                 <div class="row">
-                    <div class="col h5 text-center">
+                    <div class="col h5 text-center mt-4">
                         <u>Step 2</u>:
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                 <!-- text -->
                 <div class="row">
                     <div class="col h5 text-center">
-                        Choose one of the images to report:                       
+                        Choose what to report:                       
                     </div>
                 </div>
 
@@ -97,12 +97,12 @@
                 <div class="row">
                     <div class="col text-center" v-if="!get_current_part_period().choice">
 
-                        <div class="row justify-content-center mt-4">
+                        <div class="row justify-content-center">
                             <div v-for="(o, index) in session.parameter_set.parameter_set_random_outcomes"
                                  class="col-auto text-center"
                                  v-bind:id="'choice_grid_' + o.id"
                                  v-on:click="take_choice_grid_click(o.id, index)" >                
-                                <img v-bind:src="'/static/' + o.image" 
+                                <img v-bind:src="'/static/' + o.label" 
                                      class="choice_image rounded border-success border-2"
                                      v-bind:class="{'border':index==get_current_part_period().current_outcome_index}"/>
                                     
@@ -111,7 +111,7 @@
                         
                    </div>
                    <div class="col text-center" v-else>
-                        <img v-bind:src="'/static/' + get_current_part_period().choice.image" 
+                        <img v-bind:src="'/static/' + get_current_part_period().choice.label" 
                             class="choice_image rounded border-success border-2 border"/>                            
                    </div>
                 </div>
@@ -128,7 +128,7 @@
                             v-on:click="sendchoice()">
                             <span class="h5">
                                 Report [[get_current_part_period().current_outcome_id >-1 ? 
-                                         session.parameter_set.parameter_set_random_outcomes[get_current_part_period().current_outcome_index].name
+                                         session.parameter_set.parameter_set_random_outcomes[get_current_part_period().current_outcome_index].abbreviation
                                          : '---']]                                                    
                             </span>
                         </button>

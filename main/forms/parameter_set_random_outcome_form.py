@@ -20,8 +20,11 @@ class ParameterSetRandomOutcomeForm(forms.ModelForm):
     
     image = forms.CharField(label='Image File',
                             widget=forms.TextInput(attrs={"v-model":"current_random_outcome.image",}))
+    
+    label = forms.CharField(label='Label File',
+                            widget=forms.TextInput(attrs={"v-model":"current_random_outcome.label",}))
 
     class Meta:
         model=ParameterSetRandomOutcome
-        fields =['name', 'abbreviation', 'image']
+        fields =['name', 'abbreviation', 'image', 'label']
     

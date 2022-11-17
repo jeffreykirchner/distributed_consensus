@@ -223,8 +223,8 @@ choice_card_visible(){
 
     if(!app.current_choice.hasOwnProperty('session_part')) return false;
 
-    if(!app.session.current_experiment_phase == 'Run' || 
-       !app.session.current_experiment_phase == 'Instructions') return false;
+    if(app.session.current_experiment_phase != 'Run' && 
+       app.session.current_experiment_phase != 'Instructions') return false;
 
     session_player_part = app.session_player.session_player_parts[app.current_choice.session_part.parameter_set_part.part_number-1];
     

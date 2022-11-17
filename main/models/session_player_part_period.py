@@ -91,16 +91,26 @@ class SessionPlayerPartPeriod(models.Model):
 
         #logger.info(f'Player:{self.session_player_part.session_player.parameter_set_player.id_label}, random_outcome_counts_sorted: {random_outcome_counts_sorted}')
 
+        indexes = self.get_part_period_indexes()
+        part_number = indexes["part_number"]
+        period_number = indexes["period_number"]
+        session_player_part_period = self.session_player_part.session_player.session_player_parts_json[part_number]["session_player_part_periods"][period_number]
+
+        #if player in majority store it                                                                     
         if random_outcome_counts_sorted[0]['sum'] >= self.session_part_period.session_part.parameter_set_part.minimum_for_majority:
             self.majority_choice = random_outcome_counts_sorted[0]['random_outcome']
             self.save()
 
-            indexes = self.get_part_period_indexes()
-            part_number = indexes["part_number"]
-            period_number = indexes["period_number"]
-            self.session_player_part.session_player.session_player_parts_json[part_number]["session_player_part_periods"] \
-                                                                             [period_number]["majority_choice"] = self.majority_choice.json()
-            self.session_player_part.session_player.save()
+            session_player_part_period["majority_choice"] = self.majority_choice.json()
+        
+        #convert outcome to json format
+        for index, i in enumerate(random_outcome_counts):
+            random_outcome_counts[index]["random_outcome"] = random_outcome_counts[index]["random_outcome"].json()
+
+        #store totals
+        session_player_part_period["random_outcomes"] = random_outcome_counts
+
+        self.session_player_part.session_player.save()
 
     def write_summary_download_csv(self, writer):
         '''

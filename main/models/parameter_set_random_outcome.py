@@ -21,6 +21,7 @@ class ParameterSetRandomOutcome(models.Model):
     name = models.CharField(max_length=100, default="Name Here")
     abbreviation = models.CharField(max_length=10, default="NH")
     image = models.CharField(max_length=100, default="abc.jpg")
+    label = models.CharField(max_length=100, default="abc.jpg")
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -43,6 +44,7 @@ class ParameterSetRandomOutcome(models.Model):
             self.name = new_ps.get("name")
             self.abbreviation = new_ps.get("abbreviation")
             self.image = new_ps.get("image")
+            self.label = new_ps.get("label")
             
             self.save()
         except IntegrityError as exp:

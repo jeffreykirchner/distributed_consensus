@@ -18,23 +18,7 @@
                 <div class="table-responsive">
                     <table class="table table-condensed"> 
                         <thead>
-                            <tr>
-                                <th scope="col">
-                                    
-                                </th>
-                                <th scope="col">
-                                    
-                                </th>
-                                <th scope="col" class ="text-center" v-bind:colspan="get_current_session_player_part().group_members.length">
-                                    Period Reports
-                                </th>
-                                <th scope="col">
-                                    
-                                </th>
-                                <th scope="col">
-                                    
-                                </th>
-                            </tr>
+                            
                             <tr>
                                 <th scope="col" class = "text-center">
                                     Period
@@ -42,8 +26,11 @@
                                 <th scope="col" class = "text-center">
                                     Image Shown to Everyone
                                 </th>
-                                <th class = "text-center" v-for="(p, index) in get_current_session_player_part().group_members" v-bind:key="'part_a_table_head_'+p.id">
-                                    Person [[p.id_label]] <span v-if="p.id==session_player.id">(You)</span>
+                                <th scope="col" class = "text-center">
+                                    Your Report
+                                </th>
+                                <th class = "text-center" v-for="(p, index) in session.parameter_set.parameter_set_random_outcomes" v-bind:key="'part_a_table_head_'+p.id">
+                                    Total [[p.name]] Reports
                                 </th>
                                 <th scope="col" class = "text-center">
                                     Majority Reported
@@ -67,17 +54,23 @@
                                         [[p.parameter_set_part_period.parameter_set_random_outcome.name]]
                                     </div>                                                                          
                                 </td>
+                                <td class="text-nowrap text-center">
+                                    <div>
+                                        <img v-bind:src="'/static/' + p.choice.label" 
+                                         class="result_image" />  
+                                    </div>                                                                                                              
+                                </td>
                                 <td class="text-nowrap text-center align-middle" 
                                     style="background-color:ghostwhite;"
-                                    v-for="(g, index) in p.group_choices" 
+                                    v-for="(g, index) in p.random_outcomes" 
                                     v-bind:key="'part_a_table_body_'+p.id+'_'+g.id"
                                     v-bind:class="{'border rounded border-warning border-2' : g.session_player_id==session_player.id}">
                                     <!-- <div>
                                         <img v-bind:src="'/static/' + g.choice.image" 
                                              class="result_image" />  
                                     </div> -->
-                                    <div>
-                                        [[g.choice.name]]
+                                    <div class="h4">
+                                        [[g.sum]]
                                     </div>
                                 </td>
                                 <td class="text-nowrap text-center align-middle">
@@ -86,12 +79,12 @@
                                     </div>
                                     <div v-else>
                                         <div>
-                                            <img v-bind:src="'/static/' + p.majority_choice.image" 
+                                            <img v-bind:src="'/static/' + p.majority_choice.label" 
                                                  class="result_image" />  
                                         </div>
-                                        <div>
+                                        <!-- <div>
                                             [[p.majority_choice.name]]
-                                        </div> 
+                                        </div>  -->
                                     </div>                                                                         
                                 </td>
                                 <td class="text-nowrap text-center align-middle">
