@@ -33,14 +33,14 @@
                                         Total [[p.name]] Reports
                                     </th>                                    
                                     <th scope="col" class = "text-center">
-                                        Majority Reported
+                                        Majority Report
                                     </th>
                                     <th scope="col" class = "text-center">
-                                        Your report is in the majority.
+                                        Your Label = Majority Report
                                     </th>
                                     <th scope="col" class = "text-center">
-                                        Your label is in the majority.
-                                    </th> 
+                                        Your Report = Majority Report
+                                    </th>                                     
                                     <!-- <th scope="col" class = "text-center">
                                         Paid Period
                                     </th>                           -->
@@ -85,13 +85,13 @@
                                             <img v-bind:src="'/static/' + p.majority_choice.label" 
                                                  class="result_image" />                                 
                                         </div>                                                                         
-                                    </td>
+                                    </td>                                    
                                     <td class="text-nowrap text-center align-middle h4">
                                         
                                         <div v-if="!p.majority_choice">
                                             No
                                         </div>
-                                        <div v-else-if="p.majority_choice.id == p.choice.id" class="text-success fw-bold">
+                                        <div v-else-if="p.majority_choice.id == p.parameter_set_labels_period.label.id" class="text-success fw-bold">
                                             Yes
                                         </div>
                                         <div v-else>
@@ -103,7 +103,7 @@
                                         <div v-if="!p.majority_choice">
                                             No
                                         </div>
-                                        <div v-else-if="p.majority_choice.id == p.parameter_set_labels_period.label.id" class="text-success fw-bold">
+                                        <div v-else-if="p.majority_choice.id == p.choice.id" class="text-success fw-bold">
                                             Yes
                                         </div>
                                         <div v-else>
@@ -132,8 +132,8 @@
             <!-- B text -->
             <div class="row mb-4" v-if="p.session_part.parameter_set_part.mode == 'B'">
                 <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">                        
-                    If your assigned label matches the majority ([[p.session_part.parameter_set_part.minimum_for_majority]]+ people) report you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
-                    If your assigned label does <u>not</u> match the majority report from you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
+                    If Your Label matches the Majority Report you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
+                    If Your Label does <u>not</u> match the Majority Report you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
                     
                     Your earnings for this part: $[[p.earnings]]
                 </div>
@@ -142,9 +142,9 @@
              <!-- C text -->
              <div class="row mb-4" v-if="p.session_part.parameter_set_part.mode == 'C'">
                 <div class="col h5 text-center" v-if="current_choice.hasOwnProperty('session_part')">                        
-                    If your assigned label from matches the majority ([[p.session_part.parameter_set_part.minimum_for_majority]]+ people) report from you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
-                    If your assigned label from does <u>not</u> match the majority report from you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
-                    You will <b>also</b> earn $[[p.session_part.parameter_set_part.pay_choice_majority]] if your report matches the majority report.<br><br>
+                    If Your Label matches the Majority Report you earn $[[p.session_part.parameter_set_part.pay_label_majority]].<br>
+                    If Your Label does <u>not</u> match the Majority Report you instead earn $[[p.session_part.parameter_set_part.pay_label_minority]].<br><br>
+                    You will <b>also</b> earn $[[p.session_part.parameter_set_part.pay_choice_majority]] if Your Report matches the Majority Report.<br><br>
                     
                     Your earnings for this part: $[[p.earnings]]
                 </div>
