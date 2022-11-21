@@ -105,6 +105,9 @@ class Session(models.Model):
         '''
         setup and start experiment
         '''
+        logger = logging.getLogger(__name__)
+
+        start_time = datetime.now()
 
         self.reset_experiment()
 
@@ -145,6 +148,8 @@ class Session(models.Model):
         self.current_session_part = self.session_parts_a.first()
 
         self.save()
+
+        logger.info(f'Start length: {datetime.now() - start_time}')
  
     def reset_experiment(self):
         '''

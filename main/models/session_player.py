@@ -148,7 +148,9 @@ class SessionPlayer(models.Model):
         '''
 
         self.session_player_parts_json = [p.json_for_subject() for p in self.session_player_parts_b.all()]
-        self.parameter_set_player_json = self.parameter_set_player.json()  
+
+        # self.parameter_set_player_json = self.parameter_set_player.json()  
+        self.parameter_set_player_json = self.session.parameter_set_json["parameter_set_players"][self.player_number-1]
 
         self.save()
         

@@ -38,7 +38,7 @@ class SessionPlayerPart(models.Model):
         
         verbose_name = 'Session Player Part'
         verbose_name_plural = 'Session Player Part'
-        ordering = ['session_player', 'session_part']
+        ordering = ['session_player', 'session_part__parameter_set_part__part_number']
         constraints = [
             models.UniqueConstraint(fields=['session_player', 'session_part'], name='unique_session_player_period'),
         ]
@@ -162,20 +162,20 @@ class SessionPlayerPart(models.Model):
         #"session_player.session_player_parts.0.session_player_part_periods.0.group_choices.0"
 
         
-        part_index = self.parameter_set_player_part.parameter_set_part.part_number-1
-        session_player_part_periods_json = self.session_player.session_player_parts_json[part_index]["session_player_part_periods"]
+        #part_index = self.parameter_set_player_part.parameter_set_part.part_number-1
+        #session_player_part_periods_json = self.session_player.session_player_parts_json[part_index]["session_player_part_periods"]
 
         #logger.info(self)
         #logger.info(session_player_part_periods_json)
 
-        for index_1, i in enumerate(self.session_player_part_periods_a.all()):
-            group_members = i.get_group_members()
+        # for index_1, i in enumerate(self.session_player_part_periods_a.all()):
+        #     group_members = i.get_group_members()
 
-            for index_2, g in enumerate(group_members.all()):
-                #logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
-                session_player_part_periods_json[index_1]["group_choices"][index_2]["choice"] = g.choice.json_for_subject()
+        #     for index_2, g in enumerate(group_members.all()):
+        #         #logger.info(f"update_session_player_parts_json: part_index: {part_index}, session_player_part_period:{index_1}, group_choice:{index_2}")
+        #         session_player_part_periods_json[index_1]["group_choices"][index_2]["choice"] = g.choice.json_for_subject()
 
-        self.session_player.save()
+        #self.session_player.save()
 
     def json_for_subject(self):
         '''

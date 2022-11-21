@@ -128,7 +128,7 @@ class SessionPlayerPartPeriod(models.Model):
         json object of model
         '''
 
-        group_choices = [i.json_for_group() for i in self.get_group_members()]
+        # group_choices = [i.json_for_group() for i in self.get_group_members()]
 
         return{
             "id" : self.id,    
@@ -143,7 +143,7 @@ class SessionPlayerPartPeriod(models.Model):
             "current_outcome_id" : -1,   
 
             "majority_choice" : self.majority_choice.json_for_subject() if self.majority_choice else None,
-            "group_choices" : group_choices,
+            # "group_choices" : group_choices,
 
             "group_number" : self.get_group_number(),
 
