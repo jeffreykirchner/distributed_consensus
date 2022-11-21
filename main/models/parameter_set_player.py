@@ -16,6 +16,7 @@ class ParameterSetPlayer(models.Model):
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
 
     id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
+    player_number = models.IntegerField(verbose_name='Player number', default=0) 
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -26,7 +27,7 @@ class ParameterSetPlayer(models.Model):
     class Meta:
         verbose_name = 'Parameter Set Player'
         verbose_name_plural = 'Parameter Set Players'
-        #ordering=['id_label']
+        ordering=['player_number']
 
     def from_dict(self, new_ps):
         '''
@@ -35,6 +36,7 @@ class ParameterSetPlayer(models.Model):
         '''
 
         self.id_label = new_ps.get("id_label")
+        self.player_number = new_ps.get("id_label")
 
         # parameter_set_player_parts
         new_parameter_set_player_parts = new_ps.get("parameter_set_player_parts")
@@ -75,6 +77,7 @@ class ParameterSetPlayer(models.Model):
 
             "id" : self.id,
             "id_label" : self.id_label,
+            "player_number" : self.player_number,
             "parameter_set_player_parts" : [i.json() for i in self.parameter_set_player_parts_a.all()]
         }
     

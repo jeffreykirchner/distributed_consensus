@@ -189,7 +189,7 @@ class Session(models.Model):
 
             new_session_player.session = self
             new_session_player.parameter_set_player = i
-            new_session_player.player_number = count + 1
+            new_session_player.player_number = i.player_number
 
             new_session_player.save()
 

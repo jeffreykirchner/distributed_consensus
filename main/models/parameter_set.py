@@ -59,24 +59,29 @@ class ParameterSet(models.Model):
             self.survey_link = new_ps.get("survey_link")
 
             self.save()
+
+            self.parameter_set_players.all().delete()
             
             #create parameter set players
             new_parameter_set_players = new_ps.get("parameter_set_players")
 
-            if len(new_parameter_set_players) > self.parameter_set_players.count():
-                #add more players
-                new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
+            for i in range(len(new_parameter_set_players)):
+                main.models.ParameterSetPlayer.objects.create(parameter_set=self)
 
-                for i in range(new_player_count):
-                     main.models.ParameterSetPlayer.objects.create(parameter_set=self)
+            # if len(new_parameter_set_players) > self.parameter_set_players.count():
+            #     #add more players
+            #     new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
 
-            elif len(new_parameter_set_players) < self.parameter_set_players.count():
-                #remove excess players
+            #     for i in range(new_player_count):
+            #         main.models.ParameterSetPlayer.objects.create(parameter_set=self)
 
-                extra_player_count = self.parameter_set_players.count() - len(new_parameter_set_players)
+            # elif len(new_parameter_set_players) < self.parameter_set_players.count():
+            #     #remove excess players
 
-                for i in range(extra_player_count):
-                    self.parameter_set_players.last().delete()
+            #     extra_player_count = self.parameter_set_players.count() - len(new_parameter_set_players)
+
+            #     for i in range(extra_player_count):
+            #         self.parameter_set_players.last().delete()
             
             #random outcomes
             new_parameter_set_random_outcomes = new_ps.get("parameter_set_random_outcomes")
@@ -173,9 +178,18 @@ class ParameterSet(models.Model):
 
         player = main.models.ParameterSetPlayer()
         player.parameter_set = self
+        player.player_number = self.parameter_set_players.count() + 1
 
         player.save()
         player.setup_parts()
+    
+    def update_player_count(self):
+        '''
+        update the number of parameterset players
+        '''
+        for count, i in enumerate(self.parameter_set_players.all()):
+            i.player_number = count + 1
+            i.save()
     
     def randomize_labels(self):
         '''
@@ -199,7 +213,7 @@ class ParameterSet(models.Model):
         '''
         session = self.sessions_d.first()
         session_players = session.session_players_a.all()
-        
+
         return{
             "id" : self.id,
 
