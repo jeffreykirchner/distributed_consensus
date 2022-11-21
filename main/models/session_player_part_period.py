@@ -27,6 +27,7 @@ class SessionPlayerPartPeriod(models.Model):
     #earnings = models.IntegerField(verbose_name='Period Earnings', default=0)        #earnings in cents this period
     choice_length = models.IntegerField(verbose_name='Choice Length', default=0)      #time in ms it took subjects to make choice 
     json_for_group_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
+    indexes_json = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -68,8 +69,13 @@ class SessionPlayerPartPeriod(models.Model):
         '''
         return part and period indexes
         '''
-        return {"part_number" : self.session_part_period.session_part.parameter_set_part.part_number-1,
-                "period_number" : self.session_part_period.parameter_set_part_period.period_number-1}
+
+        if not self.indexes_json:
+            self.indexes_json = {"part_number" : self.session_part_period.session_part.parameter_set_part.part_number-1,
+                                 "period_number" : self.session_part_period.parameter_set_part_period.period_number-1}
+            self.save()
+
+        return self.indexes_json
 
     def calc_majority_choice(self):
         '''
@@ -129,12 +135,17 @@ class SessionPlayerPartPeriod(models.Model):
         '''
 
         # group_choices = [i.json_for_group() for i in self.get_group_members()]
+        
+        parameter_set_json =  self.session_player_part.session_player.session.parameter_set_json
+        indexes = self.get_part_period_indexes()
 
         return{
             "id" : self.id,    
             #"earnings" : self.earnings,
             "parameter_set_labels_period" : self.parameter_set_labels_period.json(),
-            "parameter_set_part_period" : self.session_part_period.parameter_set_part_period.json(),
+            #"parameter_set_part_period" : self.session_part_period.parameter_set_part_period.json(),
+            "parameter_set_part_period" : parameter_set_json["parameter_set_parts"][indexes["part_number"]]
+                                                            ["parameter_set_part_periods"][indexes["period_number"]],
             
             "choice" : self.choice.json() if self.choice else None,      
             "choice_length" : self.choice_length,
@@ -158,11 +169,11 @@ class SessionPlayerPartPeriod(models.Model):
         if not self.json_for_group_json:
             
             self.json_for_group_json = {
-                "id" : self.id,  
+                #"id" : self.id,  
                 "session_player_id" : self.session_player_part.session_player.id,
                 "id_label" : self.session_player_part.session_player.parameter_set_player.id_label,
                 "parameter_set_labels_period" : self.parameter_set_labels_period.json_for_subject(),
-                "choice" : self.choice.json_for_subject() if self.choice else None, 
+                #"choice" : self.choice.json_for_subject() if self.choice else None, 
             }
 
             self.save()

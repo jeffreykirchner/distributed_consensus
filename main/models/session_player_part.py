@@ -70,6 +70,13 @@ class SessionPlayerPart(models.Model):
         '''
         return self.session_player_part_periods_a.get(session_part_period=self.session_part.current_session_part_period)
     
+    def calc_majority_choice_current_period(self):
+        '''
+        do majority choice calc for current session_player_part_period
+        '''
+        session_player_part_period = self.get_current_session_player_part_period()
+        session_player_part_period.calc_majority_choice()
+    
     def calc_majority_choice(self):
         '''
         calc majority choice and earnings for this part
@@ -80,8 +87,8 @@ class SessionPlayerPart(models.Model):
         session_player_part_json =  self.session_player.session_player_parts_json[part_number]
 
         #calc majority choice for group
-        for i in self.session_player_part_periods_a.all():
-            i.calc_majority_choice()
+        # for i in self.session_player_part_periods_a.all():
+        #     i.calc_majority_choice()
         
         #mode A payment
         if self.session_part.parameter_set_part.mode == main.globals.PartModes.A:

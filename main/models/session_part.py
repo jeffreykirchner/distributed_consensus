@@ -60,8 +60,12 @@ class SessionPart(models.Model):
         '''
         advance to next period
         '''
+        #period complete calc results
+        for i in self.session_player_parts_a.all():
+            i.calc_majority_choice_current_period()
 
         if self.current_session_part_period.parameter_set_part_period.period_number==self.parameter_set_part.parameter_set.period_count:
+            
             return False
 
         current_period_number = self.current_session_part_period.parameter_set_part_period.period_number
