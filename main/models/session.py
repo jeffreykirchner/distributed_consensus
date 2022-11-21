@@ -298,7 +298,7 @@ class Session(models.Model):
         '''
         return data summary in csv format
         '''
-        v = ["Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "LabelSet", "Label", "Report", "ReportLength", "MajorityReported"]
+        v = ["Session", "Date", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "LabelSet", "Label", "Report", "ReportLength", "MajorityReported"]
         for i in self.parameter_set.parameter_set_random_outcomes.all():
             v.append(f'{i.abbreviation}ReportCount')
 
@@ -311,6 +311,7 @@ class Session(models.Model):
             for index_j, j in enumerate(i["parameter_set_part_periods"]):
 
                 session_data = [self.id, 
+                                self.get_start_date_string(),
                                 index_i + 1,
                                 index_j + 1,
                                 i["mode"],

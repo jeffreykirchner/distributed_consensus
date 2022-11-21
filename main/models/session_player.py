@@ -124,12 +124,14 @@ class SessionPlayer(models.Model):
 
         out_data = session_data.copy()
 
+        choice = session_player_part_period.get("choice", None)
+
         out_data.append(session_player_part_period["paid"])
         out_data.append(session_player_part_period["group_number"])
         out_data.append(self.parameter_set_player_json["id_label"])
         out_data.append(parameter_set_player_part["parameter_set_labels"]["name"])
         out_data.append(parameter_set_player_part["parameter_set_labels"]["parameter_set_labels_period"][period_index]["label"]["abbreviation"])
-        out_data.append(session_player_part_period["choice"]["abbreviation"])
+        out_data.append(choice["abbreviation"] if choice else None)
         out_data.append(session_player_part_period["choice_length"])
 
         if session_player_part_period["majority_choice"]:
@@ -137,8 +139,9 @@ class SessionPlayer(models.Model):
         else:
             out_data.append("None")
 
-        for i in session_player_part_period["random_outcomes"]:
-            out_data.append(i["sum"])
+        if choice:
+            for i in session_player_part_period["random_outcomes"]:
+                out_data.append(i["sum"])
 
         writer.writerow(out_data)
     
