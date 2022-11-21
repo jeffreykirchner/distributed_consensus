@@ -269,14 +269,14 @@ class SessionPlayerPartInline(admin.TabularInline):
 @admin.register(SessionPlayer)
 class SessionPlayerAdmin(admin.ModelAdmin):
     
-    def render_change_form(self, request, context, *args, **kwargs):
-         context['adminform'].form.fields['parameter_set_player'].queryset = kwargs['obj'].parameter_set_player.parameter_set.parameter_set_players.all()
+    # def render_change_form(self, request, context, *args, **kwargs):
+    #      context['adminform'].form.fields['parameter_set_player'].queryset = kwargs['obj'].parameter_set_player.parameter_set.parameter_set_players.all()
 
-         return super(SessionPlayerAdmin, self).render_change_form(request, context, *args, **kwargs)
+    #      return super(SessionPlayerAdmin, self).render_change_form(request, context, *args, **kwargs)
 
-    readonly_fields=['session','player_number','player_key']
+    readonly_fields=['session','player_number','player_key', 'parameter_set_player']
     list_display = ['parameter_set_player', 'name', 'student_id', 'email',]
-    fields = ['session','name', 'student_id', 'email', 'parameter_set_player','player_number','player_key', 'name_submitted', 'survey_complete']
+    fields = ['session','name', 'student_id', 'email','player_number', 'parameter_set_player','player_key', 'name_submitted', 'survey_complete']
     inlines = [
         SessionPlayerPartInline,
       ]

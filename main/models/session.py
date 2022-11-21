@@ -298,9 +298,9 @@ class Session(models.Model):
         '''
         return data summary in csv format
         '''
-        v = ["Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "Label Set", "Label", "Report", "Report Length (ms)", "Majority Reported"]
+        v = ["Session", "Part", "Period", "Mode", "Image", "Paid", "Group", "Player", "LabelSet", "Label", "Report", "ReportLength", "MajorityReported"]
         for i in self.parameter_set.parameter_set_random_outcomes.all():
-            v.append(f'{i.name} Report Count')
+            v.append(f'{i.abbreviation}ReportCount')
 
         output = io.StringIO()
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
