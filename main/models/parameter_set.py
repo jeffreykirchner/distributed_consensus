@@ -197,7 +197,9 @@ class ParameterSet(models.Model):
         '''
         return json object of model
         '''
-        parameter_set_players = self.parameter_set_parts.all()
+        session = self.sessions_d.first()
+        session_players = session.session_players_a.all()
+        
         return{
             "id" : self.id,
 
@@ -212,8 +214,8 @@ class ParameterSet(models.Model):
             "survey_required" : "True" if self.survey_required else "False",
             "survey_link" : self.survey_link,
 
-            "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
-            "parameter_set_parts" : [p.json() for p in parameter_set_players],
+            "parameter_set_players" : [p.parameter_set_player.json() for p in session_players],
+            "parameter_set_parts" : [p.json() for p in self.parameter_set_parts.all()],
             "parameter_set_labels" : [p.json() for p in self.parameter_set_labels.all()],
             "parameter_set_random_outcomes" : [p.json() for p in self.parameter_set_random_outcomes.all()],
 

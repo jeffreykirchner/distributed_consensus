@@ -34,7 +34,7 @@ class Session(models.Model):
     '''
     session model
     '''
-    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE)
+    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="sessions_d")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sessions_a")
     collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="sessions_b")
     current_session_part = models.ForeignKey('main.SessionPart', models.SET_NULL, blank=True, null=True, related_name="sessions_c")
