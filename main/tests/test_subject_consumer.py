@@ -41,8 +41,9 @@ class TestSubjectConsumer(TestCase):
         session_player_part_period = session_player.get_current_session_player_part().get_current_session_player_part_period()
 
         data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[1].id, 
-                            'part_period_id': session_player_part_period.id, 
-                            'current_index': {'part_index': 0, 'period_index': 0}}}
+                       'part_period_id': session_player_part_period.id, 
+                       'time_span' : 1001,
+                       'current_index': {'part_index': 0, 'period_index': 0}}}
                 
         r = take_choice(self.session_small.id, session_player.id, data)
         self.assertEqual(r["value"], "success")
@@ -61,6 +62,7 @@ class TestSubjectConsumer(TestCase):
 
         data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                        'part_period_id': session_player_part_period.id, 
+                       'time_span' : 1001,
                        'current_index': {'part_index': 1, 'period_index': 0}}}
                 
         r = take_choice(self.session_small.id, session_player.id, data)

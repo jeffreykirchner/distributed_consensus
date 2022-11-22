@@ -55,10 +55,12 @@ class TestStaffConsumer(TestCase):
                 if index<self.session_large.session_players_a.all().count()/2:       
                     data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                            'part_period_id': session_player_part_period.id, 
+                            'time_span' : 1001,
                            'current_index': {'part_index': 0, 'period_index': j}}}
                 else:
                     data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[1].id, 
                             'part_period_id': session_player_part_period.id, 
+                             'time_span' : 1001,
                             'current_index': {'part_index': 0, 'period_index': j}}}
                 
                 r = take_choice(self.session_large.id, i.id, data)   
@@ -94,11 +96,13 @@ class TestStaffConsumer(TestCase):
                 if index < minimum_for_majority:    
                     data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                            'part_period_id': session_player_part_period.id, 
+                           'time_span' : 1001,
                            'current_index': {'part_index': 0, 'period_index': j}}}
                     
                 else:
                     data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[1].id, 
                             'part_period_id': session_player_part_period.id, 
+                            'time_span' : 1001,
                             'current_index': {'part_index': 0, 'period_index': j}}}
 
                 r = take_choice(self.session_large.id, i.id, data)   
@@ -148,10 +152,12 @@ class TestStaffConsumer(TestCase):
                     if index < minimum_for_majority:      
                         data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                            'part_period_id': session_player_part_period.id, 
+                           'time_span' : 1001,
                            'current_index': {'part_index': 0, 'period_index': j}}}
                     else:
                         data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[1].id, 
                            'part_period_id': session_player_part_period.id, 
+                           'time_span' : 1001,
                            'current_index': {'part_index': 0, 'period_index': j}}}
 
                     r = take_choice(self.session_large.id, i.id, data)   
@@ -159,6 +165,7 @@ class TestStaffConsumer(TestCase):
                 else:
                     data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                            'part_period_id': session_player_part_period.id, 
+                           'time_span' : 1001,
                            'current_index': {'part_index': 0, 'period_index': j}}}
 
                     r = take_choice(self.session_large.id, i.id, data)   
@@ -177,6 +184,7 @@ class TestStaffConsumer(TestCase):
   
                 data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                         'part_period_id': session_player_part_period.id, 
+                        'time_span' : 1001,
                         'current_index': {'part_index': 0, 'period_index': j}}}
 
                 r = take_choice(self.session_large.id, i.id, data)   
@@ -218,6 +226,7 @@ class TestStaffConsumer(TestCase):
 
                 data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                        'part_period_id': session_player_part_period.id, 
+                       'time_span' : 1001,
                        'current_index': {'part_index': 0, 'period_index': j}}}
                 
                 r = take_choice(self.session_large.id, i.id, data)   
@@ -264,6 +273,7 @@ class TestStaffConsumer(TestCase):
 
                 data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                        'part_period_id': session_player_part_period.id, 
+                       'time_span' : 1001,
                        'current_index': {'part_index': 0, 'period_index': j}}}
                 
                 r = take_choice(self.session_large.id, i.id, data)   
@@ -309,6 +319,7 @@ class TestStaffConsumer(TestCase):
 
                 data ={'data':{'random_outcome_id': self.session_large.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                        'part_period_id': session_player_part_period.id, 
+                       'time_span' : 1001,
                        'current_index': {'part_index': 0, 'period_index': j}}}
                 
                 r = take_choice(self.session_large.id, i.id, data)   
@@ -372,6 +383,7 @@ class TestStaffConsumer(TestCase):
 
                 data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                         'part_period_id': session_player_part_period.id, 
+                        'time_span' : 1001,
                         'current_index': {'part_index': 0, 'period_index': j}}}
 
                 r = take_choice(self.session_small.id, i.id, data)   
@@ -416,6 +428,7 @@ class TestStaffConsumer(TestCase):
 
                 data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                         'part_period_id': session_player_part_period.id, 
+                        'time_span' : 1001,
                         'current_index': {'part_index': 0, 'period_index': j}}}
 
                 r = take_choice(self.session_small.id, i.id, data)   
@@ -443,6 +456,7 @@ class TestStaffConsumer(TestCase):
 
                 data ={'data':{'random_outcome_id': self.session_small.parameter_set.parameter_set_random_outcomes.all()[0].id, 
                         'part_period_id': session_player_part_period.id, 
+                        'time_span' : 1001,
                         'current_index': {'part_index': 0, 'period_index': j}}}
 
                 r = take_choice(self.session_small.id, i.id, data)   
