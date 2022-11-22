@@ -136,9 +136,9 @@ var app = Vue.createApp({
 
         /**
          * do after session has loaded
-         */
-         doFirstLoad()
-         {           
+        */
+        doFirstLoad()
+        {           
              app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false})           
              document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
 
@@ -173,7 +173,7 @@ var app = Vue.createApp({
             app.do_timer_2();
 
             app.choice_start_time = new Date().getTime();
-         },
+        },
 
         /**
           * run timer
