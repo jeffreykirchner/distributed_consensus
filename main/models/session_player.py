@@ -139,8 +139,8 @@ class SessionPlayer(models.Model):
         else:
             out_data.append("None")
 
-        if choice:
-            for i in session_player_part_period.get("random_outcomes", None):
+        if session_player_part_period.get("random_outcomes", None):
+            for i in session_player_part_period.get("random_outcomes"):
                 if i:
                     out_data.append(i["sum"])
 
