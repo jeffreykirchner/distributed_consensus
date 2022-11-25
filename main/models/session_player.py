@@ -140,8 +140,9 @@ class SessionPlayer(models.Model):
             out_data.append("None")
 
         if choice:
-            for i in session_player_part_period["random_outcomes"]:
-                out_data.append(i["sum"])
+            for i in session_player_part_period.get("random_outcomes", None):
+                if i:
+                    out_data.append(i["sum"])
 
         writer.writerow(out_data)
     
