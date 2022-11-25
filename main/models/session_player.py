@@ -141,8 +141,7 @@ class SessionPlayer(models.Model):
 
         if session_player_part_period.get("random_outcomes", None):
             for i in session_player_part_period.get("random_outcomes"):
-                if i:
-                    out_data.append(i["sum"])
+                out_data.append(i["sum"])
 
         writer.writerow(out_data)
     
@@ -157,6 +156,11 @@ class SessionPlayer(models.Model):
         self.parameter_set_player_json = self.session.parameter_set_json["parameter_set_players"][self.player_number-1]
 
         self.save()
+
+        'redo majority choice calc'
+        for i in self.session_player_parts_b.all():
+            for j in i.session_player_part_periods_a.all():
+                j.calc_majority_choice()
         
     def update_earnings(self):
         '''
