@@ -169,7 +169,7 @@ class SessionPlayerPartPeriod(models.Model):
         if not self.json_for_group_json:
             
             self.json_for_group_json = {
-                #"id" : self.id,  
+                "id" : self.id,  
                 "session_player_id" : self.session_player_part.session_player.id,
                 "id_label" : self.session_player_part.session_player.parameter_set_player.id_label,
                 "parameter_set_labels_period" : self.parameter_set_labels_period.json_for_subject(),

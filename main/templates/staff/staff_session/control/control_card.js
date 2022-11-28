@@ -3,11 +3,11 @@
  updatePhaseButtonText(){
     if(this.session.finished && this.session.current_experiment_phase == "Done")
     {
-        this.move_to_next_phase_text = '** Experiment complete **';
+        this.move_to_next_phase_text = '** Session complete **';
     }
     else if(this.session.current_experiment_phase == "Names")
     {
-        this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+        this.move_to_next_phase_text = 'Complete Session <i class="fas fa-flag-checkered"></i>';
     }
     else if(this.session.current_experiment_phase == "Results")
     {
