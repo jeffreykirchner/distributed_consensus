@@ -365,12 +365,12 @@ class Session(models.Model):
 
         writer = csv.writer(output)
 
-        writer.writerow(['Name', 'Student ID', 'Earnings'])
+        writer.writerow(['Session', 'Date', 'Player', 'Name', 'Student_ID', 'Earnings'])
 
         session_players = self.session_players_a.all()
 
         for p in session_players:
-            writer.writerow([p.name, p.student_id, p.earnings])
+            writer.writerow([self.id, self.get_start_date_string(), p.player_number, p.name, p.student_id, p.earnings])
 
         return output.getvalue()
 
