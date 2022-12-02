@@ -67,7 +67,7 @@ takeDownloadRecruiterData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Template_Recruiter_Data_Session_" + app.session.id +".csv";
+    downloadLink.download = "Distributed_Consensus_Recruiter_Session" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -93,7 +93,7 @@ takeDownloadPaymentData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Template_Payment_Data_Session_" + app.session.id +".csv";
+    downloadLink.download = "Distributed_Consensus_Payments_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
