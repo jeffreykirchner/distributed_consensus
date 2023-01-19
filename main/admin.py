@@ -335,9 +335,13 @@ class SessionPartInline(admin.TabularInline):
 class SessionAdmin(admin.ModelAdmin):
 
     form = SessionFormAdmin
+
+    @admin.display(description='Creator')
+    def get_creator_email(self, obj):
+        return obj.creator.email
     
     readonly_fields=['parameter_set', 'current_session_part','session_key','channel_key']
-    list_display = ['title', 'creator']
+    list_display = ['title', 'get_creator_email']
     # fields = ['parameter_set', 'creator', 'collaborators', 'current_session_part', 'title','current_experiment_phase', 'started',
     #           'session_key','channel_key','finished','shared','locked',]
 
