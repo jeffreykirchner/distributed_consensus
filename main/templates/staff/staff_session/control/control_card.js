@@ -302,7 +302,7 @@ take_payment_periods(messageData){
 },
 
 send_refresh_screens(messageData){
-    if (!confirm('Refresh the cliet and server screens?')) {
+    if (!confirm('Refresh the client and server screens?')) {
         return;
     }
 
